@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundlePackageType</key>
+	<string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleDisplayName</key>
+	<string>Tastecard</string>
+	<key>CFBundleName</key>
+	<string>$(PRODUCT_NAME)</string>
+	<key>CFBundleShortVersionString</key>
+	<string>$(MARKETING_VERSION)</string>
+	<key>CFBundleVersion</key>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
+
+	<!-- Portrait only: the card is a portrait surface. -->
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+	</array>
+
+	<!-- Default launch screen (blank, themed via Assets). -->
+	<key>UILaunchScreen</key>
+	<dict>
+		<key>UIColorName</key>
+		<string>LaunchBackground</string>
+	</dict>
+
+	<!-- §8 / 5.1.1 — honest, specific Photos permission string.
+	     We request the *add/read* description; limited library is offered explicitly in-app. -->
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Tastecard analyses your photos on this device to build your card. Your photos never leave your device — nothing is uploaded, and you can grant access to all or only selected photos.</string>
+
+	<!-- Core app makes zero network calls and uses no non-exempt encryption.
+	     Declaring this avoids an unnecessary export-compliance prompt at submission. -->
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+
+	<!-- Status bar handled by SwiftUI; light/dark adapts to the card background. -->
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<true/>
+
+	<!-- Bundled fonts (drop the .ttf files into Resources/Fonts — see that folder's README).
+	     Font.custom() falls back to system fonts gracefully if a file is absent. -->
+	<key>UIAppFonts</key>
+	<array>
+		<string>PlusJakartaSans-Regular.ttf</string>
+		<string>PlusJakartaSans-Medium.ttf</string>
+		<string>PlusJakartaSans-SemiBold.ttf</string>
+		<string>PlusJakartaSans-Bold.ttf</string>
+		<string>PlusJakartaSans-ExtraBold.ttf</string>
+		<string>Inter-Regular.ttf</string>
+		<string>Inter-Medium.ttf</string>
+		<string>Inter-SemiBold.ttf</string>
+		<string>Inter-Bold.ttf</string>
+		<string>JetBrainsMono-Regular.ttf</string>
+		<string>JetBrainsMono-Medium.ttf</string>
+		<string>JetBrainsMono-Bold.ttf</string>
+	</array>
+</dict>
+</plist>

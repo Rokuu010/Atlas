@@ -1,0 +1,833 @@
+{
+  "version": 1,
+  "categories": [
+    {
+      "id": "always_on_the_run",
+      "displayName": "Always on the Run",
+      "tagline": "Your camera roll has logged more miles than most people's cars.",
+      "detectionPrompts": [
+        "a photo of a person running",
+        "a photo of a road race or marathon",
+        "a photo of running shoes or a running track"
+      ],
+      "rarityIndex": 0.35,
+      "threshold": 0.22
+    },
+    {
+      "id": "engine_heart",
+      "displayName": "Engine Heart",
+      "tagline": "You'd photograph a parked car you'll never own.",
+      "detectionPrompts": [
+        "a photo of a car",
+        "a sports car or classic car",
+        "a car show or garage"
+      ],
+      "rarityIndex": 0.35,
+      "threshold": 0.2
+    },
+    {
+      "id": "player_one",
+      "displayName": "Player One",
+      "tagline": "Your screenshots have a high score.",
+      "detectionPrompts": [
+        "a video game screenshot",
+        "a gaming setup or console",
+        "a game controller"
+      ],
+      "rarityIndex": 0.3,
+      "threshold": 0.2
+    },
+    {
+      "id": "on_the_pitch",
+      "displayName": "On the Pitch",
+      "tagline": "Weekends are measured in 90-minute halves.",
+      "detectionPrompts": [
+        "a photo of a person playing football (soccer)",
+        "a photo of a football pitch",
+        "a person in a football kit with a ball"
+      ],
+      "rarityIndex": 0.35,
+      "threshold": 0.2
+    },
+    {
+      "id": "one_more_chapter",
+      "displayName": "One More Chapter",
+      "tagline": "There's always a current read in the camera roll.",
+      "detectionPrompts": [
+        "a photo of a book or books",
+        "a bookshelf or bookstore",
+        "a person reading a book"
+      ],
+      "rarityIndex": 0.2,
+      "threshold": 0.2
+    },
+    {
+      "id": "sole_collector",
+      "displayName": "Sole Collector",
+      "tagline": "Boxes you'll never throw away.",
+      "detectionPrompts": [
+        "a photo of sneakers or trainers",
+        "a collection of shoes on display",
+        "a close-up of athletic shoes"
+      ],
+      "rarityIndex": 0.4,
+      "threshold": 0.2
+    },
+    {
+      "id": "summit_chaser",
+      "displayName": "Summit Chaser",
+      "tagline": "You measure a good day in elevation gained.",
+      "detectionPrompts": [
+        "a photo of a mountain summit",
+        "a scenic mountain peak view",
+        "a person at the top of a mountain"
+      ],
+      "rarityIndex": 0.45,
+      "threshold": 0.22
+    },
+    {
+      "id": "golden_hour_loyalist",
+      "displayName": "Golden Hour Loyalist",
+      "tagline": "You stop everything when the light goes gold.",
+      "detectionPrompts": [
+        "a photo of a sunset or sunrise",
+        "a dramatic sky with clouds",
+        "a colourful sky at golden hour"
+      ],
+      "rarityIndex": 0.2,
+      "threshold": 0.2
+    },
+    {
+      "id": "two_wheels",
+      "displayName": "Two Wheels",
+      "tagline": "Happiest somewhere between point A and point B.",
+      "detectionPrompts": [
+        "a photo of a bicycle",
+        "a person cycling outdoors",
+        "a bike path or cycling route"
+      ],
+      "rarityIndex": 0.38,
+      "threshold": 0.2
+    },
+    {
+      "id": "hoop_dreams",
+      "displayName": "Hoop Dreams",
+      "tagline": "The court is where you think clearest.",
+      "detectionPrompts": [
+        "a photo of a basketball court",
+        "a person playing basketball",
+        "a basketball hoop"
+      ],
+      "rarityIndex": 0.35,
+      "threshold": 0.2
+    },
+    {
+      "id": "board_feet",
+      "displayName": "Board Feet",
+      "tagline": "Bruises heal, the clip lives forever.",
+      "detectionPrompts": [
+        "a photo of a person skateboarding",
+        "a skateboard at a skatepark",
+        "a skateboarding trick"
+      ],
+      "rarityIndex": 0.45,
+      "threshold": 0.2
+    },
+    {
+      "id": "glove_up",
+      "displayName": "Glove Up",
+      "tagline": "Stress has nowhere to hide.",
+      "detectionPrompts": [
+        "a photo of a boxing gym",
+        "a person with boxing gloves",
+        "a martial arts training session"
+      ],
+      "rarityIndex": 0.45,
+      "threshold": 0.2
+    },
+    {
+      "id": "powered_by_caffeine",
+      "displayName": "Powered by Caffeine",
+      "tagline": "Your love language is a flat white.",
+      "detectionPrompts": [
+        "a cup of coffee",
+        "a latte with latte art",
+        "the interior of a coffee shop"
+      ],
+      "rarityIndex": 0.12,
+      "threshold": 0.2
+    },
+    {
+      "id": "rise_and_bake",
+      "displayName": "Rise and Bake",
+      "tagline": "Flour on the counter, joy in the oven.",
+      "detectionPrompts": [
+        "home-baked bread or cake",
+        "a person baking",
+        "a tray of cookies or pastries"
+      ],
+      "rarityIndex": 0.32,
+      "threshold": 0.2
+    },
+    {
+      "id": "eats_first_questions_later",
+      "displayName": "Eats First, Questions Later",
+      "tagline": "The food gets photographed before the first bite.",
+      "detectionPrompts": [
+        "a plated meal at a restaurant",
+        "a close-up photo of food",
+        "a dish of food on a table"
+      ],
+      "rarityIndex": 0.12,
+      "threshold": 0.2
+    },
+    {
+      "id": "your_people",
+      "displayName": "Your People",
+      "tagline": "You document the crew like a photojournalist.",
+      "detectionPrompts": [
+        "a group photo of friends together",
+        "people socialising",
+        "a candid group of friends"
+      ],
+      "rarityIndex": 0.15,
+      "threshold": 0.2
+    },
+    {
+      "id": "after_dark",
+      "displayName": "After Dark",
+      "tagline": "Your best stories start after 10pm.",
+      "detectionPrompts": [
+        "a party at night",
+        "a nightclub scene",
+        "people dancing at night"
+      ],
+      "rarityIndex": 0.3,
+      "threshold": 0.2
+    },
+    {
+      "id": "main_character",
+      "displayName": "Main Character",
+      "tagline": "The camera loves you, and you know it.",
+      "detectionPrompts": [
+        "a selfie of a person",
+        "a close-up portrait of a face",
+        "a mirror selfie"
+      ],
+      "rarityIndex": 0.12,
+      "threshold": 0.22
+    },
+    {
+      "id": "crowd_surfer",
+      "displayName": "Crowd Surfer",
+      "tagline": "Mud, lights, and zero regrets.",
+      "detectionPrompts": [
+        "a music festival crowd",
+        "a festival stage",
+        "people at an outdoor festival"
+      ],
+      "rarityIndex": 0.4,
+      "threshold": 0.2
+    },
+    {
+      "id": "wheels_up",
+      "displayName": "Wheels Up",
+      "tagline": "Your phone storage is mostly other time zones.",
+      "detectionPrompts": [
+        "a famous landmark or tourist site",
+        "a travel photo in a foreign city",
+        "luggage or an airport"
+      ],
+      "rarityIndex": 0.3,
+      "threshold": 0.2
+    },
+    {
+      "id": "salt_in_the_air",
+      "displayName": "Salt in the Air",
+      "tagline": "You gravitate to wherever water meets sand.",
+      "detectionPrompts": [
+        "a photo of a beach",
+        "the ocean or sea",
+        "a coastal seaside view"
+      ],
+      "rarityIndex": 0.18,
+      "threshold": 0.22
+    },
+    {
+      "id": "front_row_energy",
+      "displayName": "Front Row Energy",
+      "tagline": "A graveyard of blurry stage photos and zero regrets.",
+      "detectionPrompts": [
+        "a live concert",
+        "a music festival stage",
+        "a crowd with concert stage lights"
+      ],
+      "rarityIndex": 0.35,
+      "threshold": 0.2
+    },
+    {
+      "id": "gallery_wanderer",
+      "displayName": "Gallery Wanderer",
+      "tagline": "You'll travel for a good exhibition.",
+      "detectionPrompts": [
+        "artwork in a museum or gallery",
+        "a painting or sculpture",
+        "the interior of an art museum"
+      ],
+      "rarityIndex": 0.45,
+      "threshold": 0.2
+    },
+    {
+      "id": "beat_face",
+      "displayName": "Beat Face",
+      "tagline": "Your face is the canvas.",
+      "detectionPrompts": [
+        "a makeup look close-up",
+        "makeup products and brushes",
+        "a beauty makeup application"
+      ],
+      "rarityIndex": 0.35,
+      "threshold": 0.2
+    },
+    {
+      "id": "skin_first",
+      "displayName": "Skin First",
+      "tagline": "Glow is a long game and you're winning it.",
+      "detectionPrompts": [
+        "skincare products on a shelf",
+        "a facial skincare routine",
+        "a vanity of beauty products"
+      ],
+      "rarityIndex": 0.4,
+      "threshold": 0.2
+    },
+    {
+      "id": "mic_night",
+      "displayName": "Mic Night",
+      "tagline": "You'll grab the mic without being asked.",
+      "detectionPrompts": [
+        "a karaoke night",
+        "a person singing into a microphone",
+        "a comedy club stage"
+      ],
+      "rarityIndex": 0.52,
+      "threshold": 0.2
+    },
+    {
+      "id": "page_and_pour",
+      "displayName": "Page and Pour",
+      "tagline": "Productive, but make it aesthetic.",
+      "detectionPrompts": [
+        "a laptop at a cafe",
+        "a notebook and coffee",
+        "a study desk setup"
+      ],
+      "rarityIndex": 0.26,
+      "threshold": 0.2
+    },
+    {
+      "id": "tech_forward",
+      "displayName": "Tech Forward",
+      "tagline": "First in line, every launch.",
+      "detectionPrompts": [
+        "a photo of tech gadgets",
+        "a desk with multiple screens",
+        "a new phone or device"
+      ],
+      "rarityIndex": 0.4,
+      "threshold": 0.2
+    },
+    {
+      "id": "star_gazer",
+      "displayName": "Star Gazer",
+      "tagline": "You point the camera up.",
+      "detectionPrompts": [
+        "a night sky full of stars",
+        "the moon close-up",
+        "a Milky Way landscape"
+      ],
+      "rarityIndex": 0.62,
+      "threshold": 0.2
+    },
+    {
+      "id": "paws_and_claws",
+      "displayName": "Paws & Claws",
+      "tagline": "Ruled by a creature who ignores you.",
+      "detectionPrompts": [
+        "a photo of a pet cat",
+        "a cat close-up",
+        "a cat lounging at home"
+      ],
+      "rarityIndex": 0.4,
+      "threshold": 0.2
+    },
+    {
+      "id": "last_round",
+      "displayName": "Last Round",
+      "tagline": "The pub is basically your second living room.",
+      "detectionPrompts": [
+        "a pint of beer",
+        "a craft beer or pub interior",
+        "people drinking beer"
+      ],
+      "rarityIndex": 0.22,
+      "threshold": 0.2
+    },
+    {
+      "id": "boba_run",
+      "displayName": "Boba Run",
+      "tagline": "There's always a half-finished cup with a fat straw.",
+      "detectionPrompts": [
+        "a cup of bubble tea",
+        "boba milk tea",
+        "a bubble tea drink"
+      ],
+      "rarityIndex": 0.28,
+      "threshold": 0.2
+    },
+    {
+      "id": "sea_legs",
+      "displayName": "Sea Legs",
+      "tagline": "Land is fine, but the water's better.",
+      "detectionPrompts": [
+        "a sailboat or yacht",
+        "a person on a boat",
+        "a boat out on the water"
+      ],
+      "rarityIndex": 0.6,
+      "threshold": 0.2
+    },
+    {
+      "id": "in_the_saddle",
+      "displayName": "In the Saddle",
+      "tagline": "Reins in hand, head clear.",
+      "detectionPrompts": [
+        "a person horse riding",
+        "a horse and rider",
+        "an equestrian scene"
+      ],
+      "rarityIndex": 0.62,
+      "threshold": 0.2
+    },
+    {
+      "id": "on_the_baize",
+      "displayName": "On the Baize",
+      "tagline": "You call your shots.",
+      "detectionPrompts": [
+        "a pool or billiards table",
+        "a person playing pool",
+        "a snooker table"
+      ],
+      "rarityIndex": 0.5,
+      "threshold": 0.2
+    },
+    {
+      "id": "fresh_ice",
+      "displayName": "Fresh Ice",
+      "tagline": "Born for the rink.",
+      "detectionPrompts": [
+        "a person ice skating",
+        "an ice rink",
+        "ice skates on the ice"
+      ],
+      "rarityIndex": 0.62,
+      "threshold": 0.2
+    },
+    {
+      "id": "six_strings",
+      "displayName": "Six Strings",
+      "tagline": "There's always an instrument within reach.",
+      "detectionPrompts": [
+        "a person playing guitar",
+        "a guitar or musical instrument",
+        "a band rehearsing"
+      ],
+      "rarityIndex": 0.4,
+      "threshold": 0.2
+    },
+    {
+      "id": "sawdust",
+      "displayName": "Sawdust",
+      "tagline": "Measure twice, post once.",
+      "detectionPrompts": [
+        "a woodworking project",
+        "tools and timber in a workshop",
+        "a person building furniture"
+      ],
+      "rarityIndex": 0.6,
+      "threshold": 0.2
+    },
+    {
+      "id": "brick_by_brick",
+      "displayName": "Brick by Brick",
+      "tagline": "Some builds take all weekend, and that's the point.",
+      "detectionPrompts": [
+        "a Lego build",
+        "a model kit",
+        "a detailed model or figurine"
+      ],
+      "rarityIndex": 0.45,
+      "threshold": 0.2
+    },
+    {
+      "id": "your_move",
+      "displayName": "Your Move",
+      "tagline": "The board comes out and the night's decided.",
+      "detectionPrompts": [
+        "a chessboard",
+        "people playing a board game",
+        "tabletop games on a table"
+      ],
+      "rarityIndex": 0.35,
+      "threshold": 0.2
+    },
+    {
+      "id": "in_character",
+      "displayName": "In Character",
+      "tagline": "You don't dress up, you transform.",
+      "detectionPrompts": [
+        "a person in a cosplay costume",
+        "a costume at a convention",
+        "an elaborate dressed-up character"
+      ],
+      "rarityIndex": 0.65,
+      "threshold": 0.2
+    },
+    {
+      "id": "time_piece",
+      "displayName": "Time Piece",
+      "tagline": "It's never just about telling the time.",
+      "detectionPrompts": [
+        "a wristwatch close-up",
+        "a luxury watch",
+        "a watch collection"
+      ],
+      "rarityIndex": 0.5,
+      "threshold": 0.2
+    },
+    {
+      "id": "lights_up",
+      "displayName": "Lights Up",
+      "tagline": "You'll stand in the cold for a good display.",
+      "detectionPrompts": [
+        "a fireworks display",
+        "fireworks in the night sky",
+        "a firework celebration"
+      ],
+      "rarityIndex": 0.45,
+      "threshold": 0.2
+    },
+    {
+      "id": "bullseye",
+      "displayName": "Bullseye",
+      "tagline": "Steady hand, sharp eye.",
+      "detectionPrompts": [
+        "a dartboard",
+        "a person throwing darts",
+        "a darts game in a pub"
+      ],
+      "rarityIndex": 0.5,
+      "threshold": 0.2
+    },
+    {
+      "id": "apex_hunter",
+      "displayName": "Apex Hunter",
+      "tagline": "You take corners for fun.",
+      "detectionPrompts": [
+        "a go-kart on a track",
+        "a person karting",
+        "a racing kart"
+      ],
+      "rarityIndex": 0.68,
+      "threshold": 0.2
+    },
+    {
+      "id": "net_result",
+      "displayName": "Net Result",
+      "tagline": "Fast hands, faster trash talk.",
+      "detectionPrompts": [
+        "a table tennis game",
+        "a person playing ping pong",
+        "a table tennis paddle and ball"
+      ],
+      "rarityIndex": 0.5,
+      "threshold": 0.2
+    },
+    {
+      "id": "medium_rare",
+      "displayName": "Medium Rare",
+      "tagline": "You take your steak seriously",
+      "detectionPrompts": [
+        "a steak on a plate",
+        "a grilled steak close-up",
+        "a steak dinner"
+      ],
+      "rarityIndex": 0.24,
+      "threshold": 0.2
+    },
+    {
+      "id": "glaze_days",
+      "displayName": "Glaze Days",
+      "tagline": "A dozen is a serving size.",
+      "detectionPrompts": [
+        "a box of doughnuts",
+        "a glazed doughnut close-up",
+        "doughnuts on display"
+      ],
+      "rarityIndex": 0.26,
+      "threshold": 0.2
+    },
+    {
+      "id": "green_juice",
+      "displayName": "Green Juice",
+      "tagline": "Health, but make it photogenic.",
+      "detectionPrompts": [
+        "a smoothie or juice",
+        "a green smoothie",
+        "a smoothie bowl"
+      ],
+      "rarityIndex": 0.26,
+      "threshold": 0.2
+    },
+    {
+      "id": "bird_and_sauce",
+      "displayName": "Bird and Sauce",
+      "tagline": "The crispier the better.",
+      "detectionPrompts": [
+        "fried chicken",
+        "a plate of fried chicken",
+        "chicken wings"
+      ],
+      "rarityIndex": 0.26,
+      "threshold": 0.2
+    },
+    {
+      "id": "matcha_hour",
+      "displayName": "Matcha Hour",
+      "tagline": "Green, frothy, non-negotiable.",
+      "detectionPrompts": [
+        "a matcha latte",
+        "a green matcha drink",
+        "a cup of matcha tea"
+      ],
+      "rarityIndex": 0.3,
+      "threshold": 0.2
+    },
+    {
+      "id": "inked_pages",
+      "displayName": "Inked Pages",
+      "tagline": "A shelf you'll never thin out.",
+      "detectionPrompts": [
+        "a comic book",
+        "manga pages",
+        "a comic book collection"
+      ],
+      "rarityIndex": 0.45,
+      "threshold": 0.2
+    },
+    {
+      "id": "anime_heart",
+      "displayName": "Anime Heart",
+      "tagline": "A whole world in every frame.",
+      "detectionPrompts": [
+        "anime artwork",
+        "an anime figure or poster",
+        "an anime convention"
+      ],
+      "rarityIndex": 0.45,
+      "threshold": 0.2
+    },
+    {
+      "id": "deck_builder",
+      "displayName": "Deck Builder",
+      "tagline": "The collection is never finished.",
+      "detectionPrompts": [
+        "trading cards",
+        "a trading card collection",
+        "people playing a card game"
+      ],
+      "rarityIndex": 0.5,
+      "threshold": 0.2
+    },
+    {
+      "id": "drone_pilot",
+      "displayName": "Drone Pilot",
+      "tagline": "You see the world from above.",
+      "detectionPrompts": [
+        "a drone aircraft",
+        "an aerial drone photo",
+        "a person flying a drone"
+      ],
+      "rarityIndex": 0.7,
+      "threshold": 0.2
+    },
+    {
+      "id": "spray_can",
+      "displayName": "Spray Can",
+      "tagline": "The city is a canvas.",
+      "detectionPrompts": [
+        "graffiti street art",
+        "a wall mural",
+        "spray paint art"
+      ],
+      "rarityIndex": 0.6,
+      "threshold": 0.2
+    },
+    {
+      "id": "lens_hunter",
+      "displayName": "Lens Hunter",
+      "tagline": "Digital's fine, but film has soul.",
+      "detectionPrompts": [
+        "a film camera",
+        "a vintage analog camera",
+        "35mm film photos"
+      ],
+      "rarityIndex": 0.6,
+      "threshold": 0.2
+    },
+    {
+      "id": "layered_up",
+      "displayName": "Layered Up",
+      "tagline": "The right piece finishes everything.",
+      "detectionPrompts": [
+        "jewellery close-up",
+        "rings and necklaces",
+        "a jewellery collection"
+      ],
+      "rarityIndex": 0.45,
+      "threshold": 0.2
+    },
+    {
+      "id": "signature_scent",
+      "displayName": "Signature Scent",
+      "tagline": "You're remembered by how you smelled.",
+      "detectionPrompts": [
+        "a perfume bottle",
+        "a fragrance collection",
+        "a bottle of cologne"
+      ],
+      "rarityIndex": 0.45,
+      "threshold": 0.2
+    },
+    {
+      "id": "designer_eye",
+      "displayName": "Designer Eye",
+      "tagline": "You know quality on sight.",
+      "detectionPrompts": [
+        "a designer handbag",
+        "a luxury fashion item",
+        "a high-end boutique"
+      ],
+      "rarityIndex": 0.5,
+      "threshold": 0.2
+    },
+    {
+      "id": "holy_ground",
+      "displayName": "Holy Ground",
+      "tagline": "Awe finds you in quiet places.",
+      "detectionPrompts": [
+        "a cathedral interior",
+        "a church or temple",
+        "ornate religious architecture"
+      ],
+      "rarityIndex": 0.5,
+      "threshold": 0.2
+    },
+    {
+      "id": "cave_dweller",
+      "displayName": "Cave Dweller",
+      "tagline": "The best parts are underground.",
+      "detectionPrompts": [
+        "inside a cave",
+        "a cave with rock formations",
+        "a person exploring a cave"
+      ],
+      "rarityIndex": 0.72,
+      "threshold": 0.2
+    },
+    {
+      "id": "steam_engine",
+      "displayName": "Steam Engine",
+      "tagline": "The journey beats the destination.",
+      "detectionPrompts": [
+        "a train journey",
+        "a scenic railway",
+        "a train at a station"
+      ],
+      "rarityIndex": 0.6,
+      "threshold": 0.2
+    },
+    {
+      "id": "aurora_chaser",
+      "displayName": "Aurora Chaser",
+      "tagline": "You'd freeze for that sky.",
+      "detectionPrompts": [
+        "the northern lights",
+        "aurora borealis in the sky",
+        "green lights over a night landscape"
+      ],
+      "rarityIndex": 0.92,
+      "threshold": 0.2
+    },
+    {
+      "id": "last_light",
+      "displayName": "Last Light",
+      "tagline": "Stillness over water, every time.",
+      "detectionPrompts": [
+        "a calm lake at dusk",
+        "a reflection on still water",
+        "a quiet waterside evening"
+      ],
+      "rarityIndex": 0.55,
+      "threshold": 0.24
+    },
+    {
+      "id": "caption_material",
+      "displayName": "Caption Material",
+      "tagline": "Half your gallery is things you meant to send.",
+      "detectionPrompts": [
+        "a meme screenshot",
+        "a funny text message screenshot",
+        "a social media post screenshot"
+      ],
+      "rarityIndex": 0.3,
+      "threshold": 0.24
+    },
+    {
+      "id": "note_to_self",
+      "displayName": "Note to Self",
+      "tagline": "Your camera is basically your memory.",
+      "detectionPrompts": [
+        "a photo of a whiteboard with notes",
+        "a photo of handwritten notes",
+        "a screenshot of a note or list"
+      ],
+      "rarityIndex": 0.3,
+      "threshold": 0.24
+    },
+    {
+      "id": "tiny_hands",
+      "displayName": "Tiny Hands",
+      "tagline": "A new favourite person arrived.",
+      "detectionPrompts": [
+        "a newborn baby",
+        "a parent holding a baby",
+        "a baby's first photos"
+      ],
+      "rarityIndex": 0.66,
+      "threshold": 0.2
+    },
+    {
+      "id": "she_said_yes",
+      "displayName": "She Said Yes",
+      "tagline": "A yes worth photographing forever.",
+      "detectionPrompts": [
+        "an engagement ring on a hand",
+        "a proposal moment",
+        "a close-up of a ring"
+      ],
+      "rarityIndex": 0.82,
+      "threshold": 0.2
+    }
+  ]
+}

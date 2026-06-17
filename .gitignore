@@ -1,0 +1,27 @@
+# XcodeGen output (regenerate with `xcodegen generate`)
+Tastecard.xcodeproj/
+
+# Xcode
+build/
+DerivedData/
+*.xcuserstate
+xcuserdata/
+*.xcscmblueprint
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Generated / large model artifacts (produced on macOS; regenerate via scripts/)
+Tastecard/Resources/SigLIPImageEncoder.mlpackage/
+Tastecard/Resources/category_text_embeddings.bin
+
+# Fonts (download per Resources/Fonts/README.md)
+Tastecard/Resources/Fonts/*.ttf
+
+# macOS
+.DS_Store
+
+# Local tooling
+.claude/

@@ -86,6 +86,19 @@ Tastecard/
 TastecardTests/                 ThemeSelector, Rarity, ExifClustering, InputSanitizer, CategoryLoading
 ```
 
+## Android (Kotlin + Jetpack Compose)
+
+A separate native Android app lives under `android/` — same dataset, same precomputed
+text vectors, same selection/rarity/clustering logic (ported to Kotlin), with the SigLIP
+image encoder running via **ONNX Runtime** instead of Core ML. Photos via MediaStore,
+EXIF GPS via androidx.exifinterface, 9:16 export via Android Canvas + share Intent.
+
+Build a **debug APK** (no Mac needed) on a free Ubuntu runner via the
+[Android build workflow](.github/workflows/android.yml): Actions ▸ "Android build" ▸ Run.
+The APK artifact installs directly — no signing dance, no 7-day expiry. Locally:
+`cd android && ./gradlew assembleDebug` after running the dataset + `convert_siglip_onnx.py`
+scripts. Unit tests (`io.tastecard` logic) run via `gradle -p android test`.
+
 ## What was removed from the mockup (§3)
 
 CreatorStudio / PhoneFrame, the fake QR + fake social buttons + `ais.studio` mock, the

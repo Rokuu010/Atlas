@@ -25,3 +25,13 @@ Tastecard/Resources/Fonts/*.ttf
 
 # Local tooling
 .claude/
+
+# Android / Gradle
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+android/.idea/
+android/app/src/main/assets/category_text_embeddings.bin
+android/app/src/main/assets/siglip_image_encoder.onnx
+*.iml

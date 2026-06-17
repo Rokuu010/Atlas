@@ -1,0 +1,55 @@
+name: Android build
+
+# Builds an installable debug APK on a free Ubuntu runner (no Mac, no signing dance —
+# a debug APK is self-signed and installs directly on any Android phone with
+# "install unknown apps" enabled).
+#
+# Run it from the GitHub UI: Actions ▸ "Android build" ▸ Run workflow.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  apk:
+    name: Build debug APK
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Generate category dataset
+        run: python scripts/generate_categories.py --output android/app/src/main/assets/categories.json
+
+      # Non-fatal: if the SigLIP→ONNX export needs another pass, the APK still builds
+      # (the app shows its "setup required" screen until the model is bundled).
+      - name: Generate model + text vectors
+        continue-on-error: true
+        run: |
+          python -m pip install --upgrade pip
+          pip install torch open_clip_torch transformers sentencepiece numpy onnx
+          python scripts/precompute_text_embeddings.py --output android/app/src/main/assets/category_text_embeddings.bin
+          python scripts/convert_siglip_onnx.py
+
+      - uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: "8.9"
+
+      - name: Build debug APK
+        run: gradle -p android assembleDebug --no-daemon --stacktrace
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Tastecard-debug-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error

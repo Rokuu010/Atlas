@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import UIKit
 
 struct PermissionDeniedView: View {
     @EnvironmentObject private var model: AppModel

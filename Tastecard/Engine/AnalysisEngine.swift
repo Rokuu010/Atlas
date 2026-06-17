@@ -13,6 +13,7 @@
 
 import Foundation
 import CoreGraphics
+import UIKit   // UIImage.cgImage member access on images returned by PhotoAssetLoader
 
 struct AnalysisProgress: Equatable, Sendable {
     let processed: Int

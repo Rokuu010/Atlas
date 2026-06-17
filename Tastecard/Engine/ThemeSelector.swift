@@ -39,7 +39,11 @@ struct SelectionConfig: Equatable {
     /// Evidence floor = max(floorBase, ceil(librarySize/1000 * floorPerThousand)).
     /// Larger libraries demand more evidence (someone with 2k photos needs more than 100).
     var floorBase: Int = 3
-    var floorPerThousand: Double = 5.0
+    var floorPerThousand: Double = 3.0
+    /// Above this library size we never show "warming up": if the evidence floor isn't met
+    /// we still surface the strongest themes by score. Keeps a big, varied gallery from
+    /// being left with nothing when thresholds are conservative.
+    var relativeFallbackMinPhotos: Int = 400
 
     func evidenceFloor(librarySize: Int) -> Int {
         let scaled = Int((Double(librarySize) / 1000.0 * floorPerThousand).rounded(.up))
@@ -68,24 +72,30 @@ enum ThemeSelector {
                 return a.categoryId < b.categoryId
             }
 
-        // "Fewer than 3 clear the bar" -> warming up (the evidence floor is the bar).
         let clearedCount = ranked.filter { $0.count >= floor }.count
-        guard clearedCount >= config.minThemes else {
-            return .warmingUp(.notEnoughEvidence)
-        }
 
-        // Fill 3rd–6th slots only with categories that appear in >= floor photos OR are
-        // top-N by strength, so a fragile statistical hiccup never fills a slot.
-        var selected: [CategoryTally] = []
-        for (rank, candidate) in ranked.enumerated() {
-            if selected.count >= config.maxThemes { break }
-            let isGuaranteedByStrength = rank < config.guaranteedTopSlots
-            if candidate.count >= floor || isGuaranteedByStrength {
-                selected.append(candidate)
+        // Primary path: enough categories clear the evidence floor. Fill 3rd–6th slots
+        // only with categories that appear in >= floor photos OR are top-N by strength,
+        // so a fragile statistical hiccup never fills a slot.
+        if clearedCount >= config.minThemes {
+            var selected: [CategoryTally] = []
+            for (rank, candidate) in ranked.enumerated() {
+                if selected.count >= config.maxThemes { break }
+                let isGuaranteedByStrength = rank < config.guaranteedTopSlots
+                if candidate.count >= floor || isGuaranteedByStrength {
+                    selected.append(candidate)
+                }
             }
+            return .themes(selected)
         }
 
-        // clearedCount >= minThemes guarantees selected.count >= minThemes.
-        return .themes(selected)
+        // Safety net: a clearly non-sparse library should never be left with nothing.
+        // If at least minThemes categories registered any matches, surface the strongest.
+        if photosAnalysed >= config.relativeFallbackMinPhotos, ranked.count >= config.minThemes {
+            return .themes(Array(ranked.prefix(config.maxThemes)))
+        }
+
+        // Truly sparse / weak signal -> "still warming up".
+        return .warmingUp(.notEnoughEvidence)
     }
 }

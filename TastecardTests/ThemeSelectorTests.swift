@@ -60,19 +60,44 @@ final class ThemeSelectorTests: XCTestCase {
     func testEvidenceFloorScalesWithLibrarySize() {
         let config = SelectionConfig()
         XCTAssertEqual(config.evidenceFloor(librarySize: 100), 3)
-        XCTAssertEqual(config.evidenceFloor(librarySize: 1000), 5)
-        XCTAssertEqual(config.evidenceFloor(librarySize: 2000), 10)
-        XCTAssertEqual(config.evidenceFloor(librarySize: 3000), 15)
+        XCTAssertEqual(config.evidenceFloor(librarySize: 1000), 3)
+        XCTAssertEqual(config.evidenceFloor(librarySize: 2000), 6)
+        XCTAssertEqual(config.evidenceFloor(librarySize: 3000), 9)
     }
 
-    func testLargeLibraryRequiresMoreEvidence() {
-        // At 2000 photos the floor is 10; counts of 6 do NOT clear it.
+    func testLargeLibraryFallsBackToStrongestThemes() {
+        // 2000 photos -> floor 6. No category clears it, but several have matches, so a
+        // big varied gallery still gets a card from its strongest themes (no "warming up").
         let tallies = [
-            tally("a", count: 9, score: 9),
-            tally("b", count: 8, score: 8),
-            tally("c", count: 7, score: 7),
+            tally("a", count: 5, score: 5),
+            tally("b", count: 4, score: 4),
+            tally("c", count: 3, score: 3),
+            tally("d", count: 2, score: 2),
+        ]
+        guard case let .themes(selected) = ThemeSelector.select(tallies: tallies, photosAnalysed: 2000) else {
+            return XCTFail("expected themes via fallback")
+        }
+        XCTAssertEqual(selected.map(\.categoryId), ["a", "b", "c", "d"])
+    }
+
+    func testLargeLibraryWithTooFewMatchingCategoriesStillWarmsUp() {
+        // Even at 2000 photos, if fewer than 3 categories matched anything, warm up.
+        let tallies = [
+            tally("a", count: 50, score: 50),
+            tally("b", count: 30, score: 30),
         ]
         XCTAssertEqual(ThemeSelector.select(tallies: tallies, photosAnalysed: 2000),
+                       .warmingUp(.notEnoughEvidence))
+    }
+
+    func testSparseLibraryBelowFallbackWarmsUp() {
+        // 100 photos (< fallback floor): only 2 categories clear the evidence floor -> warm up.
+        let tallies = [
+            tally("a", count: 5, score: 5),
+            tally("b", count: 4, score: 4),
+            tally("c", count: 2, score: 2),
+        ]
+        XCTAssertEqual(ThemeSelector.select(tallies: tallies, photosAnalysed: 100),
                        .warmingUp(.notEnoughEvidence))
     }
 

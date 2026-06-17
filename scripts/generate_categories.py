@@ -25,7 +25,10 @@ import sys
 from pathlib import Path
 
 SCHEMA_VERSION = 1
-DEFAULT_THRESHOLD = 0.20
+# SigLIP image-text cosine similarities are on a low scale: a genuine match sits around
+# 0.10–0.14 (≈ the model's own sigmoid-0.5 decision boundary). 0.12 is the calibrated
+# default; ambiguous categories are nudged up to reduce cross-firing.
+DEFAULT_THRESHOLD = 0.12
 DEFAULT_RARITY = 0.40
 
 # rarityIndex per category id. Common/everyday subjects low; rare subjects high.
@@ -109,13 +112,13 @@ RARITY: dict[str, float] = {
 # Per-category threshold overrides. Ambiguous categories (e.g. running vs hiking) get a
 # slightly raised bar to reduce cross-firing. Everything else uses DEFAULT_THRESHOLD.
 THRESHOLD: dict[str, float] = {
-    "always_on_the_run": 0.22,   # running vs hiking/walking
-    "summit_chaser": 0.22,       # mountains vs generic landscape
-    "last_light": 0.24,          # calm water vs any water
-    "salt_in_the_air": 0.22,     # beach vs any water
-    "note_to_self": 0.24,        # notes vs any screenshot
-    "caption_material": 0.24,    # memes vs any screenshot
-    "main_character": 0.22,      # selfie vs any portrait
+    "always_on_the_run": 0.15,   # running vs hiking/walking
+    "summit_chaser": 0.15,       # mountains vs generic landscape
+    "last_light": 0.16,          # calm water vs any water
+    "salt_in_the_air": 0.15,     # beach vs any water
+    "note_to_self": 0.16,        # notes vs any screenshot
+    "caption_material": 0.16,    # memes vs any screenshot
+    "main_character": 0.15,      # selfie vs any portrait
 }
 
 

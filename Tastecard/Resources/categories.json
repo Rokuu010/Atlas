@@ -11,7 +11,7 @@
         "a photo of running shoes or a running track"
       ],
       "rarityIndex": 0.35,
-      "threshold": 0.22
+      "threshold": 0.15
     },
     {
       "id": "engine_heart",
@@ -23,7 +23,7 @@
         "a car show or garage"
       ],
       "rarityIndex": 0.35,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "player_one",
@@ -35,7 +35,7 @@
         "a game controller"
       ],
       "rarityIndex": 0.3,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "on_the_pitch",
@@ -47,7 +47,7 @@
         "a person in a football kit with a ball"
       ],
       "rarityIndex": 0.35,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "one_more_chapter",
@@ -59,7 +59,7 @@
         "a person reading a book"
       ],
       "rarityIndex": 0.2,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "sole_collector",
@@ -71,7 +71,7 @@
         "a close-up of athletic shoes"
       ],
       "rarityIndex": 0.4,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "summit_chaser",
@@ -83,7 +83,7 @@
         "a person at the top of a mountain"
       ],
       "rarityIndex": 0.45,
-      "threshold": 0.22
+      "threshold": 0.15
     },
     {
       "id": "golden_hour_loyalist",
@@ -95,7 +95,7 @@
         "a colourful sky at golden hour"
       ],
       "rarityIndex": 0.2,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "two_wheels",
@@ -107,7 +107,7 @@
         "a bike path or cycling route"
       ],
       "rarityIndex": 0.38,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "hoop_dreams",
@@ -119,7 +119,7 @@
         "a basketball hoop"
       ],
       "rarityIndex": 0.35,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "board_feet",
@@ -131,7 +131,7 @@
         "a skateboarding trick"
       ],
       "rarityIndex": 0.45,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "glove_up",
@@ -143,7 +143,7 @@
         "a martial arts training session"
       ],
       "rarityIndex": 0.45,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "powered_by_caffeine",
@@ -155,7 +155,7 @@
         "the interior of a coffee shop"
       ],
       "rarityIndex": 0.12,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "rise_and_bake",
@@ -167,7 +167,7 @@
         "a tray of cookies or pastries"
       ],
       "rarityIndex": 0.32,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "eats_first_questions_later",
@@ -179,7 +179,7 @@
         "a dish of food on a table"
       ],
       "rarityIndex": 0.12,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "your_people",
@@ -191,7 +191,7 @@
         "a candid group of friends"
       ],
       "rarityIndex": 0.15,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "after_dark",
@@ -203,7 +203,7 @@
         "people dancing at night"
       ],
       "rarityIndex": 0.3,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "main_character",
@@ -215,7 +215,7 @@
         "a mirror selfie"
       ],
       "rarityIndex": 0.12,
-      "threshold": 0.22
+      "threshold": 0.15
     },
     {
       "id": "crowd_surfer",
@@ -227,7 +227,7 @@
         "people at an outdoor festival"
       ],
       "rarityIndex": 0.4,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "wheels_up",
@@ -239,7 +239,7 @@
         "luggage or an airport"
       ],
       "rarityIndex": 0.3,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "salt_in_the_air",
@@ -251,7 +251,7 @@
         "a coastal seaside view"
       ],
       "rarityIndex": 0.18,
-      "threshold": 0.22
+      "threshold": 0.15
     },
     {
       "id": "front_row_energy",
@@ -263,7 +263,7 @@
         "a crowd with concert stage lights"
       ],
       "rarityIndex": 0.35,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "gallery_wanderer",
@@ -275,7 +275,7 @@
         "the interior of an art museum"
       ],
       "rarityIndex": 0.45,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "beat_face",
@@ -287,7 +287,7 @@
         "a beauty makeup application"
       ],
       "rarityIndex": 0.35,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "skin_first",
@@ -299,7 +299,7 @@
         "a vanity of beauty products"
       ],
       "rarityIndex": 0.4,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "mic_night",
@@ -311,7 +311,7 @@
         "a comedy club stage"
       ],
       "rarityIndex": 0.52,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "page_and_pour",
@@ -323,7 +323,7 @@
         "a study desk setup"
       ],
       "rarityIndex": 0.26,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "tech_forward",
@@ -335,7 +335,7 @@
         "a new phone or device"
       ],
       "rarityIndex": 0.4,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "star_gazer",
@@ -347,7 +347,7 @@
         "a Milky Way landscape"
       ],
       "rarityIndex": 0.62,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "paws_and_claws",
@@ -359,7 +359,7 @@
         "a cat lounging at home"
       ],
       "rarityIndex": 0.4,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "last_round",
@@ -371,7 +371,7 @@
         "people drinking beer"
       ],
       "rarityIndex": 0.22,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "boba_run",
@@ -383,7 +383,7 @@
         "a bubble tea drink"
       ],
       "rarityIndex": 0.28,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "sea_legs",
@@ -395,7 +395,7 @@
         "a boat out on the water"
       ],
       "rarityIndex": 0.6,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "in_the_saddle",
@@ -407,7 +407,7 @@
         "an equestrian scene"
       ],
       "rarityIndex": 0.62,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "on_the_baize",
@@ -419,7 +419,7 @@
         "a snooker table"
       ],
       "rarityIndex": 0.5,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "fresh_ice",
@@ -431,7 +431,7 @@
         "ice skates on the ice"
       ],
       "rarityIndex": 0.62,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "six_strings",
@@ -443,7 +443,7 @@
         "a band rehearsing"
       ],
       "rarityIndex": 0.4,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "sawdust",
@@ -455,7 +455,7 @@
         "a person building furniture"
       ],
       "rarityIndex": 0.6,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "brick_by_brick",
@@ -467,7 +467,7 @@
         "a detailed model or figurine"
       ],
       "rarityIndex": 0.45,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "your_move",
@@ -479,7 +479,7 @@
         "tabletop games on a table"
       ],
       "rarityIndex": 0.35,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "in_character",
@@ -491,7 +491,7 @@
         "an elaborate dressed-up character"
       ],
       "rarityIndex": 0.65,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "time_piece",
@@ -503,7 +503,7 @@
         "a watch collection"
       ],
       "rarityIndex": 0.5,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "lights_up",
@@ -515,7 +515,7 @@
         "a firework celebration"
       ],
       "rarityIndex": 0.45,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "bullseye",
@@ -527,7 +527,7 @@
         "a darts game in a pub"
       ],
       "rarityIndex": 0.5,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "apex_hunter",
@@ -539,7 +539,7 @@
         "a racing kart"
       ],
       "rarityIndex": 0.68,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "net_result",
@@ -551,7 +551,7 @@
         "a table tennis paddle and ball"
       ],
       "rarityIndex": 0.5,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "medium_rare",
@@ -563,7 +563,7 @@
         "a steak dinner"
       ],
       "rarityIndex": 0.24,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "glaze_days",
@@ -575,7 +575,7 @@
         "doughnuts on display"
       ],
       "rarityIndex": 0.26,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "green_juice",
@@ -587,7 +587,7 @@
         "a smoothie bowl"
       ],
       "rarityIndex": 0.26,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "bird_and_sauce",
@@ -599,7 +599,7 @@
         "chicken wings"
       ],
       "rarityIndex": 0.26,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "matcha_hour",
@@ -611,7 +611,7 @@
         "a cup of matcha tea"
       ],
       "rarityIndex": 0.3,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "inked_pages",
@@ -623,7 +623,7 @@
         "a comic book collection"
       ],
       "rarityIndex": 0.45,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "anime_heart",
@@ -635,7 +635,7 @@
         "an anime convention"
       ],
       "rarityIndex": 0.45,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "deck_builder",
@@ -647,7 +647,7 @@
         "people playing a card game"
       ],
       "rarityIndex": 0.5,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "drone_pilot",
@@ -659,7 +659,7 @@
         "a person flying a drone"
       ],
       "rarityIndex": 0.7,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "spray_can",
@@ -671,7 +671,7 @@
         "spray paint art"
       ],
       "rarityIndex": 0.6,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "lens_hunter",
@@ -683,7 +683,7 @@
         "35mm film photos"
       ],
       "rarityIndex": 0.6,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "layered_up",
@@ -695,7 +695,7 @@
         "a jewellery collection"
       ],
       "rarityIndex": 0.45,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "signature_scent",
@@ -707,7 +707,7 @@
         "a bottle of cologne"
       ],
       "rarityIndex": 0.45,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "designer_eye",
@@ -719,7 +719,7 @@
         "a high-end boutique"
       ],
       "rarityIndex": 0.5,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "holy_ground",
@@ -731,7 +731,7 @@
         "ornate religious architecture"
       ],
       "rarityIndex": 0.5,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "cave_dweller",
@@ -743,7 +743,7 @@
         "a person exploring a cave"
       ],
       "rarityIndex": 0.72,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "steam_engine",
@@ -755,7 +755,7 @@
         "a train at a station"
       ],
       "rarityIndex": 0.6,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "aurora_chaser",
@@ -767,7 +767,7 @@
         "green lights over a night landscape"
       ],
       "rarityIndex": 0.92,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "last_light",
@@ -779,7 +779,7 @@
         "a quiet waterside evening"
       ],
       "rarityIndex": 0.55,
-      "threshold": 0.24
+      "threshold": 0.16
     },
     {
       "id": "caption_material",
@@ -791,7 +791,7 @@
         "a social media post screenshot"
       ],
       "rarityIndex": 0.3,
-      "threshold": 0.24
+      "threshold": 0.16
     },
     {
       "id": "note_to_self",
@@ -803,7 +803,7 @@
         "a screenshot of a note or list"
       ],
       "rarityIndex": 0.3,
-      "threshold": 0.24
+      "threshold": 0.16
     },
     {
       "id": "tiny_hands",
@@ -815,7 +815,7 @@
         "a baby's first photos"
       ],
       "rarityIndex": 0.66,
-      "threshold": 0.2
+      "threshold": 0.12
     },
     {
       "id": "she_said_yes",
@@ -827,7 +827,7 @@
         "a close-up of a ring"
       ],
       "rarityIndex": 0.82,
-      "threshold": 0.2
+      "threshold": 0.12
     }
   ]
 }

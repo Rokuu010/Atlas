@@ -30,15 +30,29 @@ jobs:
       - name: Generate category dataset
         run: python scripts/generate_categories.py --output android/app/src/main/assets/categories.json
 
-      # Non-fatal: if the SigLIP→ONNX export needs another pass, the APK still builds
-      # (the app shows its "setup required" screen until the model is bundled).
+      # Fatal on failure: the analysis model is required, so a failed export must fail the
+      # build (it previously continued silently, shipping a model-less APK that shows the
+      # "setup required" screen). CPU-only torch avoids pulling the multi-GB CUDA wheel —
+      # the most common cause of this step failing on a runner.
       - name: Generate model + text vectors
-        continue-on-error: true
         run: |
           python -m pip install --upgrade pip
-          pip install torch open_clip_torch transformers sentencepiece numpy onnx
+          pip install torch --index-url https://download.pytorch.org/whl/cpu
+          pip install open_clip_torch transformers sentencepiece numpy onnx onnxruntime
           python scripts/precompute_text_embeddings.py --output android/app/src/main/assets/category_text_embeddings.bin
           python scripts/convert_siglip_onnx.py
+
+      - name: Verify model assets are bundled
+        run: |
+          set -e
+          onnx="android/app/src/main/assets/siglip_image_encoder.onnx"
+          vec="android/app/src/main/assets/category_text_embeddings.bin"
+          test -s "$onnx" || { echo "::error::missing $onnx"; exit 1; }
+          test -s "$vec"  || { echo "::error::missing $vec"; exit 1; }
+          # The ONNX encoder must be a real model (MB-scale), not an empty/stub file.
+          bytes=$(wc -c < "$onnx")
+          [ "$bytes" -gt 1000000 ] || { echo "::error::$onnx is only $bytes bytes — export failed"; exit 1; }
+          ls -lh "$onnx" "$vec"
 
       - uses: gradle/actions/setup-gradle@v3
         with:

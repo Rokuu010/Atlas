@@ -14,7 +14,7 @@ Output: android/app/src/main/assets/siglip_image_encoder.onnx
     output : embedding  float32 [1, D]             (Kotlin L2-normalises)
 
 Setup:
-    pip install torch open_clip_torch transformers sentencepiece numpy onnx
+    pip install torch open_clip_torch transformers sentencepiece numpy onnx onnxruntime
 Usage:
     python scripts/convert_siglip_onnx.py
 """
@@ -22,6 +22,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import shutil
 from pathlib import Path
 
 MODEL_NAME = "ViT-B-16-SigLIP"
@@ -36,6 +37,11 @@ def main() -> int:
     ap.add_argument("--model", default=MODEL_NAME)
     ap.add_argument("--pretrained", default=PRETRAINED)
     ap.add_argument("--side", type=int, default=INPUT_SIDE)
+    # int8 dynamic quantisation mirrors the Core ML int8 build: a full-precision
+    # ViT-B/16 image tower is ~340 MB — far too large to bundle in an APK. Quantised it is
+    # ~90 MB and the embedding space stays aligned with the (fp32) text vectors. Falls back
+    # to fp32 if onnxruntime's quantiser is unavailable, so a model is always produced.
+    ap.add_argument("--quantize", choices=["int8", "none"], default="int8")
     args = ap.parse_args()
 
     import torch
@@ -60,16 +66,31 @@ def main() -> int:
 
     out = Path(args.output)
     out.parent.mkdir(parents=True, exist_ok=True)
+
+    # Export full-precision first to a staging path; quantise into the final path below.
+    fp32_path = out.with_name("_fp32_" + out.name)
     torch.onnx.export(
         wrapper,
         dummy,
-        str(out),
+        str(fp32_path),
         input_names=["image"],
         output_names=["embedding"],
         opset_version=17,
         do_constant_folding=True,
         dynamic_axes={"image": {0: "batch"}, "embedding": {0: "batch"}},
     )
+
+    if args.quantize == "int8":
+        try:
+            from onnxruntime.quantization import quantize_dynamic, QuantType
+            quantize_dynamic(str(fp32_path), str(out), weight_type=QuantType.QInt8)
+            fp32_path.unlink(missing_ok=True)
+            print("Applied int8 dynamic quantisation.")
+        except Exception as e:  # noqa: BLE001 — never let quantisation block model output
+            print(f"WARNING: int8 quantisation failed ({e}); shipping full-precision model.")
+            shutil.move(str(fp32_path), str(out))
+    else:
+        shutil.move(str(fp32_path), str(out))
 
     size_mb = out.stat().st_size / (1024 * 1024)
     print(f"Saved -> {out}  ({size_mb:.1f} MB)")

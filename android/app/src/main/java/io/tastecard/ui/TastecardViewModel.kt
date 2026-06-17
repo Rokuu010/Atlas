@@ -41,6 +41,10 @@ class TastecardViewModel(app: Application) : AndroidViewModel(app) {
     var toast by mutableStateOf<String?>(null)
         private set
 
+    /** True when only a user-selected subset of photos is shared (Android 14 partial access). */
+    var partialAccess by mutableStateOf(false)
+        private set
+
     val progress = MutableStateFlow(0 to 0)
 
     private val store = CardStore(app)
@@ -59,7 +63,8 @@ class TastecardViewModel(app: Application) : AndroidViewModel(app) {
 
     fun begin() { phase = Phase.Priming }
 
-    fun onPermissionResult(granted: Boolean) {
+    fun onPermissionResult(granted: Boolean, partial: Boolean) {
+        partialAccess = partial
         if (granted) startAnalysis() else phase = Phase.Denied
     }
 

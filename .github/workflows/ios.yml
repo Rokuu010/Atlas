@@ -66,13 +66,15 @@ jobs:
 
       # Non-fatal: if the SigLIP→Core ML conversion needs another pass, the IPA still
       # builds (the app shows its "setup required" screen until the model is bundled).
+      # CPU-only torch avoids the multi-GB CUDA wheel — the usual cause of this step failing.
       - name: Generate Core ML model + text vectors
         continue-on-error: true
         run: |
           python -m pip install --upgrade pip
+          pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
           # open_clip's SigLIP tokenizer is a Hugging Face SentencePiece tokenizer,
           # so transformers + sentencepiece are required in addition to torch/coremltools.
-          pip install torch torchvision open_clip_torch transformers sentencepiece coremltools numpy
+          pip install open_clip_torch transformers sentencepiece coremltools numpy
           python scripts/precompute_text_embeddings.py
           python scripts/convert_siglip_coreml.py
 

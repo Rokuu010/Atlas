@@ -25,6 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.runtime.collectAsState
+import io.tastecard.engine.WarmingReason
 
 @Composable
 fun ToastBar(message: String) {
@@ -139,7 +140,28 @@ fun GeneratingScreen(vm: TastecardViewModel) {
 }
 
 @Composable
-fun WarmingUpScreen(scanned: Int, onRetry: () -> Unit, onBack: () -> Unit) {
+fun WarmingUpScreen(
+    reason: WarmingReason,
+    scanned: Int,
+    partialAccess: Boolean,
+    onRetry: () -> Unit,
+    onSelectMorePhotos: () -> Unit,
+    onBack: () -> Unit,
+) {
+    val title = when (reason) {
+        WarmingReason.NOT_ENOUGH_PHOTOS -> "Your collection is still warming up"
+        WarmingReason.NOT_ENOUGH_EVIDENCE -> "Not quite enough to call it yet"
+    }
+    // With partial access the engine only sees the handful of photos the user picked, so the
+    // fix is to share more — not to "take more photos". Lead with that when access is limited.
+    val body = when {
+        partialAccess ->
+            "Tastecard can only see the photos you selected. Share more of your library, then try again."
+        reason == WarmingReason.NOT_ENOUGH_PHOTOS ->
+            "We need a few more photos before your Tastecard takes shape. Keep snapping — then come back."
+        else ->
+            "We couldn't find three clear themes yet. Add more shots of the things you love and try again."
+    }
     OnboardingBackground {
         Column(
             Modifier.fillMaxSize().systemBarsPadding().padding(28.dp),
@@ -148,12 +170,18 @@ fun WarmingUpScreen(scanned: Int, onRetry: () -> Unit, onBack: () -> Unit) {
         ) {
             CenteredMessage(
                 emoji = "🌷",
-                title = "Not quite enough to call it yet",
-                body = "We couldn't find three clear themes yet. Add more shots of the things you love and try again.",
+                title = title,
+                body = body,
                 sub = if (scanned > 0) "Scanned $scanned photos" else null,
             )
             Spacer(Modifier.height(28.dp))
-            CTAButton("Try again", onClick = onRetry)
+            if (partialAccess) {
+                CTAButton("Select more photos", onClick = onSelectMorePhotos)
+                Spacer(Modifier.height(8.dp))
+                SecondaryButton("Try again", onClick = onRetry)
+            } else {
+                CTAButton("Try again", onClick = onRetry)
+            }
             Spacer(Modifier.height(8.dp))
             SecondaryButton("Back", onClick = onBack)
         }
@@ -161,7 +189,7 @@ fun WarmingUpScreen(scanned: Int, onRetry: () -> Unit, onBack: () -> Unit) {
 }
 
 @Composable
-fun DeniedScreen(onBack: () -> Unit) {
+fun DeniedScreen(onOpenSettings: () -> Unit, onTryAgain: () -> Unit, onBack: () -> Unit) {
     OnboardingBackground {
         Column(
             Modifier.fillMaxSize().systemBarsPadding().padding(28.dp),
@@ -171,9 +199,16 @@ fun DeniedScreen(onBack: () -> Unit) {
             CenteredMessage(
                 emoji = "🔒",
                 title = "Photo access is off",
-                body = "Tastecard needs to read your photos on this device to build your card. Enable it in system settings — your photos still never leave your device.",
+                body = "Tastecard needs to read your photos on this device to build your card. Turn on photo access in Settings — your photos still never leave your device.",
             )
             Spacer(Modifier.height(28.dp))
+            // Android only shows the system permission dialog the first time. Once denied, the
+            // reliable path back is the app's Settings page; "Try again" still helps in the
+            // case where the user merely dismissed the dialog without a permanent denial.
+            CTAButton("Open settings", onClick = onOpenSettings)
+            Spacer(Modifier.height(8.dp))
+            SecondaryButton("Try again", onClick = onTryAgain)
+            Spacer(Modifier.height(8.dp))
             SecondaryButton("Back", onClick = onBack)
         }
     }

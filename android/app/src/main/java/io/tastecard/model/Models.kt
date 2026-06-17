@@ -36,6 +36,9 @@ data class Tastecard(
     val themes: List<EmergentTheme>,
     val createdAt: Long,
 ) {
+    /** The serial as displayed (e.g. "#A7F3"). */
+    val serialDisplay: String get() = id
+
     companion object {
         private val ALPHABET = "23456789ABCDEFGHJKMNPQRSTVWXYZ"
 

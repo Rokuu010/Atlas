@@ -82,12 +82,21 @@ struct CardView: View {
     // MARK: - Background (whole screen)
 
     private var background: some View {
-        ZStack {
-            vm.theme.background
-            if let bg = vm.customBackground {
-                Image(uiImage: bg).resizable().scaledToFill()
-                if let scrim = vm.backgroundScrim { scrim }
+        GeometryReader { g in
+            ZStack {
+                vm.theme.background
+                if let bg = vm.customBackground {
+                    // Bound + clip the image to the screen so a wide photo can't overflow
+                    // its bounds and push the centred card sideways.
+                    Image(uiImage: bg)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: g.size.width, height: g.size.height)
+                        .clipped()
+                    if let scrim = vm.backgroundScrim { scrim }
+                }
             }
+            .frame(width: g.size.width, height: g.size.height)
         }
         .ignoresSafeArea()
     }
@@ -290,7 +299,7 @@ struct ThemeGridCard: View {
     var body: some View {
         ZStack(alignment: .bottomLeading) {
             AssetImage(assetId: theme.heroPhotoLocalId,
-                       fallbackName: HeroPhotoPicker.fallbackImageName(forCategoryId: theme.categoryId),
+                       categoryId: theme.categoryId,
                        targetSide: 500)
             PhotoVignette()
             Text(theme.displayName)

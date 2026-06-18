@@ -50,18 +50,38 @@ enum PhotoQualityInspector {
     struct Signals {
         let faceCount: Int
         let isLikelyDocument: Bool
+        let textRegions: Int
     }
 
     static func inspect(_ image: CGImage) -> Signals {
-        Signals(faceCount: faceCount(image), isLikelyDocument: isLikelyDocument(image))
+        Signals(faceCount: faceCount(image),
+                isLikelyDocument: isLikelyDocument(image),
+                textRegions: textRegionCount(image))
     }
 
-    /// True if the photo is unsuitable as a hero: looks like a document/ID, or contains
-    /// faces of (likely other) people. A clean single-subject scene passes.
+    /// True if the photo is unsuitable as a hero: a document/ID, faces of (likely other)
+    /// people, or text-heavy (a screenshot, note, chat, or ID — likely private). A clean
+    /// single-subject scene passes.
     static func isSensitiveForHero(_ signals: Signals) -> Bool {
         if signals.isLikelyDocument { return true }
-        if signals.faceCount >= 2 { return true } // groups / faces-of-others
+        if signals.faceCount >= 2 { return true }   // groups / faces-of-others
+        if signals.textRegions >= 6 { return true } // text-heavy => screenshot/notes/chat/ID
         return false
+    }
+
+    /// Number of recognised text regions — a cheap, reliable signal for "this is a
+    /// screenshot / note / chat", which we never want to surface as a hero.
+    private static func textRegionCount(_ image: CGImage) -> Int {
+        let request = VNRecognizeTextRequest()
+        request.recognitionLevel = .fast
+        request.usesLanguageCorrection = false
+        let handler = VNImageRequestHandler(cgImage: image, options: [:])
+        do {
+            try handler.perform([request])
+            return request.results?.count ?? 0
+        } catch {
+            return 0
+        }
     }
 
     private static func faceCount(_ image: CGImage) -> Int {

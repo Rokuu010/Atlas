@@ -231,30 +231,43 @@ final class AnalysisEngine {
                              categoryById: [String: Category],
                              heroCandidates: [String: [HeroCandidate]]) async -> [EmergentTheme] {
         var themes: [EmergentTheme] = []
+        var used = Set<String>()   // de-dup: a photo is the hero of at most one theme
         for (categoryId, photoCount) in picks {
             guard let category = categoryById[categoryId] else { continue }
-            let hero = await chooseHero(candidates: heroCandidates[categoryId] ?? [])
-            themes.append(EmergentTheme(category: category, photoCount: photoCount, heroPhotoLocalId: hero))
+            let candidates = heroCandidates[categoryId] ?? []
+            let rankedIds = HeroPhotoPicker.ranked(candidates).map { $0.assetId }
+            let hero = await chooseHero(candidates: candidates, exclude: used)
+            if let hero { used.insert(hero) }
+            themes.append(EmergentTheme(
+                category: category,
+                photoCount: photoCount,
+                heroPhotoLocalId: hero,
+                candidatePhotoLocalIds: Array(rankedIds.prefix(15))   // powers "change photo"
+            ))
         }
         return themes
     }
 
-    /// Ranks candidates, then runs a bounded Vision sensitivity check on the top few;
-    /// returns the first clean asset id, or nil so the UI uses the bundled fallback.
-    private func chooseHero(candidates: [HeroCandidate]) async -> String? {
-        let ranked = HeroPhotoPicker.ranked(candidates)
-        for candidate in ranked.prefix(config.heroInspectTopN) {
+    /// Ranks candidates (skipping any already used by another theme), then runs a bounded
+    /// Vision sensitivity check; returns the first clean, unused asset id, or nil so the
+    /// UI shows the designed per-category placeholder (privacy-safe default).
+    private func chooseHero(candidates: [HeroCandidate], exclude: Set<String>) async -> String? {
+        let ranked = HeroPhotoPicker.ranked(candidates).filter { !exclude.contains($0.assetId) }
+        var inspected = 0
+        for candidate in ranked {
+            if inspected >= config.heroInspectTopN { break }
             guard let asset = loader.asset(for: candidate.assetId),
                   let image = await loader.requestImage(for: asset, targetSide: 512),
                   let cg = image.cgImage else {
                 continue
             }
+            inspected += 1
             let signals = autoreleasepool { PhotoQualityInspector.inspect(cg) }
             if !PhotoQualityInspector.isSensitiveForHero(signals) {
                 return candidate.assetId
             }
         }
-        return nil   // all flagged sensitive -> bundled fallback (privacy-safe default)
+        return nil
     }
 }
 

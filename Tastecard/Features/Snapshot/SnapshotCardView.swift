@@ -158,10 +158,8 @@ struct SnapshotCardView: View {
     @ViewBuilder private func heroImage(for theme: EmergentTheme) -> some View {
         if let id = theme.heroPhotoLocalId, let img = heroImages[id] {
             Image(uiImage: img).resizable().scaledToFill()
-        } else if UIImage(named: HeroPhotoPicker.fallbackImageName(forCategoryId: theme.categoryId)) != nil {
-            Image(HeroPhotoPicker.fallbackImageName(forCategoryId: theme.categoryId)).resizable().scaledToFill()
         } else {
-            PlaceholderGradient()
+            CategoryPlaceholder(categoryId: theme.categoryId)
         }
     }
 

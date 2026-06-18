@@ -3,9 +3,9 @@
 //  Tastecard
 //
 //  Port of DetailModal. Expanded theme card: hero image, title, dynamic rarity badge,
-//  the "Atlas Insight" box (the tagline — the shareable hook revealed here, progressive
-//  disclosure — plus the photo count), and change-photo. The detection prompts are NEVER
-//  shown. Hero swap is by PHAsset local identifier (no pixels copied around; no leaks).
+//  the "Atlas Insight" box (the tagline — the shareable hook revealed here), and
+//  change-photo. Change-photo shows THIS category's matched photos to choose from (not
+//  the whole library), with an "all photos" escape hatch. detectionPrompts are never shown.
 //
 
 import SwiftUI
@@ -18,6 +18,10 @@ struct DetailView: View {
 
     @State private var heroId: String?
     @State private var pickerItem: PhotosPickerItem?
+
+    private let gridColumns = [GridItem(.flexible(), spacing: 8),
+                               GridItem(.flexible(), spacing: 8),
+                               GridItem(.flexible(), spacing: 8)]
 
     init(theme: EmergentTheme, vm: CardViewModel) {
         self.theme = theme
@@ -35,11 +39,8 @@ struct DetailView: View {
                         hero
                         titleRow
                         insight
-                        Text("you are free to change the photo being displayed")
-                            .font(AppFont.sans(11)).italic()
-                            .foregroundColor(.white.opacity(0.55))
-                            .frame(maxWidth: .infinity)
-                        changePhoto
+                        matchesPicker
+                        allPhotosFallback
                     }
                     .padding(20)
                 }
@@ -48,10 +49,14 @@ struct DetailView: View {
         .presentationDetents([.large])
         .onChange(of: pickerItem) { item in
             guard let item, let newId = item.itemIdentifier else { return }
-            heroId = newId
-            vm.swapHero(themeId: theme.id, toAssetId: newId)
+            select(newId)
             pickerItem = nil
         }
+    }
+
+    private func select(_ id: String) {
+        heroId = id
+        vm.swapHero(themeId: theme.id, toAssetId: id)
     }
 
     private var header: some View {
@@ -75,10 +80,8 @@ struct DetailView: View {
 
     private var hero: some View {
         ZStack(alignment: .bottom) {
-            AssetImage(assetId: heroId,
-                       fallbackName: HeroPhotoPicker.fallbackImageName(forCategoryId: theme.categoryId),
-                       targetSide: 1000)
-                .aspectRatio(4.0/3.0, contentMode: .fit)
+            AssetImage(assetId: heroId, categoryId: theme.categoryId, targetSide: 1000)
+                .aspectRatio(4.0 / 3.0, contentMode: .fit)
             LinearGradient(colors: [.black.opacity(0.5), .clear], startPoint: .bottom, endPoint: .top)
                 .allowsHitTesting(false)
         }
@@ -130,16 +133,42 @@ struct DetailView: View {
         .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).strokeBorder(.white.opacity(0.10)))
     }
 
-    private var changePhoto: some View {
+    /// Grid of this category's matched photos — pick one as the hero.
+    @ViewBuilder private var matchesPicker: some View {
+        if !theme.candidatePhotoLocalIds.isEmpty {
+            VStack(alignment: .leading, spacing: 10) {
+                Text("CHOOSE FROM THIS THEME'S PHOTOS")
+                    .font(AppFont.mono(10)).tracking(1).foregroundColor(.white.opacity(0.6))
+                LazyVGrid(columns: gridColumns, spacing: 8) {
+                    ForEach(theme.candidatePhotoLocalIds, id: \.self) { id in
+                        let selected = heroId == id
+                        AssetImage(assetId: id, categoryId: theme.categoryId, targetSide: 400)
+                            .aspectRatio(1, contentMode: .fill)
+                            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                    .strokeBorder(selected ? Color(hex: 0xF59E0B) : .white.opacity(0.08),
+                                                  lineWidth: selected ? 3 : 1)
+                            )
+                            .contentShape(Rectangle())
+                            .onTapGesture { Haptics.select(); select(id) }
+                    }
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
+
+    private var allPhotosFallback: some View {
         PhotosPicker(selection: $pickerItem, matching: .images, photoLibrary: .shared()) {
-            Text("change photo".uppercased())
-                .font(AppFont.sans(12, weight: .black)).tracking(2)
-                .foregroundColor(.white)
+            Text("Choose from all photos…")
+                .font(AppFont.sans(13, weight: .semibold))
+                .foregroundColor(.white.opacity(0.75))
                 .frame(maxWidth: .infinity)
-                .padding(.vertical, 14)
-                .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(.white.opacity(0.10)))
-                .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).strokeBorder(.white.opacity(0.15)))
+                .padding(.vertical, 12)
+                .background(RoundedRectangle(cornerRadius: 14, style: .continuous).fill(.white.opacity(0.08)))
         }
         .buttonStyle(.plain)
+        .padding(.top, 4)
     }
 }

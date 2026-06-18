@@ -27,6 +27,8 @@ final class AssetImageCache {
 struct AssetImage: View {
     let assetId: String?
     var fallbackName: String?
+    /// When set, an unavailable image shows the designed per-category placeholder.
+    var categoryId: String?
     var targetSide: CGFloat = 600
 
     @State private var image: UIImage?
@@ -46,6 +48,8 @@ struct AssetImage: View {
             Image(uiImage: image).resizable().scaledToFill()
         } else if let fallbackName, UIImage(named: fallbackName) != nil {
             Image(fallbackName).resizable().scaledToFill()
+        } else if let categoryId {
+            CategoryPlaceholder(categoryId: categoryId)
         } else {
             PlaceholderGradient()
         }

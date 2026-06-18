@@ -2,13 +2,10 @@
 //  SnapshotCardView.swift
 //  Tastecard
 //
-//  The 9:16 export surface (§7), a faithful native port of SnapshotModal's inner layout:
-//  brand row (NAME … #code), an inner glass card replicating the main card's glass /
-//  scrim / brightness adaptation, the same active highlight/dim states, MAX 4 themes,
-//  and NO droplet/edit icons on the title. It is the highest-fidelity surface in the app.
-//
-//  Rendered synchronously by ImageRenderer, so every image is a pre-resolved UIImage
-//  (local only — no async, no network, no CORS taint).
+//  The 9:16 export surface (§7). Rendered by ImageRenderer, which can't reproduce live
+//  blur (Material) — so the export uses an EXPLICIT crisp glass panel (gradient + border +
+//  shadow) instead, giving a clean, high-contrast card rather than a flat grey blob.
+//  Max 4 themes, no droplet/edit icons on the title.
 //
 
 import SwiftUI
@@ -20,45 +17,36 @@ struct SnapshotCardView: View {
     let customBackground: UIImage?
     let isBgDark: Bool
     let selectedThemeId: String?
-    /// Pre-resolved hero images keyed by PHAsset local id.
     let heroImages: [String: UIImage]
 
-    /// Base width of the 9:16 surface in points; the renderer scales it ×3.
     static let baseWidth: CGFloat = 400
     var baseWidth: CGFloat { Self.baseWidth }
     var baseHeight: CGFloat { baseWidth * 16.0 / 9.0 }
 
-    // Adaptive styling (mirrors SnapshotModal; custom-bg dark uses black/35, light white/20).
     private var textColor: Color {
         customBackground != nil ? (isBgDark ? Color(hex: 0xFDF9F6) : Color(hex: 0x0C1519)) : theme.text
     }
-    private var cardFill: Color {
-        guard customBackground != nil else { return theme.glassFill }
-        return isBgDark ? .black.opacity(0.35) : .white.opacity(0.20)
-    }
-    private var cardBorder: Color {
-        guard customBackground != nil else { return theme.glassBorder }
-        return isBgDark ? .white.opacity(0.10) : .white.opacity(0.20)
-    }
 
-    private var themes: [EmergentTheme] { Array(card.themes.prefix(4)) }   // MAX 4
+    private var themes: [EmergentTheme] { Array(card.themes.prefix(4)) }
 
     var body: some View {
         ZStack {
             theme.background
             if let bg = customBackground {
                 Image(uiImage: bg).resizable().scaledToFill()
-                (isBgDark ? Color.black.opacity(0.25) : Color.white.opacity(0.05))
+                    .frame(width: baseWidth, height: baseHeight).clipped()
+                // Stronger scrim in the export so the card + photos pop crisply.
+                LinearGradient(colors: [.black.opacity(0.35), .black.opacity(0.5)],
+                               startPoint: .top, endPoint: .bottom)
             }
 
             VStack(spacing: 0) {
                 brandRow
-                innerCard
-                    .padding(.top, 10)
-                Spacer(minLength: 8)
+                innerCard.padding(.top, 12)
+                Spacer(minLength: 10)
                 footer
             }
-            .padding(18)
+            .padding(20)
         }
         .frame(width: baseWidth, height: baseHeight)
         .clipped()
@@ -73,48 +61,61 @@ struct SnapshotCardView: View {
                 .font(AppFont.mono(11, weight: .bold))
         }
         .foregroundColor(textColor)
-        .opacity(0.75)
+        .opacity(0.8)
     }
 
     private var innerCard: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            // Title — NO droplet, NO icons, per the snapshot rule. Rarity badge stays.
-            VStack(alignment: .leading, spacing: 3) {
+        VStack(alignment: .leading, spacing: 14) {
+            VStack(alignment: .leading, spacing: 4) {
                 Text(card.displayName)
-                    .font(AppFont.display(22, weight: .black))
+                    .font(AppFont.display(26, weight: .black))
                     .lineLimit(1).minimumScaleFactor(0.6)
                 HStack(spacing: 5) {
                     Text("TASTECARD RARITY:")
                         .font(AppFont.mono(8)).tracking(0.5).opacity(0.6)
-                    RarityBadge(tier: card.cardRarity, fontSize: 9)
+                    RarityBadge(tier: card.cardRarity, fontSize: 10)
                 }
             }
-
             stats
             chips
             grid
         }
         .foregroundColor(textColor)
-        .padding(14)
+        .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .glassCard(cornerRadius: 24, fill: cardFill, border: cardBorder, shadow: false)
+        .background(panel)
+    }
+
+    /// Explicit glass panel — crisp under ImageRenderer (no Material dependency). The base
+    /// fill uses the text color so it lightens dark themes and darkens light ones (good
+    /// contrast either way); a top white sheen + adaptive border + shadow sell the glass.
+    private var panel: some View {
+        let shape = RoundedRectangle(cornerRadius: 26, style: .continuous)
+        return shape
+            .fill(textColor.opacity(0.08))
+            .overlay(
+                shape.fill(LinearGradient(colors: [Color.white.opacity(0.10), .clear],
+                                          startPoint: .top, endPoint: .center))
+            )
+            .overlay(shape.strokeBorder(textColor.opacity(0.28), lineWidth: 1.5))
+            .shadow(color: .black.opacity(0.22), radius: 16, y: 8)
     }
 
     private var stats: some View {
         HStack(spacing: 6) {
             snapStat(card.photosAnalysed.abbreviated, "Photos")
-            snapStat("\(card.emergentThemeCount)", "themes")
+            snapStat("\(card.emergentThemeCount)", "Themes")
             snapStat("\(card.placesCount)", "Places")
         }
-        .padding(.vertical, 7)
+        .padding(.vertical, 8)
         .overlay(alignment: .top) { Rectangle().fill(textColor.opacity(0.15)).frame(height: 1) }
         .overlay(alignment: .bottom) { Rectangle().fill(textColor.opacity(0.15)).frame(height: 1) }
     }
 
     private func snapStat(_ value: String, _ label: String) -> some View {
         VStack(alignment: .leading, spacing: 1) {
-            Text(value).font(AppFont.mono(13, weight: .bold))
-            Text(label.uppercased()).font(AppFont.mono(7)).opacity(0.7)
+            Text(value).font(AppFont.mono(15, weight: .heavy))
+            Text(label.uppercased()).font(AppFont.sans(7, weight: .semibold)).opacity(0.7)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
@@ -125,10 +126,10 @@ struct SnapshotCardView: View {
                 let isActive = selectedThemeId == theme.categoryId
                 Text(theme.displayName)
                     .font(AppFont.sans(9, weight: .bold))
-                    .padding(.horizontal, 7).padding(.vertical, 3)
-                    .background(Capsule().fill(.white.opacity(isActive ? 0.30 : 0.10)))
-                    .overlay(Capsule().strokeBorder(.white.opacity(isActive ? 0.55 : 0.05)))
-                    .opacity(isActive ? 1 : 0.6)
+                    .padding(.horizontal, 8).padding(.vertical, 3)
+                    .background(Capsule().fill(.white.opacity(isActive ? 0.32 : 0.12)))
+                    .overlay(Capsule().strokeBorder(.white.opacity(isActive ? 0.55 : 0.10)))
+                    .opacity(isActive ? 1 : 0.7)
             }
         }
         .frame(maxWidth: .infinity)
@@ -137,20 +138,20 @@ struct SnapshotCardView: View {
     private var grid: some View {
         LazyVGrid(columns: [GridItem(.flexible(), spacing: 8), GridItem(.flexible(), spacing: 8)], spacing: 8) {
             ForEach(themes) { theme in
-                let highlighted = selectedThemeId == nil || selectedThemeId == theme.categoryId
                 ZStack(alignment: .bottomLeading) {
                     heroImage(for: theme)
-                    PhotoVignette()
+                    LinearGradient(stops: [.init(color: .black.opacity(0.8), location: 0),
+                                           .init(color: .clear, location: 0.55)],
+                                   startPoint: .bottom, endPoint: .top)
                     Text(theme.displayName)
                         .font(AppFont.sans(9, weight: .bold))
                         .foregroundColor(.white)
                         .lineLimit(2)
-                        .padding(6)
+                        .padding(7)
                 }
-                .aspectRatio(3.0/4.0, contentMode: .fit)
-                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-                .opacity(highlighted ? 1 : 0.35)
-                .scaleEffect(highlighted ? 1 : 0.95)
+                .aspectRatio(3.0 / 4.0, contentMode: .fill)
+                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(.white.opacity(0.12)))
             }
         }
     }
@@ -166,7 +167,7 @@ struct SnapshotCardView: View {
     private var footer: some View {
         Text("\(card.displayName) • \(card.serialDisplay)".uppercased())
             .font(AppFont.mono(8)).tracking(2)
-            .foregroundColor(textColor).opacity(0.5)
+            .foregroundColor(textColor).opacity(0.55)
             .lineLimit(1).minimumScaleFactor(0.6)
             .frame(maxWidth: .infinity)
     }

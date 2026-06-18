@@ -37,17 +37,20 @@ final class CardViewModel: ObservableObject {
     var textColor: Color {
         customBackground != nil ? (isBgDark ? Color(hex: 0xFDF9F6) : Color(hex: 0x0C1519)) : theme.text
     }
+    // With a custom background we want true glassmorphism — the blurred photo visible
+    // THROUGH the card — so the tint over the .ultraThinMaterial is kept light.
     var cardFill: Color {
         guard customBackground != nil else { return theme.glassFill }
-        return isBgDark ? Color.black.opacity(0.25) : Color.white.opacity(0.15)
+        return isBgDark ? Color.black.opacity(0.12) : Color.white.opacity(0.10)
     }
     var cardBorder: Color {
         guard customBackground != nil else { return theme.glassBorder }
-        return isBgDark ? Color.white.opacity(0.10) : Color.white.opacity(0.20)
+        return isBgDark ? Color.white.opacity(0.18) : Color.white.opacity(0.30)
     }
+    // Only a whisper of scrim so the background photo stays visible behind the glass.
     var backgroundScrim: Color? {
         guard customBackground != nil else { return nil }
-        return isBgDark ? Color.black.opacity(0.25) : Color.white.opacity(0.05)
+        return isBgDark ? Color.black.opacity(0.12) : Color.white.opacity(0.04)
     }
 
     // MARK: - The drop

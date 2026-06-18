@@ -14,7 +14,9 @@ Output: android/app/src/main/assets/siglip_image_encoder.onnx
     output : embedding  float32 [1, D]             (Kotlin L2-normalises)
 
 Setup:
-    pip install torch open_clip_torch transformers sentencepiece numpy onnx onnxruntime
+    pip install torch torchvision open_clip_torch transformers sentencepiece numpy onnx onnxruntime onnxscript
+    (onnxscript is required: torch 2.9+ imports it inside torch.onnx.export, even for the
+     legacy exporter we pin below.)
 Usage:
     python scripts/convert_siglip_onnx.py
 """
@@ -78,6 +80,10 @@ def main() -> int:
         opset_version=17,
         do_constant_folding=True,
         dynamic_axes={"image": {0: "batch"}, "embedding": {0: "batch"}},
+        # torch 2.9+ defaults to the torch.export-based exporter; pin the legacy
+        # TorchScript exporter, which honours dynamic_axes/do_constant_folding and emits
+        # ONNX that ONNX Runtime Mobile loads reliably.
+        dynamo=False,
     )
 
     if args.quantize == "int8":

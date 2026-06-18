@@ -11,6 +11,7 @@
 //
 
 import SwiftUI
+import UIKit
 
 /// A single page theme: a flat background color plus the glass parameters used
 /// by the card. `text` is the on-background foreground color.
@@ -68,5 +69,14 @@ extension Color {
         let g = Double((hex >> 8) & 0xFF) / 255.0
         let b = Double(hex & 0xFF) / 255.0
         self.init(.sRGB, red: r, green: g, blue: b, opacity: alpha)
+    }
+
+    /// Packs the colour into 0xRRGGBB (sRGB) for persistence, or nil if components can't
+    /// be resolved (e.g. a dynamic/asset colour).
+    var rgbHex: UInt32? {
+        var r: CGFloat = 0, g: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
+        guard UIColor(self).getRed(&r, green: &g, blue: &b, alpha: &a) else { return nil }
+        func ch(_ v: CGFloat) -> UInt32 { UInt32((max(0, min(1, v)) * 255).rounded()) }
+        return (ch(r) << 16) | (ch(g) << 8) | ch(b)
     }
 }

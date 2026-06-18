@@ -8,6 +8,7 @@
 //
 
 import SwiftUI
+import PhotosUI
 
 struct SettingsView: View {
     @ObservedObject var vm: CardViewModel
@@ -15,18 +16,42 @@ struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
 
     @State private var name: String = ""
+    @State private var aboutText: String = ""
+    @State private var profilePickerItem: PhotosPickerItem?
     @State private var showDeleteConfirm = false
     @State private var legal: LegalDocument?
 
     var body: some View {
         NavigationStack {
             Form {
-                Section("Display name") {
+                Section("Your name") {
                     TextField("Your name", text: $name)
                         .font(AppFont.sans(16))
                         .submitLabel(.done)
                         .onSubmit { commitName() }
-                    Text("Max \(InputSanitizer.maxDisplayNameLength) characters. Shown on your card and export.")
+                    Text("Shown as “\(Tastecard.title(forName: name))”. Max \(InputSanitizer.maxDisplayNameLength) characters.")
+                        .font(.caption).foregroundStyle(.secondary)
+                }
+
+                Section("Profile photo") {
+                    HStack(spacing: 12) {
+                        ProfileAvatar(image: vm.profileImage, ink: .primary, size: 44)
+                        PhotosPicker(selection: $profilePickerItem, matching: .images, photoLibrary: .shared()) {
+                            Text(vm.profileImage == nil ? "Choose photo" : "Change photo")
+                        }
+                        Spacer()
+                        if vm.profileImage != nil {
+                            Button("Remove", role: .destructive) { vm.clearProfileImage() }
+                        }
+                    }
+                }
+
+                Section("About me") {
+                    TextField("A line about you", text: $aboutText, axis: .vertical)
+                        .font(AppFont.sans(16))
+                        .lineLimit(1...4)
+                        .onChange(of: aboutText) { _ in commitAbout() }
+                    Text("Up to \(InputSanitizer.maxAboutMeLength) characters. Shown on your card before your themes.")
                         .font(.caption).foregroundStyle(.secondary)
                 }
 
@@ -71,8 +96,20 @@ struct SettingsView: View {
                     Button("Done") { commitName(); dismiss() }
                 }
             }
-            .onAppear { name = vm.card.displayName }
-            .onDisappear { commitName() }
+            .onAppear {
+                name = vm.card.displayName
+                aboutText = vm.card.aboutMe ?? ""
+            }
+            .onDisappear { commitName(); commitAbout() }
+            .onChange(of: profilePickerItem) { item in
+                guard let item else { return }
+                Task {
+                    if let data = try? await item.loadTransferable(type: Data.self) {
+                        vm.setProfileImage(data: data)
+                    }
+                    profilePickerItem = nil
+                }
+            }
             .alert("Delete all data?", isPresented: $showDeleteConfirm) {
                 Button("Delete", role: .destructive) {
                     dismiss()
@@ -89,6 +126,10 @@ struct SettingsView: View {
     private func commitName() {
         vm.rename(name)
         name = vm.card.displayName
+    }
+
+    private func commitAbout() {
+        vm.setAboutMe(aboutText)
     }
 
     private func labeledRow(_ label: String, _ value: String) -> some View {

@@ -18,7 +18,7 @@ struct CardView: View {
 
     @State private var selectedThemeId: String?
     @State private var sheet: CardSheet?
-    @State private var bgPickerItem: PhotosPickerItem?
+    @State private var profilePickerItem: PhotosPickerItem?
 
     private var card: Tastecard { vm.card }
 
@@ -27,11 +27,13 @@ struct CardView: View {
         case detail(EmergentTheme)
         case snapshot
         case settings
+        case appearance
         var id: String {
             switch self {
             case .detail(let t): return "detail-\(t.id)"
             case .snapshot: return "snapshot"
             case .settings: return "settings"
+            case .appearance: return "appearance"
             }
         }
     }
@@ -61,20 +63,25 @@ struct CardView: View {
             case .snapshot:
                 SnapshotView(card: card,
                              theme: vm.theme,
+                             backgroundColor: vm.backgroundColor,
                              customBackground: vm.customBackground,
                              isBgDark: vm.isBgDark,
+                             glassOpacity: vm.glassOpacity,
+                             profileImage: vm.profileImage,
                              selectedThemeId: selectedThemeId)
             case .settings:
                 SettingsView(vm: vm).environmentObject(model)
+            case .appearance:
+                AppearanceSheet(vm: vm)
             }
         }
-        .onChange(of: bgPickerItem) { item in
+        .onChange(of: profilePickerItem) { item in
             guard let item else { return }
             Task {
                 if let data = try? await item.loadTransferable(type: Data.self) {
-                    vm.setCustomBackground(data: data)
+                    vm.setProfileImage(data: data)
                 }
-                bgPickerItem = nil
+                profilePickerItem = nil
             }
         }
     }
@@ -84,7 +91,7 @@ struct CardView: View {
     private var background: some View {
         GeometryReader { g in
             ZStack {
-                vm.theme.background
+                vm.backgroundColor
                 if let bg = vm.customBackground {
                     // Bound + clip the image to the screen so a wide photo can't overflow
                     // its bounds and push the centred card sideways.
@@ -108,7 +115,7 @@ struct CardView: View {
             header
             identity
             stats
-            chips
+            aboutMe
             emergentHeader
             grid
             shareButton
@@ -120,7 +127,7 @@ struct CardView: View {
                    screen: screen,
                    fill: vm.cardFill,
                    border: vm.cardBorder,
-                   themeGlassFill: vm.theme.glassFill)
+                   themeGlassFill: vm.materialGlassFill)
         .foregroundColor(vm.textColor)
     }
 
@@ -133,25 +140,40 @@ struct CardView: View {
                 .tracking(3)
                 .foregroundColor(vm.textColor.opacity(0.9))
             Spacer()
-            PhotosPicker(selection: $bgPickerItem, matching: .images, photoLibrary: .shared()) {
-                roundIconLabel(systemImage: "photo")
+            // The droplet now opens the Appearance menu (colour, photo, opacity).
+            Button(action: { Haptics.tap(); sheet = .appearance }) {
+                DropletIcon()
+                    .stroke(vm.textColor, style: StrokeStyle(lineWidth: 2.4, lineCap: .round, lineJoin: .round))
+                    .frame(width: 18, height: 18)
+                    .frame(width: 36, height: 36)
+                    .background(Circle().fill(vm.textColor.opacity(0.10)))
+                    .contentShape(Circle())
             }
             .buttonStyle(.plain)
-        }
-        .padding(.bottom, 14)
-        .overlay(alignment: .bottom) {
-            Rectangle().fill(vm.textColor.opacity(0.15)).frame(height: 1)
+            .accessibilityLabel("Customise appearance")
         }
     }
 
     private var identity: some View {
-        HStack(alignment: .top) {
+        HStack(alignment: .center, spacing: 14) {
+            ProfileAvatar(image: vm.profileImage, ink: vm.textColor, size: 56)
+                .overlay(alignment: .bottomTrailing) {
+                    PhotosPicker(selection: $profilePickerItem, matching: .images, photoLibrary: .shared()) {
+                        Image(systemName: "pencil")
+                            .font(.system(size: 9, weight: .bold))
+                            .foregroundColor(vm.textColor)
+                            .frame(width: 20, height: 20)
+                            .background(Circle().fill(.ultraThinMaterial))
+                            .overlay(Circle().strokeBorder(vm.textColor.opacity(0.25)))
+                    }
+                    .buttonStyle(.plain)
+                }
             VStack(alignment: .leading, spacing: 4) {
-                Text(card.displayName)
-                    .font(AppFont.display(30, weight: .bold))
+                Text(card.cardTitle)
+                    .font(AppFont.display(26, weight: .bold))
                     .foregroundColor(vm.textColor)
                     .lineLimit(2)
-                    .minimumScaleFactor(0.7)
+                    .minimumScaleFactor(0.6)
                 HStack(spacing: 8) {
                     Text("TASTECARD RARITY:")
                         .font(AppFont.mono(10))
@@ -160,8 +182,7 @@ struct CardView: View {
                     RarityBadge(tier: card.cardRarity, fontSize: 12)
                 }
             }
-            Spacer()
-            DropButton(color: vm.textColor) { vm.drop() }
+            Spacer(minLength: 0)
         }
     }
 
@@ -171,9 +192,7 @@ struct CardView: View {
             statCell(value: "\(card.emergentThemeCount)", label: "emerging themes")
             statCell(value: "\(card.placesCount)", label: "Places")
         }
-        .padding(.vertical, 14)
-        .overlay(alignment: .top) { Rectangle().fill(vm.textColor.opacity(0.15)).frame(height: 1) }
-        .overlay(alignment: .bottom) { Rectangle().fill(vm.textColor.opacity(0.15)).frame(height: 1) }
+        .padding(.vertical, 4)
     }
 
     private func statCell(value: String, label: String) -> some View {
@@ -191,27 +210,28 @@ struct CardView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    private var chips: some View {
-        FlowLayout(spacing: 8, lineSpacing: 8) {
-            ForEach(card.themes) { theme in
-                let isActive = selectedThemeId == theme.categoryId
-                Button {
-                    Haptics.select()
-                    selectedThemeId = isActive ? nil : theme.categoryId
-                } label: {
-                    Text(theme.displayName)
-                        .font(AppFont.sans(12, weight: isActive ? .bold : .regular))
-                        .foregroundColor(vm.textColor)
-                        .padding(.horizontal, 14).padding(.vertical, 6)
-                        .glassPill(cornerRadius: 999,
-                                   fill: .white.opacity(isActive ? 0.35 : 0.10),
-                                   border: .white.opacity(isActive ? 0.50 : 0.15))
-                        .scaleEffect(isActive ? 1.05 : 1.0)
+    private var aboutMe: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text("About Me")
+                .font(AppFont.mono(11, weight: .bold))
+                .tracking(2)
+                .foregroundColor(vm.textColor.opacity(0.7))
+            if let about = card.aboutMe, !about.isEmpty {
+                Text(about)
+                    .font(AppFont.sans(14))
+                    .foregroundColor(vm.textColor.opacity(0.9))
+                    .fixedSize(horizontal: false, vertical: true)
+            } else {
+                Button { sheet = .settings } label: {
+                    Text("Add yours in Settings")
+                        .font(AppFont.sans(14))
+                        .foregroundColor(vm.textColor.opacity(0.45))
+                        .italic()
                 }
                 .buttonStyle(.plain)
             }
         }
-        .frame(maxWidth: 325)
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private var emergentHeader: some View {
@@ -248,7 +268,7 @@ struct CardView: View {
     }
 
     private var footer: some View {
-        Text("\(card.displayName) • \(card.serialDisplay)".uppercased())
+        Text("\(card.cardTitle) • \(card.serialDisplay)".uppercased())
             .font(AppFont.mono(10))
             .tracking(2)
             .foregroundColor(vm.textColor.opacity(0.4))
@@ -332,5 +352,93 @@ extension Int {
             return v < 10 ? String(format: "%.1fK", v) : String(format: "%.0fK", v)
         }
         return "\(self)"
+    }
+}
+
+/// Circular profile avatar — the user's photo, else a neutral person glyph on a tinted disc.
+struct ProfileAvatar: View {
+    let image: UIImage?
+    let ink: Color
+    var size: CGFloat = 56
+
+    var body: some View {
+        ZStack {
+            Circle().fill(ink.opacity(0.12))
+            if let image {
+                Image(uiImage: image).resizable().scaledToFill()
+            } else {
+                Image(systemName: "person.fill")
+                    .font(.system(size: size * 0.42, weight: .medium))
+                    .foregroundColor(ink.opacity(0.55))
+            }
+        }
+        .frame(width: size, height: size)
+        .clipShape(Circle())
+        .overlay(Circle().strokeBorder(ink.opacity(0.25), lineWidth: 1))
+    }
+}
+
+/// The Appearance menu: a colour wheel, a photo background, a glass-opacity slider, the
+/// preset "Shuffle palette", and a reset — replacing the old top photo button (§ user req 3).
+struct AppearanceSheet: View {
+    @ObservedObject var vm: CardViewModel
+    @Environment(\.dismiss) private var dismiss
+    @State private var bgPickerItem: PhotosPickerItem?
+
+    private var colorBinding: Binding<Color> {
+        Binding(
+            get: { vm.customColor ?? vm.theme.background },
+            set: { vm.setCustomColor($0) }
+        )
+    }
+    private var opacityBinding: Binding<Double> {
+        Binding(get: { vm.glassOpacity }, set: { vm.setGlassOpacity($0) })
+    }
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section("Background") {
+                    ColorPicker("Background colour", selection: colorBinding, supportsOpacity: false)
+                    PhotosPicker(selection: $bgPickerItem, matching: .images, photoLibrary: .shared()) {
+                        Label("Choose a background photo", systemImage: "photo")
+                    }
+                    if vm.customBackground != nil {
+                        Button("Remove background photo", role: .destructive) { vm.clearCustomBackground() }
+                    }
+                    Button { vm.drop() } label: {
+                        Label("Shuffle palette", systemImage: "shuffle")
+                    }
+                }
+
+                Section("Glass") {
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("Card opacity").font(.subheadline)
+                        Slider(value: opacityBinding, in: 0.0...1.0)
+                        Text("Lower is more see-through; higher is more frosted.")
+                            .font(.caption).foregroundStyle(.secondary)
+                    }
+                }
+
+                Section {
+                    Button("Reset appearance", role: .destructive) { vm.resetAppearance() }
+                }
+            }
+            .navigationTitle("Appearance")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } }
+            }
+            .onChange(of: bgPickerItem) { item in
+                guard let item else { return }
+                Task {
+                    if let data = try? await item.loadTransferable(type: Data.self) {
+                        vm.setCustomBackground(data: data)
+                    }
+                    bgPickerItem = nil
+                }
+            }
+        }
+        .presentationDetents([.medium, .large])
     }
 }

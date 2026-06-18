@@ -40,10 +40,14 @@ jobs:
 
       - name: Build & test (iPhone simulator)
         run: |
+          # Don't hardcode a simulator model — Xcode's bundled sims change per version
+          # (Xcode 26.x has no "iPhone 16"). Pick the first available iPhone simulator.
+          NAME=$(xcrun simctl list devices available | sed -nE 's/^ *(iPhone[^(]*) \(.*/\1/p' | head -1 | sed 's/ *$//')
+          echo "Using simulator: ${NAME:-<none found>}"
           xcodebuild test \
             -project Tastecard.xcodeproj \
             -scheme Tastecard \
-            -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
+            -destination "platform=iOS Simulator,name=$NAME" \
             CODE_SIGNING_ALLOWED=NO
 
   ipa:

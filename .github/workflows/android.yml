@@ -30,19 +30,34 @@ jobs:
       - name: Generate category dataset
         run: python scripts/generate_categories.py --output android/app/src/main/assets/categories.json
 
+      # Cache the SigLIP checkpoint so it is downloaded from the HF Hub once, then reused —
+      # avoids re-pulling ~400 MB (and tripping HF's unauthenticated rate limits) every run.
+      - name: Cache Hugging Face hub (SigLIP checkpoint)
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: hf-hub-vitb16-siglip-webli-v1
+
       # Fatal on failure: the analysis model is required, so a failed export must fail the
       # build (it previously continued silently, shipping a model-less APK that shows the
       # "setup required" screen). CPU-only torch avoids pulling the multi-GB CUDA wheel —
       # the most common cause of this step failing on a runner.
       - name: Generate model + text vectors
+        env:
+          # Optional: add an HF_TOKEN repo secret for authenticated downloads (higher rate
+          # limits, no throttling). Works unauthenticated if unset. hf_transfer + an explicit
+          # timeout make the ~400 MB checkpoint download fast and non-hanging.
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_HUB_ENABLE_HF_TRANSFER: "1"
+          HF_HUB_DOWNLOAD_TIMEOUT: "60"
         run: |
           python -m pip install --upgrade pip
           # torch AND torchvision must come from the SAME CPU index — open_clip imports
           # torchvision at load, and a PyPI (CUDA) torchvision against a CPU torch fails with
           # "operator torchvision::nms does not exist". This mirrors the working iOS recipe.
           pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
-          # onnxscript is required by torch.onnx.export in torch 2.9+ (imported eagerly).
-          pip install open_clip_torch transformers sentencepiece numpy onnx onnxruntime onnxscript
+          # onnxscript: required by torch.onnx.export in torch 2.9+. hf_transfer: robust download.
+          pip install open_clip_torch transformers sentencepiece numpy onnx onnxruntime onnxscript hf_transfer
           python scripts/precompute_text_embeddings.py --output android/app/src/main/assets/category_text_embeddings.bin
           python scripts/convert_siglip_onnx.py
 

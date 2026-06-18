@@ -64,17 +64,31 @@ jobs:
       - name: Generate category dataset
         run: python scripts/generate_categories.py
 
+      # Cache the SigLIP checkpoint so it is downloaded from the HF Hub once, then reused —
+      # avoids re-pulling ~400 MB (and tripping HF's unauthenticated rate limits) every run.
+      - name: Cache Hugging Face hub (SigLIP checkpoint)
+        uses: actions/cache@v4
+        with:
+          path: ~/Library/Caches/huggingface
+          key: hf-hub-vitb16-siglip-webli-v1
+
       # Non-fatal: if the SigLIP→Core ML conversion needs another pass, the IPA still
       # builds (the app shows its "setup required" screen until the model is bundled).
       # CPU-only torch avoids the multi-GB CUDA wheel — the usual cause of this step failing.
       - name: Generate Core ML model + text vectors
         continue-on-error: true
+        env:
+          # Optional HF_TOKEN secret => authenticated, un-throttled downloads. hf_transfer +
+          # an explicit timeout keep the ~400 MB checkpoint download fast and non-hanging.
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_HUB_ENABLE_HF_TRANSFER: "1"
+          HF_HUB_DOWNLOAD_TIMEOUT: "60"
         run: |
           python -m pip install --upgrade pip
           pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
           # open_clip's SigLIP tokenizer is a Hugging Face SentencePiece tokenizer,
           # so transformers + sentencepiece are required in addition to torch/coremltools.
-          pip install open_clip_torch transformers sentencepiece coremltools numpy
+          pip install open_clip_torch transformers sentencepiece coremltools numpy hf_transfer
           python scripts/precompute_text_embeddings.py
           python scripts/convert_siglip_coreml.py
 

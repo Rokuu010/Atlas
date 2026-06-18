@@ -15,9 +15,16 @@ sealed interface EngineResult {
 
 /**
  * Orchestrates the on-device pipeline (§6), mirroring the iOS AnalysisEngine:
- * enumerate -> (cache | downsample+embed+release) -> cosine vs precomputed text vectors
- * -> threshold tally -> 3–6 selection -> rarity -> hero pick -> EXIF Places -> card.
+ * enumerate -> (cache | downsample+embed+release) -> bias-corrected relative affinity vs
+ * precomputed text vectors -> distinctive-match tally -> evidence-floor 3–6 selection (with
+ * a relative-ranking safety net) -> rarity -> hero pick -> EXIF Places -> card.
  * Runs off the main thread and is cancellable via coroutine cancellation.
+ *
+ * Why relative affinity, not absolute cosine: SigLIP image-text cosines are compressed and
+ * carry a strong per-prompt prior (some prompts sit "close" to every image). A fixed cutoff
+ * therefore either matched nothing ("still warming up") or matched junk. Instead, for each
+ * photo we subtract that photo's MEAN affinity across all categories and keep the ones it is
+ * distinctively closest to — scale-invariant, bias-free, and naturally multi-label.
  */
 class AnalysisEngine(
     private val photos: PhotoRepository,
@@ -27,6 +34,9 @@ class AnalysisEngine(
     private val cache: EmbeddingCache,
     private val config: SelectionConfig = SelectionConfig(),
     private val defaultDisplayName: String = "My Tastecard",
+    // A photo "matches" a category when its affinity exceeds the photo's own mean affinity
+    // by at least this margin (bias-corrected, scale-invariant).
+    private val relativeMargin: Float = 0.05f,
 ) {
     private data class Aligned(val category: Category, val vector: FloatArray)
     private data class HeroCandidate(val uri: String, val similarity: Float, val screenshot: Boolean, val pixelCount: Int)
@@ -45,13 +55,17 @@ class AnalysisEngine(
             return@withContext EngineResult.WarmingUp(WarmingReason.NOT_ENOUGH_EVIDENCE, total)
         }
 
-        val counts = HashMap<String, Int>()
-        val scores = HashMap<String, Double>()
+        // Per-category accumulators.
+        val counts = HashMap<String, Int>()        // photos where delta >= relativeMargin
+        val scores = HashMap<String, Double>()      // sum of margins for matched photos
+        val softScores = HashMap<String, Double>()  // sum of positive delta over ALL photos (ranking net)
+        val softCounts = HashMap<String, Int>()     // photos where delta > 0 (prominence)
         val heroes = HashMap<String, MutableList<HeroCandidate>>()
         val coords = ArrayList<GeoClustering.Coordinate>()
 
         var processed = 0
         val stride = maxOf(1, total / 100)
+        val margin = relativeMargin
 
         for (m in metas) {
             ensureActive()
@@ -72,18 +86,36 @@ class AnalysisEngine(
             photos.location(m.uri)?.let { coords.add(it) }
 
             val embedding = emb ?: continue
-            for (a in aligned) {
-                val sim = VectorMath.dot(embedding, a.vector)
-                val threshold = a.category.threshold.toFloat()
-                if (sim >= threshold) {
-                    counts[a.category.id] = (counts[a.category.id] ?: 0) + 1
-                    scores[a.category.id] = (scores[a.category.id] ?: 0.0) + (sim - threshold).toDouble()
-                    val list = heroes.getOrPut(a.category.id) { mutableListOf() }
-                    list.add(HeroCandidate(m.uri.toString(), sim, m.isScreenshot, m.pixelCount))
-                    if (list.size > 60) {
-                        list.sortByDescending { heroScore(it) }
-                        while (list.size > 40) list.removeAt(list.size - 1)
-                    }
+
+            // Cosine to every category, then subtract this photo's mean affinity.
+            val cosines = FloatArray(aligned.size)
+            var sum = 0f
+            for (i in aligned.indices) {
+                val c = VectorMath.dot(embedding, aligned[i].vector)
+                cosines[i] = c
+                sum += c
+            }
+            val mean = sum / aligned.size
+
+            for (i in aligned.indices) {
+                val delta = cosines[i] - mean
+                if (delta <= 0f) continue
+                val cid = aligned[i].category.id
+
+                softScores[cid] = (softScores[cid] ?: 0.0) + delta.toDouble()
+                softCounts[cid] = (softCounts[cid] ?: 0) + 1
+
+                // Hero candidate (use raw cosine as the quality/representativeness signal).
+                val list = heroes.getOrPut(cid) { mutableListOf() }
+                list.add(HeroCandidate(m.uri.toString(), cosines[i], m.isScreenshot, m.pixelCount))
+                if (list.size > 60) {
+                    list.sortByDescending { heroScore(it) }
+                    while (list.size > 40) list.removeAt(list.size - 1)
+                }
+
+                if (delta >= margin) {
+                    counts[cid] = (counts[cid] ?: 0) + 1
+                    scores[cid] = (scores[cid] ?: 0.0) + delta.toDouble()
                 }
             }
         }
@@ -91,32 +123,60 @@ class AnalysisEngine(
         cache.flush()
         onProgress(total, total)
 
+        val placesCount = GeoClustering.placesCount(coords)
+        val byId = categories.associateBy { it.id }
+
+        // Primary selection from distinctive-match tallies.
         val tallies = aligned.mapNotNull { a ->
             val count = counts[a.category.id] ?: 0
             if (count > 0) CategoryTally(a.category.id, count, scores[a.category.id] ?: 0.0) else null
         }
-        val byId = categories.associateBy { it.id }
 
         when (val outcome = ThemeSelector.select(tallies, processed, config)) {
-            is SelectionOutcome.WarmingUp -> EngineResult.WarmingUp(outcome.reason, processed)
             is SelectionOutcome.Themes -> {
-                val themes = outcome.themes.mapNotNull { tally ->
-                    val cat = byId[tally.categoryId] ?: return@mapNotNull null
-                    val hero = heroes[tally.categoryId]?.maxByOrNull { heroScore(it) }?.uri
-                    EmergentTheme(cat.id, cat.displayName, cat.tagline, tally.count, cat.rarityIndex, cat.rarityTier, hero)
+                val themes = buildThemes(outcome.themes.map { it.categoryId to it.count }, byId, heroes)
+                EngineResult.Card(assemble(themes, processed, placesCount))
+            }
+            is SelectionOutcome.WarmingUp -> when (outcome.reason) {
+                WarmingReason.NOT_ENOUGH_PHOTOS ->
+                    EngineResult.WarmingUp(WarmingReason.NOT_ENOUGH_PHOTOS, processed)
+
+                // Relative-ranking safety net: a non-sparse library always gets its strongest,
+                // most-distinctive themes rather than the "still warming up" dead end.
+                WarmingReason.NOT_ENOUGH_EVIDENCE -> {
+                    val ranked = aligned
+                        .mapNotNull { a -> (softScores[a.category.id] ?: 0.0).let { if (it > 0.0) a.category.id to it else null } }
+                        .sortedByDescending { it.second }
+                    if (processed < config.relativeFallbackMinPhotos || ranked.size < config.minThemes) {
+                        EngineResult.WarmingUp(WarmingReason.NOT_ENOUGH_EVIDENCE, processed)
+                    } else {
+                        val picks = ranked.take(config.maxThemes).map { it.first to maxOf(softCounts[it.first] ?: 0, 1) }
+                        EngineResult.Card(assemble(buildThemes(picks, byId, heroes), processed, placesCount))
+                    }
                 }
-                val card = Tastecard.assemble(
-                    displayName = defaultDisplayName,
-                    themeIndex = (0 until 16).random(),
-                    heroPhotoUri = themes.firstOrNull()?.heroPhotoUri,
-                    photosAnalysed = processed,
-                    placesCount = GeoClustering.placesCount(coords),
-                    themes = themes,
-                )
-                EngineResult.Card(card)
             }
         }
     }
+
+    private fun buildThemes(
+        picks: List<Pair<String, Int>>,
+        byId: Map<String, Category>,
+        heroes: Map<String, MutableList<HeroCandidate>>,
+    ): List<EmergentTheme> = picks.mapNotNull { (categoryId, photoCount) ->
+        val cat = byId[categoryId] ?: return@mapNotNull null
+        val hero = heroes[categoryId]?.maxByOrNull { heroScore(it) }?.uri
+        EmergentTheme(cat.id, cat.displayName, cat.tagline, photoCount, cat.rarityIndex, cat.rarityTier, hero)
+    }
+
+    private fun assemble(themes: List<EmergentTheme>, processed: Int, places: Int): Tastecard =
+        Tastecard.assemble(
+            displayName = defaultDisplayName,
+            themeIndex = (0 until 16).random(),
+            heroPhotoUri = themes.firstOrNull()?.heroPhotoUri,
+            photosAnalysed = processed,
+            placesCount = places,
+            themes = themes,
+        )
 
     private fun heroScore(h: HeroCandidate): Double {
         val screenshotPenalty = if (h.screenshot) 0.5 else 0.0

@@ -3,12 +3,20 @@
 //  Tastecard
 //
 //  Orchestrates the on-device pipeline (§6):
-//    enumerate assets -> (cache hit | downsample + SigLIP embed) -> cosine vs precomputed
-//    category text vectors -> threshold tally (multi-label) -> evidence-floor 3–6 selection
-//    -> rarity -> hero pick -> EXIF Places -> assemble Tastecard.
+//    enumerate assets -> (cache hit | downsample + SigLIP embed) -> bias-corrected
+//    relative affinity vs precomputed category text vectors -> distinctive-match tally
+//    -> evidence-floor 3–6 selection (with a relative-ranking safety net) -> rarity
+//    -> hero pick -> EXIF Places -> assemble Tastecard.
 //
-//  Chunked, backgrounded, cancellable, bounded memory (downsample/infer/release; cache
-//  keyed by localIdentifier for incremental re-runs). Runs OFF the main actor.
+//  Why relative affinity, not absolute cosine: SigLIP image-text cosines are compressed
+//  and carry a strong per-prompt prior (some category prompts sit "close" to every image).
+//  A fixed cosine cutoff therefore either matches nothing (the "still warming up" bug) or
+//  matches junk. Instead, for each photo we subtract that photo's MEAN affinity across all
+//  categories and keep the categories it is distinctively closest to. This is scale-
+//  invariant, removes the universal-prompt bias, and is naturally multi-label — the standard
+//  senior-level way to get reliable SigLIP/CLIP zero-shot signal on real-world libraries.
+//
+//  Chunked, backgrounded, cancellable, bounded memory. Runs OFF the main actor.
 //
 
 import Foundation
@@ -43,6 +51,9 @@ final class AnalysisEngine {
         var batchSize = 32
         var heroInspectTopN = 5
         var defaultDisplayName = "My Tastecard"
+        /// A photo "matches" a category when its affinity exceeds the photo's own mean
+        /// affinity by at least this margin (bias-corrected, scale-invariant).
+        var relativeMargin: Float = 0.05
     }
 
     private let loader: PhotoAssetLoader
@@ -85,14 +96,18 @@ final class AnalysisEngine {
         guard !aligned.isEmpty else { throw EngineError.noAlignedCategories }
         let categoryById = Dictionary(uniqueKeysWithValues: categories.map { ($0.id, $0) })
 
-        var counts: [String: Int] = [:]
-        var scores: [String: Double] = [:]
+        // Per-category accumulators.
+        var counts: [String: Int] = [:]            // photos where delta >= relativeMargin
+        var scores: [String: Double] = [:]          // sum of margins for matched photos
+        var softScores: [String: Double] = [:]      // sum of positive delta over ALL photos (ranking net)
+        var softCounts: [String: Int] = [:]         // photos where delta > 0 (prominence)
         var heroCandidates: [String: [HeroCandidate]] = [:]
         var coords: [GeoClustering.Coordinate] = []
 
         var processed = 0
         let progressStride = max(1, total / 100)   // throttle UI updates to ~100 ticks
         let side = CGFloat(embedder.inputSide)
+        let margin = config.relativeMargin
 
         for chunk in allIds.chunked(into: config.batchSize) {
             try Task.checkCancellation()
@@ -125,21 +140,35 @@ final class AnalysisEngine {
                 let isScreenshot = asset.mediaSubtypes.contains(.photoScreenshot)
                 let pixelCount = asset.pixelWidth * asset.pixelHeight
 
-                for a in aligned {
-                    let sim = VectorMath.dot(embedding, a.vector)
-                    let threshold = Float(a.category.threshold)
-                    if sim >= threshold {
-                        counts[a.category.id, default: 0] += 1
-                        scores[a.category.id, default: 0] += Double(sim - threshold)
-                        heroCandidates[a.category.id, default: []].append(
-                            HeroCandidate(assetId: id, similarity: sim,
-                                          isScreenshot: isScreenshot, pixelCount: pixelCount))
-                        // Bound memory: a popular category needn't retain thousands of
-                        // candidates — keep only the strongest for hero selection.
-                        if heroCandidates[a.category.id]!.count > 60 {
-                            heroCandidates[a.category.id] =
-                                Array(HeroPhotoPicker.ranked(heroCandidates[a.category.id]!).prefix(40))
-                        }
+                // Cosine to every category, then subtract this photo's mean affinity.
+                var cosines = [Float](repeating: 0, count: aligned.count)
+                var sum: Float = 0
+                for i in aligned.indices {
+                    let c = VectorMath.dot(embedding, aligned[i].vector)
+                    cosines[i] = c
+                    sum += c
+                }
+                let mean = sum / Float(aligned.count)
+
+                for i in aligned.indices {
+                    let delta = cosines[i] - mean
+                    guard delta > 0 else { continue }
+                    let cid = aligned[i].category.id
+
+                    softScores[cid, default: 0] += Double(delta)
+                    softCounts[cid, default: 0] += 1
+
+                    // Hero candidate (use raw cosine as the quality/representativeness signal).
+                    heroCandidates[cid, default: []].append(
+                        HeroCandidate(assetId: id, similarity: cosines[i],
+                                      isScreenshot: isScreenshot, pixelCount: pixelCount))
+                    if heroCandidates[cid]!.count > 60 {
+                        heroCandidates[cid] = Array(HeroPhotoPicker.ranked(heroCandidates[cid]!).prefix(40))
+                    }
+
+                    if delta >= margin {
+                        counts[cid, default: 0] += 1
+                        scores[cid, default: 0] += Double(delta)
                     }
                 }
             }
@@ -148,37 +177,66 @@ final class AnalysisEngine {
         await cache.flush()
         onProgress(AnalysisProgress(processed: total, total: total))
 
-        // Selection.
+        let placesCount = GeoClustering.placesCount(coords)
+
+        // Primary selection from distinctive-match tallies.
         let tallies: [CategoryTally] = aligned.compactMap { a in
             guard let count = counts[a.category.id], count > 0 else { return nil }
-            return CategoryTally(categoryId: a.category.id, count: count,
-                                 score: scores[a.category.id] ?? 0)
+            return CategoryTally(categoryId: a.category.id, count: count, score: scores[a.category.id] ?? 0)
         }
 
         switch ThemeSelector.select(tallies: tallies, photosAnalysed: processed, config: config.selection) {
-        case .warmingUp(let reason):
-            return .warmingUp(reason, photosScanned: processed)
-
         case .themes(let selected):
-            var themes: [EmergentTheme] = []
-            for tally in selected {
-                guard let category = categoryById[tally.categoryId] else { continue }
-                let hero = await chooseHero(candidates: heroCandidates[tally.categoryId] ?? [])
-                themes.append(EmergentTheme(category: category, photoCount: tally.count,
-                                            heroPhotoLocalId: hero))
-            }
+            let themes = await buildThemes(
+                selected.map { ($0.categoryId, $0.count) },
+                categoryById: categoryById, heroCandidates: heroCandidates)
+            return .card(assemble(themes: themes, processed: processed, places: placesCount))
 
-            let placesCount = GeoClustering.placesCount(coords)
-            let card = Tastecard(
-                displayName: config.defaultDisplayName,
-                themeIndex: Int.random(in: 0..<AppTheme.all.count),
-                heroPhotoLocalId: themes.first?.heroPhotoLocalId,
-                photosAnalysed: processed,
-                placesCount: placesCount,
-                themes: themes
-            )
-            return .card(card)
+        case .warmingUp(.notEnoughPhotos):
+            return .warmingUp(.notEnoughPhotos, photosScanned: processed)
+
+        case .warmingUp(.notEnoughEvidence):
+            // Relative-ranking safety net: a non-sparse library always gets its strongest,
+            // most-distinctive themes rather than the "still warming up" dead end.
+            guard processed >= config.selection.relativeFallbackMinPhotos else {
+                return .warmingUp(.notEnoughEvidence, photosScanned: processed)
+            }
+            let ranked = aligned
+                .compactMap { a -> (String, Double)? in
+                    guard let s = softScores[a.category.id], s > 0 else { return nil }
+                    return (a.category.id, s)
+                }
+                .sorted { $0.1 > $1.1 }
+            guard ranked.count >= config.selection.minThemes else {
+                return .warmingUp(.notEnoughEvidence, photosScanned: processed)
+            }
+            let picks = ranked.prefix(config.selection.maxThemes).map { ($0.0, max(softCounts[$0.0] ?? 0, 1)) }
+            let themes = await buildThemes(Array(picks), categoryById: categoryById, heroCandidates: heroCandidates)
+            return .card(assemble(themes: themes, processed: processed, places: placesCount))
         }
+    }
+
+    private func assemble(themes: [EmergentTheme], processed: Int, places: Int) -> Tastecard {
+        Tastecard(
+            displayName: config.defaultDisplayName,
+            themeIndex: Int.random(in: 0..<AppTheme.all.count),
+            heroPhotoLocalId: themes.first?.heroPhotoLocalId,
+            photosAnalysed: processed,
+            placesCount: places,
+            themes: themes
+        )
+    }
+
+    private func buildThemes(_ picks: [(String, Int)],
+                             categoryById: [String: Category],
+                             heroCandidates: [String: [HeroCandidate]]) async -> [EmergentTheme] {
+        var themes: [EmergentTheme] = []
+        for (categoryId, photoCount) in picks {
+            guard let category = categoryById[categoryId] else { continue }
+            let hero = await chooseHero(candidates: heroCandidates[categoryId] ?? [])
+            themes.append(EmergentTheme(category: category, photoCount: photoCount, heroPhotoLocalId: hero))
+        }
+        return themes
     }
 
     /// Ranks candidates, then runs a bounded Vision sensitivity check on the top few;

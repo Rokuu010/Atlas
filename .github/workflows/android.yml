@@ -57,7 +57,9 @@ jobs:
           # "operator torchvision::nms does not exist". This mirrors the working iOS recipe.
           pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
           # onnxscript: required by torch.onnx.export in torch 2.9+. hf_transfer: robust download.
-          pip install open_clip_torch transformers sentencepiece numpy onnx onnxruntime onnxscript hf_transfer
+          # Pin onnxruntime to the same version as onnxruntime-android (build.gradle.kts) so the
+          # quantiser and the on-device runtime agree on opset/IR — else the model won't load.
+          pip install open_clip_torch transformers sentencepiece numpy onnx "onnxruntime==1.26.0" onnxscript hf_transfer
           python scripts/precompute_text_embeddings.py --output android/app/src/main/assets/category_text_embeddings.bin
           python scripts/convert_siglip_onnx.py
 

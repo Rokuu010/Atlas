@@ -12,6 +12,7 @@ import Foundation
 
 enum InputSanitizer {
     static let maxDisplayNameLength = 40
+    static let maxAboutMeLength = 160
 
     /// Sanitises a user-entered display name:
     ///   - strips control characters and zero-width / bidi formatting characters
@@ -39,6 +40,20 @@ enum InputSanitizer {
     static func displayNameOrDefault(_ raw: String, default fallback: String = "My Tastecard") -> String {
         let s = displayName(raw)
         return s.isEmpty ? fallback : s
+    }
+
+    /// Sanitises the free-text "About me": same control/zero-width stripping and whitespace
+    /// collapse as the display name, but a longer cap. May be empty (the card hides it).
+    static func aboutMe(_ raw: String) -> String {
+        var scalars = String.UnicodeScalarView()
+        for s in raw.unicodeScalars where !isDisallowed(s) { scalars.append(s) }
+        var cleaned = String(scalars)
+            .components(separatedBy: .whitespacesAndNewlines)
+            .filter { !$0.isEmpty }
+            .joined(separator: " ")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        if cleaned.count > maxAboutMeLength { cleaned = String(cleaned.prefix(maxAboutMeLength)) }
+        return cleaned
     }
 
     /// Filename-safe slug for the exported PNG (matches the web mockup's rule).

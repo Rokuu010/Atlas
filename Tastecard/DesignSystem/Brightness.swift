@@ -9,6 +9,7 @@
 //  glass tint, and the readability scrim.
 //
 
+import SwiftUI
 import UIKit
 
 enum Brightness {
@@ -17,6 +18,14 @@ enum Brightness {
     /// Mirrors: brightness = sqrt(0.299*r^2 + 0.587*g^2 + 0.114*b^2) < 135
     static func isDark(_ image: UIImage) -> Bool {
         averageBrightness(image).map { $0 < 135 } ?? false
+    }
+
+    /// Same luminance-weighted RMS test for a solid colour (used by the custom colour wheel).
+    static func isDark(_ color: Color) -> Bool {
+        var r: CGFloat = 0, g: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
+        guard UIColor(color).getRed(&r, green: &g, blue: &b, alpha: &a) else { return false }
+        let R = Double(r) * 255, G = Double(g) * 255, B = Double(b) * 255
+        return (0.299 * R * R + 0.587 * G * G + 0.114 * B * B).squareRoot() < 135
     }
 
     /// The luminance-weighted RMS brightness of a 10x10 downscale, or nil if it

@@ -13,8 +13,11 @@ import UIKit
 struct SnapshotView: View {
     let card: Tastecard
     let theme: AppTheme
+    let backgroundColor: Color
     let customBackground: UIImage?
     let isBgDark: Bool
+    let glassOpacity: Double
+    let profileImage: UIImage?
     let selectedThemeId: String?
 
     @Environment(\.dismiss) private var dismiss
@@ -24,8 +27,10 @@ struct SnapshotView: View {
     @State private var errorMessage: String?
 
     private var snapshot: SnapshotCardView {
-        SnapshotCardView(card: card, theme: theme, customBackground: customBackground,
-                         isBgDark: isBgDark, selectedThemeId: selectedThemeId, heroImages: heroImages)
+        SnapshotCardView(card: card, theme: theme, backgroundColor: backgroundColor,
+                         customBackground: customBackground, isBgDark: isBgDark,
+                         glassOpacity: glassOpacity, profileImage: profileImage,
+                         selectedThemeId: selectedThemeId, heroImages: heroImages)
     }
 
     var body: some View {

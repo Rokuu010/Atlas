@@ -18,6 +18,14 @@ struct Tastecard: Codable, Equatable {
     var themeIndex: Int
     /// Filename of a user-chosen background stored in the app sandbox (local only), or nil.
     var customBackgroundFilename: String?
+    /// User-chosen solid background colour (sRGB packed 0xRRGGBB), or nil for the theme/photo.
+    var customBackgroundColorHex: UInt32?
+    /// Glass tint strength multiplier (0...1, default 1.0). Lower = more see-through card.
+    var glassOpacity: Double?
+    /// Filename of a user-chosen profile picture stored in the app sandbox (local only), or nil.
+    var profileImageFilename: String?
+    /// Free-text "About me" shown on the card, customised in Settings. Sanitised at the edge.
+    var aboutMe: String?
     /// Auto-picked card hero (opaque PHAsset local id), user-swappable.
     var heroPhotoLocalId: String?
 
@@ -33,6 +41,24 @@ struct Tastecard: Codable, Equatable {
 
     /// The serial as displayed (e.g. "#A7F3").
     var serialDisplay: String { id }
+
+    /// The card's headline. The stored name is the user's name; the card always reads
+    /// "<name>'s Tastecard". The default ("My Tastecard") is shown as-is, not possessivised.
+    var cardTitle: String { Tastecard.title(forName: displayName) }
+
+    /// Possessive card title for a given name. Exposed so Settings can preview it live.
+    static func title(forName name: String) -> String {
+        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        if trimmed.isEmpty || trimmed.caseInsensitiveCompare("My Tastecard") == .orderedSame {
+            return "My Tastecard"
+        }
+        // Light possessive: "James" -> "James'", everything else -> "<name>'s".
+        let suffix = trimmed.lowercased().hasSuffix("s") ? "'" : "'s"
+        return "\(trimmed)\(suffix) Tastecard"
+    }
+
+    /// Effective glass tint multiplier with a safe default for cards saved before this field.
+    var glassTintMultiplier: Double { glassOpacity ?? 1.0 }
 }
 
 extension Tastecard {
@@ -57,6 +83,10 @@ extension Tastecard {
         self.displayName = displayName
         self.themeIndex = themeIndex
         self.customBackgroundFilename = nil
+        self.customBackgroundColorHex = nil
+        self.glassOpacity = nil
+        self.profileImageFilename = nil
+        self.aboutMe = nil
         self.heroPhotoLocalId = heroPhotoLocalId
         self.photosAnalysed = photosAnalysed
         self.emergentThemeCount = themes.count

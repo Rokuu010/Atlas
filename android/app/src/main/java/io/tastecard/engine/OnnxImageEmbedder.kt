@@ -65,11 +65,31 @@ class OnnxImageEmbedder private constructor(
             }
             val env = OrtEnvironment.getEnvironment()
             val opts = OrtSession.SessionOptions()
-            val session = env.createSession(bytes, opts)
+            val session = try {
+                env.createSession(bytes, opts)
+            } catch (e: Throwable) {
+                throw MissingModelException("model failed to load (runtime/opset mismatch?): ${e.message}")
+            }
             val inputName = session.inputNames.first()
+            // Prefer the static output dim from metadata; if it's dynamic (-1), determine it
+            // with one dummy inference so a quantised/dynamic-shape model still works.
             val outInfo = session.outputInfo.values.first().info as TensorInfo
-            val dim = outInfo.shape.lastOrNull { it > 0 }?.toInt()
-                ?: throw MissingModelException("could not read output dim")
+            var dim = outInfo.shape.lastOrNull { it > 0 }?.toInt() ?: -1
+            if (dim <= 0) {
+                dim = try {
+                    val side = 224
+                    val zeros = FloatBuffer.allocate(3 * side * side)
+                    OnnxTensor.createTensor(env, zeros, longArrayOf(1, 3, side.toLong(), side.toLong())).use { t ->
+                        session.run(mapOf(inputName to t)).use { res ->
+                            @Suppress("UNCHECKED_CAST")
+                            (res[0].value as Array<FloatArray>)[0].size
+                        }
+                    }
+                } catch (e: Throwable) {
+                    throw MissingModelException("could not determine output dim: ${e.message}")
+                }
+            }
+            if (dim <= 0) throw MissingModelException("could not determine output dim")
             return OnnxImageEmbedder(env, session, inputName, dim)
         }
     }

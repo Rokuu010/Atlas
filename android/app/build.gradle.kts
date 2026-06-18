@@ -54,8 +54,10 @@ dependencies {
     implementation("androidx.exifinterface:exifinterface:1.3.7")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
 
-    // On-device inference (SigLIP image encoder, ONNX).
-    implementation("com.microsoft.onnxruntime:onnxruntime-android:1.18.0")
+    // On-device inference (SigLIP image encoder, ONNX). Keep in lockstep with the Python
+    // onnxruntime that quantises the model in CI (android.yml) — an older runtime can't load
+    // a model produced by much newer tooling (this was the "engine not installed" cause).
+    implementation("com.microsoft.onnxruntime:onnxruntime-android:1.26.0")
     // Image loading for content:// photos in Compose.
     implementation("io.coil-kt:coil-compose:2.6.0")
 

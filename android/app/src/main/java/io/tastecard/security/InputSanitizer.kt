@@ -3,6 +3,7 @@ package io.tastecard.security
 /** Display-name sanitisation + filename safety (§9) — ported from iOS. */
 object InputSanitizer {
     const val MAX_DISPLAY_NAME_LENGTH = 40
+    const val MAX_ABOUT_ME_LENGTH = 160
 
     private val FORMATTING = setOf(
         0x200B, 0x200C, 0x200D, 0x200E, 0x200F, 0xFEFF,
@@ -25,6 +26,18 @@ object InputSanitizer {
     fun displayNameOrDefault(raw: String, default: String = "My Tastecard"): String {
         val s = displayName(raw)
         return s.ifEmpty { default }
+    }
+
+    /** Free-text "About me": same stripping/whitespace collapse, longer cap, may be empty. */
+    fun aboutMe(raw: String): String {
+        val filtered = buildString {
+            for (cp in raw.codePoints()) {
+                if (isDisallowed(cp)) continue
+                appendCodePoint(cp)
+            }
+        }
+        val collapsed = filtered.split(Regex("\\s+")).filter { it.isNotEmpty() }.joinToString(" ").trim()
+        return if (collapsed.length > MAX_ABOUT_ME_LENGTH) collapsed.substring(0, MAX_ABOUT_ME_LENGTH) else collapsed
     }
 
     fun filenameSlug(raw: String): String {

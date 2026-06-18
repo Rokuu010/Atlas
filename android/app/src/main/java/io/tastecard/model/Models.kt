@@ -21,6 +21,8 @@ data class EmergentTheme(
     val rarityIndex: Double,
     val rarityTier: RarityTier,
     val heroPhotoUri: String?, // MediaStore content URI string; null -> bundled fallback
+    /** Top matching photos for this category (content URIs, best-first) for "change photo". */
+    val candidatePhotoUris: List<String> = emptyList(),
 )
 
 /** The production card (§5). Derived, non-identifying data only. */
@@ -35,15 +37,35 @@ data class Tastecard(
     var cardRarity: RarityTier,
     val themes: List<EmergentTheme>,
     val createdAt: Long,
+    // Appearance + profile (mirrors iOS). All optional/backward-compatible.
+    var aboutMe: String? = null,
+    var profileImagePath: String? = null,        // local file path of the profile picture
+    var customBackgroundPath: String? = null,    // local file path of a custom background photo
+    var customBackgroundColorArgb: Long? = null, // packed 0xFFRRGGBB solid background colour
+    var glassOpacity: Double? = null,            // 0..1 glass tint multiplier (1.0 default)
 ) {
     /** The serial as displayed (e.g. "#A7F3"). */
     val serialDisplay: String get() = id
+
+    /** Glass tint multiplier with a safe default for cards saved before this field. */
+    val glassTintMultiplier: Double get() = glassOpacity ?: 1.0
+
+    /** The card headline: "<name>'s Tastecard"; the default name is shown as-is. */
+    val cardTitle: String get() = title(displayName)
 
     companion object {
         private val ALPHABET = "23456789ABCDEFGHJKMNPQRSTVWXYZ"
 
         /** Local, per-device short code (§11 decision b) — e.g. "#A7F3". Not a global serial. */
         fun makeLocalCode(): String = "#" + (1..4).map { ALPHABET.random() }.joinToString("")
+
+        /** Possessive card title for a name. Exposed so Settings can preview it live. */
+        fun title(name: String): String {
+            val trimmed = name.trim()
+            if (trimmed.isEmpty() || trimmed.equals("My Tastecard", ignoreCase = true)) return "My Tastecard"
+            val suffix = if (trimmed.lowercase().endsWith("s")) "'" else "'s"
+            return "$trimmed$suffix Tastecard"
+        }
 
         fun assemble(
             displayName: String,

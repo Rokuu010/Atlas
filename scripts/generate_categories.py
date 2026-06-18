@@ -26,9 +26,11 @@ from pathlib import Path
 
 SCHEMA_VERSION = 1
 # SigLIP image-text cosine similarities are on a low scale: a genuine match sits around
-# 0.10–0.14 (≈ the model's own sigmoid-0.5 decision boundary). 0.12 is the calibrated
-# default; ambiguous categories are nudged up to reduce cross-firing.
-DEFAULT_THRESHOLD = 0.12
+# 0.10–0.14 (≈ the model's own sigmoid-0.5 decision boundary), while UNRELATED pairs
+# cluster near 0 ± 0.036 (random cosine in 768-d ≈ 1/sqrt(768)). 0.10 is therefore ~2.8
+# std above the noise floor — it captures the lower half of genuine matches (which 0.12
+# was rejecting, leaving too few categories) without dipping into guess territory.
+DEFAULT_THRESHOLD = 0.10
 DEFAULT_RARITY = 0.40
 
 # rarityIndex per category id. Common/everyday subjects low; rare subjects high.
@@ -109,16 +111,18 @@ RARITY: dict[str, float] = {
     "aurora_chaser": 0.92,
 }
 
-# Per-category threshold overrides. Ambiguous categories (e.g. running vs hiking) get a
-# slightly raised bar to reduce cross-firing. Everything else uses DEFAULT_THRESHOLD.
+# Per-category threshold overrides. Ambiguous categories (e.g. running vs hiking) keep a
+# raised bar to reduce cross-firing — but kept within the achievable ~0.10–0.14 match band
+# (0.16 sat above the typical match ceiling, so those categories almost never fired).
+# Everything else uses DEFAULT_THRESHOLD.
 THRESHOLD: dict[str, float] = {
-    "always_on_the_run": 0.15,   # running vs hiking/walking
-    "summit_chaser": 0.15,       # mountains vs generic landscape
-    "last_light": 0.16,          # calm water vs any water
-    "salt_in_the_air": 0.15,     # beach vs any water
-    "note_to_self": 0.16,        # notes vs any screenshot
-    "caption_material": 0.16,    # memes vs any screenshot
-    "main_character": 0.15,      # selfie vs any portrait
+    "always_on_the_run": 0.13,   # running vs hiking/walking
+    "summit_chaser": 0.13,       # mountains vs generic landscape
+    "last_light": 0.14,          # calm water vs any water
+    "salt_in_the_air": 0.13,     # beach vs any water
+    "note_to_self": 0.14,        # notes vs any screenshot
+    "caption_material": 0.14,    # memes vs any screenshot
+    "main_character": 0.13,      # selfie vs any portrait
 }
 
 

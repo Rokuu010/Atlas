@@ -37,6 +37,7 @@ class CardStore(context: Context) {
                     .put("rarityIndex", t.rarityIndex)
                     .put("rarityTier", t.rarityTier.name)
                     .put("heroPhotoUri", t.heroPhotoUri ?: JSONObject.NULL)
+                    .put("candidatePhotoUris", JSONArray(t.candidatePhotoUris))
             )
         }
         return JSONObject()
@@ -50,6 +51,11 @@ class CardStore(context: Context) {
             .put("cardRarity", card.cardRarity.name)
             .put("createdAt", card.createdAt)
             .put("themes", themes)
+            .put("aboutMe", card.aboutMe ?: JSONObject.NULL)
+            .put("profileImagePath", card.profileImagePath ?: JSONObject.NULL)
+            .put("customBackgroundPath", card.customBackgroundPath ?: JSONObject.NULL)
+            .put("customBackgroundColorArgb", card.customBackgroundColorArgb ?: JSONObject.NULL)
+            .put("glassOpacity", card.glassOpacity ?: JSONObject.NULL)
     }
 
     private fun fromJson(o: JSONObject): Tastecard {
@@ -57,6 +63,9 @@ class CardStore(context: Context) {
         val themes = ArrayList<EmergentTheme>(themesArr.length())
         for (i in 0 until themesArr.length()) {
             val t = themesArr.getJSONObject(i)
+            val candArr = t.optJSONArray("candidatePhotoUris")
+            val candidates = if (candArr == null) emptyList() else
+                (0 until candArr.length()).map { candArr.getString(it) }
             themes.add(
                 EmergentTheme(
                     categoryId = t.getString("categoryId"),
@@ -67,6 +76,7 @@ class CardStore(context: Context) {
                     rarityTier = runCatching { RarityTier.valueOf(t.getString("rarityTier")) }
                         .getOrElse { Rarity.tier(t.getDouble("rarityIndex")) },
                     heroPhotoUri = if (t.isNull("heroPhotoUri")) null else t.getString("heroPhotoUri"),
+                    candidatePhotoUris = candidates,
                 )
             )
         }
@@ -81,6 +91,11 @@ class CardStore(context: Context) {
             cardRarity = runCatching { RarityTier.valueOf(o.getString("cardRarity")) }.getOrElse { RarityTier.COMMON },
             themes = themes,
             createdAt = o.optLong("createdAt", System.currentTimeMillis()),
+            aboutMe = if (o.isNull("aboutMe")) null else o.optString("aboutMe", null),
+            profileImagePath = if (o.isNull("profileImagePath")) null else o.optString("profileImagePath", null),
+            customBackgroundPath = if (o.isNull("customBackgroundPath")) null else o.optString("customBackgroundPath", null),
+            customBackgroundColorArgb = if (o.has("customBackgroundColorArgb") && !o.isNull("customBackgroundColorArgb")) o.getLong("customBackgroundColorArgb") else null,
+            glassOpacity = if (o.has("glassOpacity") && !o.isNull("glassOpacity")) o.getDouble("glassOpacity") else null,
         )
     }
 

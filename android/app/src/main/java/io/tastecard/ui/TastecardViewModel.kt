@@ -1,6 +1,7 @@
 package io.tastecard.ui
 
 import android.app.Application
+import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -17,6 +18,7 @@ import io.tastecard.engine.WarmingReason
 import io.tastecard.model.Category
 import io.tastecard.model.Tastecard
 import io.tastecard.persistence.CardStore
+import io.tastecard.persistence.LocalImageStore
 import io.tastecard.security.InputSanitizer
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -48,6 +50,7 @@ class TastecardViewModel(app: Application) : AndroidViewModel(app) {
     val progress = MutableStateFlow(0 to 0)
 
     private val store = CardStore(app)
+    private val imageStore = LocalImageStore(app)
     private var categories: List<Category> = emptyList()
     private var job: Job? = null
 
@@ -102,9 +105,9 @@ class TastecardViewModel(app: Application) : AndroidViewModel(app) {
 
     fun drop() {
         val c = card ?: return
-        val updated = c.copy(themeIndex = nextDropIndex(c.themeIndex))
-        card = updated
-        store.save(updated)
+        // Shuffling implies the curated palettes — drop any solid custom colour override.
+        val updated = c.copy(themeIndex = nextDropIndex(c.themeIndex), customBackgroundColorArgb = null)
+        update(updated)
         showToast("Theme: ${paletteAt(updated.themeIndex).name}")
     }
 
@@ -112,9 +115,77 @@ class TastecardViewModel(app: Application) : AndroidViewModel(app) {
         val c = card ?: return
         val cleaned = InputSanitizer.displayNameOrDefault(raw)
         if (cleaned == c.displayName) return
-        val updated = c.copy(displayName = cleaned)
-        card = updated
-        store.save(updated)
+        update(c.copy(displayName = cleaned))
+    }
+
+    fun setAboutMe(raw: String) {
+        val c = card ?: return
+        val new = InputSanitizer.aboutMe(raw).ifEmpty { null }
+        if (new == c.aboutMe) return
+        update(c.copy(aboutMe = new))
+    }
+
+    // MARK: profile picture
+
+    fun setProfilePhoto(uri: Uri) {
+        val c = card ?: return
+        val path = imageStore.store(uri, "profile") ?: run { showToast("Couldn't use that image"); return }
+        imageStore.delete(c.profileImagePath)
+        update(c.copy(profileImagePath = path))
+        showToast("Profile photo updated")
+    }
+
+    fun clearProfilePhoto() {
+        val c = card ?: return
+        imageStore.delete(c.profileImagePath)
+        update(c.copy(profileImagePath = null))
+    }
+
+    // MARK: appearance (custom colour, background photo, glass opacity)
+
+    fun setCustomColor(argb: Long) {
+        val c = card ?: return
+        imageStore.delete(c.customBackgroundPath)
+        update(c.copy(customBackgroundColorArgb = argb, customBackgroundPath = null))
+    }
+
+    fun clearCustomColor() {
+        val c = card ?: return
+        if (c.customBackgroundColorArgb == null) return
+        update(c.copy(customBackgroundColorArgb = null))
+    }
+
+    fun setBackgroundPhoto(uri: Uri) {
+        val c = card ?: return
+        val path = imageStore.store(uri, "bg") ?: run { showToast("Couldn't use that image"); return }
+        imageStore.delete(c.customBackgroundPath)
+        update(c.copy(customBackgroundPath = path, customBackgroundColorArgb = null))
+        showToast("Background updated")
+    }
+
+    fun clearBackgroundPhoto() {
+        val c = card ?: return
+        imageStore.delete(c.customBackgroundPath)
+        update(c.copy(customBackgroundPath = null))
+    }
+
+    fun setGlassOpacity(value: Double) {
+        val c = card ?: return
+        val clamped = value.coerceIn(0.0, 1.0)
+        if (clamped == c.glassTintMultiplier) return
+        update(c.copy(glassOpacity = clamped))
+    }
+
+    fun resetAppearance() {
+        val c = card ?: return
+        imageStore.delete(c.customBackgroundPath)
+        update(c.copy(customBackgroundPath = null, customBackgroundColorArgb = null, glassOpacity = null))
+        showToast("Appearance reset")
+    }
+
+    private fun update(c: Tastecard) {
+        card = c
+        store.save(c)
     }
 
     fun swapHero(themeId: String, uri: String) {
@@ -130,6 +201,7 @@ class TastecardViewModel(app: Application) : AndroidViewModel(app) {
     fun deleteData() {
         cancel()
         store.clear()
+        imageStore.deleteAll()
         getApplication<Application>().filesDir.listFiles()
             ?.filter { it.name.startsWith("embeddings_v1_dim") }
             ?.forEach { it.delete() }

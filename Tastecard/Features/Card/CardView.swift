@@ -43,7 +43,7 @@ struct CardView: View {
                 ScrollView(showsIndicators: false) {
                     VStack {
                         Spacer(minLength: 0)
-                        cardSurface
+                        cardSurface(screen: geo.size)
                             .frame(maxWidth: 420)
                             .padding(.horizontal, 14)
                             .padding(.vertical, 18)
@@ -103,7 +103,7 @@ struct CardView: View {
 
     // MARK: - The glass card
 
-    private var cardSurface: some View {
+    private func cardSurface(screen: CGSize) -> some View {
         VStack(spacing: 20) {
             header
             identity
@@ -115,7 +115,12 @@ struct CardView: View {
             footer
         }
         .padding(22)
-        .glassCard(cornerRadius: 40, fill: vm.cardFill, border: vm.cardBorder)
+        .cardGlass(cornerRadius: 40,
+                   customBackground: vm.customBackground,
+                   screen: screen,
+                   fill: vm.cardFill,
+                   border: vm.cardBorder,
+                   themeGlassFill: vm.theme.glassFill)
         .foregroundColor(vm.textColor)
     }
 

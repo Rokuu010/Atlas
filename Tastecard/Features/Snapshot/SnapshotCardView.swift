@@ -40,6 +40,12 @@ struct SnapshotCardView: View {
                                startPoint: .top, endPoint: .bottom)
             }
 
+            // Subtle depth vignette.
+            RadialGradient(colors: [.clear, .black.opacity(0.22)],
+                           center: .center, startRadius: baseWidth * 0.55, endRadius: baseWidth * 1.15)
+                .blendMode(.multiply)
+                .allowsHitTesting(false)
+
             VStack(spacing: 0) {
                 brandRow
                 innerCard.padding(.top, 12)
@@ -92,13 +98,13 @@ struct SnapshotCardView: View {
     private var panel: some View {
         let shape = RoundedRectangle(cornerRadius: 26, style: .continuous)
         return shape
-            .fill(textColor.opacity(0.08))
+            .fill(textColor.opacity(0.12))
             .overlay(
-                shape.fill(LinearGradient(colors: [Color.white.opacity(0.10), .clear],
+                shape.fill(LinearGradient(colors: [Color.white.opacity(0.14), .clear],
                                           startPoint: .top, endPoint: .center))
             )
-            .overlay(shape.strokeBorder(textColor.opacity(0.28), lineWidth: 1.5))
-            .shadow(color: .black.opacity(0.22), radius: 16, y: 8)
+            .overlay(shape.strokeBorder(textColor.opacity(0.30), lineWidth: 1.5))
+            .shadow(color: .black.opacity(0.28), radius: 20, y: 10)
     }
 
     private var stats: some View {

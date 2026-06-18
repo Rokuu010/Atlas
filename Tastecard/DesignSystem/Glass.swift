@@ -10,6 +10,7 @@
 //
 
 import SwiftUI
+import UIKit
 
 struct GlassCardModifier: ViewModifier {
     var cornerRadius: CGFloat = 40
@@ -66,6 +67,58 @@ extension View {
             }
             .overlay { shape.strokeBorder(border, lineWidth: 1) }
             .clipShape(shape)
+    }
+}
+
+/// The card's glass surface. With a custom background it renders TRUE glass: a blurred,
+/// position-aligned slice of the wallpaper shows through the card (like iOS Control
+/// Centre), with only a light tint — instead of `Material`, which over a separate
+/// background layer frosts to a flat grey. Without a custom background it uses the
+/// theme's Material glass.
+struct CardGlass: ViewModifier {
+    var cornerRadius: CGFloat = 40
+    let customBackground: UIImage?
+    let screen: CGSize
+    let fill: Color
+    let border: Color
+    let themeGlassFill: Color
+
+    func body(content: Content) -> some View {
+        let shape = RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+        return content
+            .background {
+                if let bg = customBackground {
+                    GeometryReader { g in
+                        let frame = g.frame(in: .global)
+                        // Draw the wallpaper full-screen, offset so the slice inside the
+                        // card lines up with what's actually behind it, then blur + tint.
+                        Image(uiImage: bg)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: screen.width, height: screen.height)
+                            .offset(x: -frame.minX, y: -frame.minY)
+                            .blur(radius: 24)
+                            .overlay(fill)
+                    }
+                    .clipShape(shape)
+                } else {
+                    shape.fill(.ultraThinMaterial).overlay(shape.fill(themeGlassFill))
+                }
+            }
+            .overlay(shape.strokeBorder(border, lineWidth: 1))
+            .shadow(color: .black.opacity(0.18), radius: 22, x: 0, y: 12)
+    }
+}
+
+extension View {
+    func cardGlass(cornerRadius: CGFloat = 40,
+                   customBackground: UIImage?,
+                   screen: CGSize,
+                   fill: Color,
+                   border: Color,
+                   themeGlassFill: Color) -> some View {
+        modifier(CardGlass(cornerRadius: cornerRadius, customBackground: customBackground,
+                           screen: screen, fill: fill, border: border, themeGlassFill: themeGlassFill))
     }
 }
 

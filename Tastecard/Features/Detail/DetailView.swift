@@ -9,6 +9,7 @@
 //
 
 import SwiftUI
+import UIKit
 import PhotosUI
 
 struct DetailView: View {
@@ -18,6 +19,7 @@ struct DetailView: View {
 
     @State private var heroId: String?
     @State private var pickerItem: PhotosPickerItem?
+    @State private var sharing = false
 
     private let gridColumns = [GridItem(.flexible(), spacing: 8),
                                GridItem(.flexible(), spacing: 8),
@@ -39,6 +41,7 @@ struct DetailView: View {
                         hero
                         titleRow
                         insight
+                        shareThemeButton
                         matchesPicker
                         allPhotosFallback
                     }
@@ -165,6 +168,39 @@ struct DetailView: View {
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
+
+    private var shareThemeButton: some View {
+        Button { shareTheme() } label: {
+            HStack(spacing: 8) {
+                if sharing { ProgressView().tint(.white) } else { Image(systemName: "square.and.arrow.up") }
+                Text(sharing ? "Preparing…" : "Share this theme")
+            }
+            .font(AppFont.sans(13, weight: .black)).tracking(1)
+            .foregroundColor(.white)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 14)
+            .background(
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .fill(LinearGradient(colors: [Color(hex: 0xEC4899), Color(hex: 0xE11D48)],
+                                         startPoint: .leading, endPoint: .trailing))
+            )
+        }
+        .buttonStyle(.plain)
+        .disabled(sharing)
+    }
+
+    private func shareTheme() {
+        guard !sharing else { return }
+        sharing = true
+        Task {
+            var img: UIImage?
+            if let id = heroId {
+                img = await PhotoAssetLoader().requestImage(forIdentifier: id, targetSide: 1200)
+            }
+            shareMiniThemeCard(theme: theme, card: vm.card, heroImage: img)
+            sharing = false
         }
     }
 

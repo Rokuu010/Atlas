@@ -19,6 +19,8 @@ struct CardView: View {
     @State private var selectedThemeId: String?
     @State private var sheet: CardSheet?
     @State private var profilePickerItem: PhotosPickerItem?
+    @State private var showWrapped = false
+    @State private var showFaceOff = false
 
     private var card: Tastecard { vm.card }
 
@@ -84,6 +86,8 @@ struct CardView: View {
                 profilePickerItem = nil
             }
         }
+        .fullScreenCover(isPresented: $showWrapped) { WrappedView(card: card) }
+        .fullScreenCover(isPresented: $showFaceOff) { FaceOffView(card: card) }
     }
 
     // MARK: - Background (whole screen)
@@ -118,6 +122,7 @@ struct CardView: View {
             aboutMe
             emergentHeader
             grid
+            actionRow
             shareButton
             footer
         }
@@ -250,6 +255,28 @@ struct CardView: View {
                     .onTapGesture { Haptics.tap(); sheet = .detail(theme) }
             }
         }
+    }
+
+    private var actionRow: some View {
+        HStack(spacing: 10) {
+            secondaryAction(icon: "sparkles", title: "Wrapped") { showWrapped = true }
+            secondaryAction(icon: "flag.2.crossed", title: "Face-off") { showFaceOff = true }
+        }
+    }
+
+    private func secondaryAction(icon: String, title: String, action: @escaping () -> Void) -> some View {
+        Button { Haptics.tap(); action() } label: {
+            HStack(spacing: 6) {
+                Image(systemName: icon)
+                Text(title.uppercased())
+            }
+            .font(AppFont.sans(11, weight: .black)).tracking(1)
+            .foregroundColor(vm.textColor)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 12)
+            .glassPill(cornerRadius: 14, fill: .white.opacity(0.10), border: .white.opacity(0.25))
+        }
+        .buttonStyle(.plain)
     }
 
     private var shareButton: some View {

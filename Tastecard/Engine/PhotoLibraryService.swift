@@ -101,7 +101,8 @@ struct PhotoAssetLoader: Sendable {
             ) { image, _ in
                 if resumed { return }
                 resumed = true
-                continuation.resume(returning: image)
+                // Normalise EXIF orientation so a photo is never shown sideways/flipped.
+                continuation.resume(returning: image?.orientationNormalized())
             }
         }
     }
@@ -109,5 +110,18 @@ struct PhotoAssetLoader: Sendable {
     func requestImage(forIdentifier id: String, targetSide: CGFloat) async -> UIImage? {
         guard let asset = asset(for: id) else { return nil }
         return await requestImage(for: asset, targetSide: targetSide)
+    }
+}
+
+extension UIImage {
+    /// Returns an upright copy (imageOrientation == .up). No-op when already upright, so
+    /// the common case is free. Prevents sideways/flipped photos in the grid and export.
+    func orientationNormalized() -> UIImage {
+        guard imageOrientation != .up else { return self }
+        let format = UIGraphicsImageRendererFormat.default()
+        format.scale = scale
+        return UIGraphicsImageRenderer(size: size, format: format).image { _ in
+            draw(in: CGRect(origin: .zero, size: size))
+        }
     }
 }

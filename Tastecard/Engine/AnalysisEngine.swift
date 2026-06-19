@@ -49,6 +49,8 @@ final class AnalysisEngine {
         var batchSize = 32
         var heroInspectTopN = 8
         var defaultDisplayName = "My Tastecard"
+        /// Cap analysis to the most recent N photos to bound scan time on large libraries.
+        var maxScanPhotos = 3000
         /// Relative margin above the photo's mean affinity (bias-corrected, scale-invariant).
         var relativeMargin: Float = 0.05
         /// Absolute cosine floor — a match must also clear this, removing weak noise matches.
@@ -82,7 +84,8 @@ final class AnalysisEngine {
     private struct Aligned { let category: Category; let vector: [Float] }
 
     func run(onProgress: @escaping @Sendable (AnalysisProgress) -> Void) async throws -> EngineResult {
-        let allIds = loader.imageAssetIdentifiers()
+        // Most recent N photos (newest-first) to keep scan time bounded on big libraries.
+        let allIds = Array(loader.imageAssetIdentifiers().prefix(config.maxScanPhotos))
         let total = allIds.count
 
         guard total >= config.selection.globalMinimumPhotos else {

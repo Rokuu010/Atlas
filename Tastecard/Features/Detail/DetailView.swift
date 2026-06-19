@@ -59,6 +59,15 @@ struct DetailView: View {
         vm.swapHero(themeId: theme.id, toAssetId: id)
     }
 
+    /// Engagement: how much of the analysed roll this theme represents.
+    private var shareOfRoll: String {
+        let total = vm.card.photosAnalysed
+        guard total > 0 else { return "Seen across \(theme.photoCount) of your photos." }
+        let pct = Double(theme.photoCount) / Double(total) * 100
+        let pctText = pct >= 1 ? String(format: "%.0f%%", pct) : "<1%"
+        return "Seen across \(theme.photoCount) photos — about \(pctText) of your roll."
+    }
+
     private var header: some View {
         HStack {
             Text(theme.displayName.uppercased())
@@ -123,7 +132,7 @@ struct DetailView: View {
                 .font(AppFont.sans(15))
                 .foregroundColor(.white.opacity(0.9))
                 .fixedSize(horizontal: false, vertical: true)
-            Text("Seen across \(theme.photoCount) of your photos.")
+            Text(shareOfRoll)
                 .font(AppFont.sans(12))
                 .foregroundColor(.white.opacity(0.55))
         }

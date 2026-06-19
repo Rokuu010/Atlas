@@ -121,16 +121,16 @@ struct SnapshotCardView: View {
     /// contrast either way); a top white sheen + adaptive border + shadow sell the glass.
     private var panel: some View {
         let shape = RoundedRectangle(cornerRadius: 26, style: .continuous)
-        // Scale the frosting with the user's opacity slider, with a floor so the export
-        // card never disappears entirely.
+        // A clearly-defined card so the photos read as INSIDE the box. The frosting still
+        // scales with the user's opacity slider, but with a solid floor + visible border.
         return shape
-            .fill(textColor.opacity(0.06 + 0.12 * glassOpacity))
+            .fill(textColor.opacity(0.16 + 0.10 * glassOpacity))
             .overlay(
-                shape.fill(LinearGradient(colors: [Color.white.opacity(0.14), .clear],
+                shape.fill(LinearGradient(colors: [Color.white.opacity(0.16), .clear],
                                           startPoint: .top, endPoint: .center))
             )
-            .overlay(shape.strokeBorder(textColor.opacity(0.30), lineWidth: 1.5))
-            .shadow(color: .black.opacity(0.28), radius: 20, y: 10)
+            .overlay(shape.strokeBorder(textColor.opacity(0.40), lineWidth: 1.5))
+            .shadow(color: .black.opacity(0.30), radius: 22, y: 12)
     }
 
     private var stats: some View {

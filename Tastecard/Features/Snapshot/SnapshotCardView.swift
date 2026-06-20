@@ -4,7 +4,13 @@
 //
 //  The 9:16 export surface (§7). Rendered by ImageRenderer, which can't reproduce live
 //  blur (Material) — so the export uses an EXPLICIT crisp glass panel (gradient + border +
-//  shadow) instead, giving a clean, high-contrast card rather than a flat grey blob.
+//  shadow) instead of a flat grey blob.
+//
+//  Layout mirrors the Android SnapshotRenderer canvas: ONE big glass card that fills the
+//  frame, with a 2x2 photo grid sized to fill the remaining space *inside* the card so the
+//  photos always read as INSIDE the box. The grid is a non-lazy VStack/HStack of fixed-frame
+//  cells (LazyVGrid collapses/overlaps cells under ImageRenderer — the "mesh" bug); a
+//  GeometryReader supplies the exact leftover height so nothing ever overflows the panel.
 //  Max 4 themes, no droplet/edit icons on the title.
 //
 
@@ -36,6 +42,17 @@ struct SnapshotCardView: View {
 
     private var themes: [EmergentTheme] { Array(card.themes.prefix(4)) }
 
+    /// The themes split into rows of two (matches Android's 2-column grid).
+    private var gridRows: [[EmergentTheme]] {
+        var rows: [[EmergentTheme]] = []
+        var i = 0
+        while i < themes.count {
+            rows.append(Array(themes[i..<min(i + 2, themes.count)]))
+            i += 2
+        }
+        return rows.isEmpty ? [[]] : rows
+    }
+
     var body: some View {
         ZStack {
             backgroundColor
@@ -53,13 +70,14 @@ struct SnapshotCardView: View {
                 .blendMode(.multiply)
                 .allowsHitTesting(false)
 
-            VStack(spacing: 0) {
+            // Brand row sits ABOVE the card; the card then fills the rest of the frame.
+            VStack(spacing: 12) {
                 brandRow
-                innerCard.padding(.top, 12)
-                Spacer(minLength: 10)
-                footer
+                cardBox
             }
-            .padding(20)
+            .padding(.horizontal, 22)
+            .padding(.top, 22)
+            .padding(.bottom, 24)
         }
         .frame(width: baseWidth, height: baseHeight)
         .clipped()
@@ -77,30 +95,37 @@ struct SnapshotCardView: View {
         .opacity(0.8)
     }
 
-    private var innerCard: some View {
+    /// The big glass card. It fills the available vertical space so it's a prominent box,
+    /// with the photo grid expanding to consume whatever room is left inside it.
+    private var cardBox: some View {
         VStack(alignment: .leading, spacing: 12) {
-            HStack(alignment: .center, spacing: 10) {
-                ProfileAvatar(image: profileImage, ink: textColor, size: 40)
-                VStack(alignment: .leading, spacing: 3) {
-                    Text(card.cardTitle)
-                        .font(AppFont.display(22, weight: .black))
-                        .lineLimit(2).minimumScaleFactor(0.5)
-                    HStack(spacing: 5) {
-                        Text("TASTECARD RARITY:")
-                            .font(AppFont.mono(8)).tracking(0.5).opacity(0.6)
-                        RarityBadge(tier: card.cardRarity, fontSize: 10)
-                    }
-                }
-                Spacer(minLength: 0)
-            }
+            identityRow
             stats
             aboutMe
-            grid
+            grid                 // expands to fill remaining height inside the card
+            footer               // inside the card, like Android
         }
         .foregroundColor(textColor)
-        .padding(16)
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(18)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .background(panel)
+    }
+
+    private var identityRow: some View {
+        HStack(alignment: .center, spacing: 10) {
+            ProfileAvatar(image: profileImage, ink: textColor, size: 40)
+            VStack(alignment: .leading, spacing: 3) {
+                Text(card.cardTitle)
+                    .font(AppFont.display(22, weight: .black))
+                    .lineLimit(2).minimumScaleFactor(0.5)
+                HStack(spacing: 5) {
+                    Text("TASTECARD RARITY:")
+                        .font(AppFont.mono(8)).tracking(0.5).opacity(0.6)
+                    RarityBadge(tier: card.cardRarity, fontSize: 10)
+                }
+            }
+            Spacer(minLength: 0)
+        }
     }
 
     @ViewBuilder private var aboutMe: some View {
@@ -110,6 +135,7 @@ struct SnapshotCardView: View {
                 Text(about)
                     .font(AppFont.sans(11))
                     .opacity(0.9)
+                    .lineLimit(2)
                     .fixedSize(horizontal: false, vertical: true)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -150,44 +176,50 @@ struct SnapshotCardView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    // Explicit, NON-lazy 2x2 grid with fixed cell sizes. LazyVGrid does not lay out
-    // reliably inside ImageRenderer (cells collapsed/overlapped in the export — the "mesh"
-    // bug); fixed frames render deterministically.
+    /// Deterministic 2x2 grid (non-lazy). GeometryReader gives the exact remaining height
+    /// inside the card; we size each portrait (3:4) cell to fill it and center the block
+    /// horizontally — the same maths Android's canvas renderer uses. Because the cells are
+    /// explicitly bounded to that measured space, they can never overflow the card panel.
     private var grid: some View {
-        let spacing: CGFloat = 8
-        // content width = baseWidth − outer padding(20·2) − inner padding(16·2)
-        let cellW = (baseWidth - 40 - 32 - spacing) / 2
-        let cellH = cellW * 4.0 / 3.0
-        return VStack(spacing: spacing) {
-            ForEach(0..<2, id: \.self) { row in
-                HStack(spacing: spacing) {
-                    ForEach(0..<2, id: \.self) { col in
-                        let idx = row * 2 + col
-                        if idx < themes.count {
-                            gridCell(themes[idx]).frame(width: cellW, height: cellH)
-                        } else {
-                            Color.clear.frame(width: cellW, height: cellH)
-                        }
+        GeometryReader { geo in
+            let gap: CGFloat = 9
+            let rowCount = max(gridRows.count, 1)
+            let cellH = (geo.size.height - gap * CGFloat(rowCount - 1)) / CGFloat(rowCount)
+            let cellW = min(cellH * 3.0 / 4.0, (geo.size.width - gap) / 2)
+
+            VStack(spacing: gap) {
+                ForEach(Array(gridRows.enumerated()), id: \.offset) { _, row in
+                    HStack(spacing: gap) {
+                        tile(row.first, w: cellW, h: cellH)
+                        tile(row.count > 1 ? row[1] : nil, w: cellW, h: cellH)
                     }
                 }
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
         }
+        .frame(maxHeight: .infinity)
     }
 
-    private func gridCell(_ theme: EmergentTheme) -> some View {
-        ZStack(alignment: .bottomLeading) {
-            heroImage(for: theme)
-            LinearGradient(stops: [.init(color: .black.opacity(0.8), location: 0),
-                                   .init(color: .clear, location: 0.55)],
-                           startPoint: .bottom, endPoint: .top)
-            Text(theme.displayName)
-                .font(AppFont.sans(9, weight: .bold))
-                .foregroundColor(.white)
-                .lineLimit(2)
-                .padding(7)
+    @ViewBuilder private func tile(_ theme: EmergentTheme?, w: CGFloat, h: CGFloat) -> some View {
+        if let theme {
+            ZStack(alignment: .bottomLeading) {
+                heroImage(for: theme)
+                LinearGradient(stops: [.init(color: .black.opacity(0.8), location: 0),
+                                       .init(color: .clear, location: 0.55)],
+                               startPoint: .bottom, endPoint: .top)
+                Text(theme.displayName)
+                    .font(AppFont.sans(9, weight: .bold))
+                    .foregroundColor(.white)
+                    .lineLimit(2)
+                    .padding(7)
+            }
+            .frame(width: w, height: h)
+            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+            .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(.white.opacity(0.12)))
+        } else {
+            // Keeps the surviving cell column-aligned when a row has a single theme.
+            Color.clear.frame(width: w, height: h)
         }
-        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-        .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(.white.opacity(0.12)))
     }
 
     @ViewBuilder private func heroImage(for theme: EmergentTheme) -> some View {
@@ -204,5 +236,6 @@ struct SnapshotCardView: View {
             .foregroundColor(textColor).opacity(0.55)
             .lineLimit(1).minimumScaleFactor(0.6)
             .frame(maxWidth: .infinity)
+            .padding(.top, 2)
     }
 }

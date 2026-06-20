@@ -102,7 +102,8 @@ struct SnapshotCardView: View {
             identityRow
             stats
             aboutMe
-            grid                 // expands to fill remaining height inside the card
+            grid                 // fixed-size 2x2, bounded to the card interior
+            Spacer(minLength: 0) // pushes the footer to the card's bottom edge
             footer               // inside the card, like Android
         }
         .foregroundColor(textColor)
@@ -176,28 +177,24 @@ struct SnapshotCardView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    /// Deterministic 2x2 grid (non-lazy). GeometryReader gives the exact remaining height
-    /// inside the card; we size each portrait (3:4) cell to fill it and center the block
-    /// horizontally — the same maths Android's canvas renderer uses. Because the cells are
-    /// explicitly bounded to that measured space, they can never overflow the card panel.
+    /// Deterministic 2x2 grid (non-lazy, NO GeometryReader). Both cell dimensions come from
+    /// fixed layout constants, so two columns exactly fill the card's interior width — a tile
+    /// (and its left-anchored label) can never spill outside the card and get clipped. (A
+    /// GeometryReader-measured width over-reported under ImageRenderer, pushing the tiles past
+    /// the card edges and cutting off the start of every label.)
     private var grid: some View {
-        GeometryReader { geo in
-            let gap: CGFloat = 9
-            let rowCount = max(gridRows.count, 1)
-            let cellH = (geo.size.height - gap * CGFloat(rowCount - 1)) / CGFloat(rowCount)
-            let cellW = min(cellH * 3.0 / 4.0, (geo.size.width - gap) / 2)
-
-            VStack(spacing: gap) {
-                ForEach(Array(gridRows.enumerated()), id: \.offset) { _, row in
-                    HStack(spacing: gap) {
-                        tile(row.first, w: cellW, h: cellH)
-                        tile(row.count > 1 ? row[1] : nil, w: cellW, h: cellH)
-                    }
+        let gap: CGFloat = 9
+        let cellW = (baseWidth - 44 - 36 - gap) / 2   // outer .horizontal 22*2 + card .padding 18*2
+        let cellH = cellW * 4.0 / 3.0                  // portrait 3:4
+        return VStack(spacing: gap) {
+            ForEach(Array(gridRows.enumerated()), id: \.offset) { _, row in
+                HStack(spacing: gap) {
+                    tile(row.first, w: cellW, h: cellH)
+                    tile(row.count > 1 ? row[1] : nil, w: cellW, h: cellH)
                 }
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
         }
-        .frame(maxHeight: .infinity)
+        .frame(maxWidth: .infinity)
     }
 
     @ViewBuilder private func tile(_ theme: EmergentTheme?, w: CGFloat, h: CGFloat) -> some View {

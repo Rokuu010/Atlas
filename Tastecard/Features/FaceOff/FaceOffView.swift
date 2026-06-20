@@ -127,7 +127,9 @@ struct FaceOffView: View {
                 LinearGradient(colors: [.clear, .black.opacity(0.8)], startPoint: .top, endPoint: .bottom)
                 VStack(alignment: .leading, spacing: 4) {
                     Text(champ.displayName).font(AppFont.display(28, weight: .black)).foregroundColor(.white)
-                    Text(champ.tagline).font(AppFont.sans(13)).italic().foregroundColor(.white.opacity(0.85))
+                    if !champ.tagline.isEmpty {
+                        Text(champ.tagline).font(AppFont.sans(13)).italic().foregroundColor(.white.opacity(0.85))
+                    }
                 }.padding(16)
             }
             .frame(height: 320)

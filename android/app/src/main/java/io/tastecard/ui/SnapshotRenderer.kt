@@ -35,10 +35,10 @@ object SnapshotRenderer {
 
         val repo = PhotoRepository(context)
         val heroes = themes.associate { t ->
-            t.categoryId to (t.heroPhotoUri?.let { runCatching { repo.loadBitmap(Uri.parse(it), 640) }.getOrNull() })
+            t.categoryId to (t.heroPhotoUri?.let { runCatching { repo.loadBitmap(Uri.parse(it), 640, applyExif = true) }.getOrNull() })
         }
-        val profileBmp = card.profileImagePath?.let { runCatching { BitmapFactory.decodeFile(it) }.getOrNull() }
-        val bgBmp = card.customBackgroundPath?.let { runCatching { BitmapFactory.decodeFile(it) }.getOrNull() }
+        val profileBmp = card.profileImagePath?.let { runCatching { decodeOriented(it) }.getOrNull() }
+        val bgBmp = card.customBackgroundPath?.let { runCatching { decodeOriented(it) }.getOrNull() }
         val customColor = card.customBackgroundColorArgb?.let { Color(it.toInt()) }
 
         val bmp = Bitmap.createBitmap(W, H, Bitmap.Config.ARGB_8888)
@@ -163,6 +163,29 @@ object SnapshotRenderer {
         val file = File(dir, "${InputSanitizer.filenameSlug(card.displayName)}_tastecard.png")
         FileOutputStream(file).use { bmp.compress(Bitmap.CompressFormat.PNG, 100, it) }
         FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
+    }
+
+    /** Decodes a stored file, rotating it to its EXIF display orientation (decodeFile ignores it). */
+    private fun decodeOriented(path: String): Bitmap? {
+        val bmp = BitmapFactory.decodeFile(path) ?: return null
+        return try {
+            val o = androidx.exifinterface.media.ExifInterface(path)
+                .getAttributeInt(androidx.exifinterface.media.ExifInterface.TAG_ORIENTATION, 1)
+            val m = android.graphics.Matrix()
+            when (o) {
+                6 -> m.postRotate(90f)
+                3 -> m.postRotate(180f)
+                8 -> m.postRotate(270f)
+                2 -> m.postScale(-1f, 1f)
+                4 -> m.postScale(1f, -1f)
+                else -> return bmp
+            }
+            val r = Bitmap.createBitmap(bmp, 0, 0, bmp.width, bmp.height, m, true)
+            if (r !== bmp) bmp.recycle()
+            r
+        } catch (e: Exception) {
+            bmp
+        }
     }
 
     /** Shrinks the paint's text size until the string fits maxWidth (down to minSize). */

@@ -150,28 +150,44 @@ struct SnapshotCardView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
+    // Explicit, NON-lazy 2x2 grid with fixed cell sizes. LazyVGrid does not lay out
+    // reliably inside ImageRenderer (cells collapsed/overlapped in the export — the "mesh"
+    // bug); fixed frames render deterministically.
     private var grid: some View {
-        LazyVGrid(columns: [GridItem(.flexible(), spacing: 8), GridItem(.flexible(), spacing: 8)], spacing: 8) {
-            ForEach(themes) { theme in
-                ZStack(alignment: .bottomLeading) {
-                    heroImage(for: theme)
-                    LinearGradient(stops: [.init(color: .black.opacity(0.8), location: 0),
-                                           .init(color: .clear, location: 0.55)],
-                                   startPoint: .bottom, endPoint: .top)
-                    Text(theme.displayName)
-                        .font(AppFont.sans(9, weight: .bold))
-                        .foregroundColor(.white)
-                        .lineLimit(2)
-                        .padding(7)
+        let spacing: CGFloat = 8
+        // content width = baseWidth − outer padding(20·2) − inner padding(16·2)
+        let cellW = (baseWidth - 40 - 32 - spacing) / 2
+        let cellH = cellW * 4.0 / 3.0
+        return VStack(spacing: spacing) {
+            ForEach(0..<2, id: \.self) { row in
+                HStack(spacing: spacing) {
+                    ForEach(0..<2, id: \.self) { col in
+                        let idx = row * 2 + col
+                        if idx < themes.count {
+                            gridCell(themes[idx]).frame(width: cellW, height: cellH)
+                        } else {
+                            Color.clear.frame(width: cellW, height: cellH)
+                        }
+                    }
                 }
-                // .fit keeps each tile inside its grid column (the previous .fill let tiles
-                // overflow the card edges in the export). The image still fills via scaledToFill.
-                .aspectRatio(3.0 / 4.0, contentMode: .fit)
-                .frame(maxWidth: .infinity)
-                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-                .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(.white.opacity(0.12)))
             }
         }
+    }
+
+    private func gridCell(_ theme: EmergentTheme) -> some View {
+        ZStack(alignment: .bottomLeading) {
+            heroImage(for: theme)
+            LinearGradient(stops: [.init(color: .black.opacity(0.8), location: 0),
+                                   .init(color: .clear, location: 0.55)],
+                           startPoint: .bottom, endPoint: .top)
+            Text(theme.displayName)
+                .font(AppFont.sans(9, weight: .bold))
+                .foregroundColor(.white)
+                .lineLimit(2)
+                .padding(7)
+        }
+        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(.white.opacity(0.12)))
     }
 
     @ViewBuilder private func heroImage(for theme: EmergentTheme) -> some View {

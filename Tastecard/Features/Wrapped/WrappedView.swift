@@ -100,8 +100,10 @@ struct WrappedView: View {
                     Text(pct >= 1 ? String(format: "%.0f%% of your roll", pct) : "<1% of your roll")
                         .font(AppFont.sans(16, weight: .semibold)).foregroundColor(.white.opacity(0.9))
                 }
-                Text(theme.tagline).font(AppFont.sans(15)).italic()
-                    .foregroundColor(.white.opacity(0.85)).fixedSize(horizontal: false, vertical: true)
+                if !theme.tagline.isEmpty {
+                    Text(theme.tagline).font(AppFont.sans(15)).italic()
+                        .foregroundColor(.white.opacity(0.85)).fixedSize(horizontal: false, vertical: true)
+                }
             }
             .padding(28).padding(.bottom, 56)
         }

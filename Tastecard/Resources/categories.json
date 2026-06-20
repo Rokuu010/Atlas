@@ -2,9 +2,9 @@
   "version": 1,
   "categories": [
     {
-      "id": "main_character",
-      "displayName": "Main Character",
-      "tagline": "The camera loves you, and you know it.",
+      "id": "main_character_energy",
+      "displayName": "Main Character Energy",
+      "tagline": "",
       "detectionPrompts": [
         "a selfie of one person",
         "a close-up portrait of a face",
@@ -14,9 +14,9 @@
       "threshold": 0.12
     },
     {
-      "id": "your_people",
-      "displayName": "Your People",
-      "tagline": "You document the crew like a photojournalist.",
+      "id": "the_group_chat_in_person",
+      "displayName": "The Group Chat, In Person",
+      "tagline": "",
       "detectionPrompts": [
         "a group photo of friends together",
         "people socialising at a gathering",
@@ -26,9 +26,9 @@
       "threshold": 0.12
     },
     {
-      "id": "family_time",
-      "displayName": "Family Time",
-      "tagline": "The whole family, all in one frame.",
+      "id": "my_favourite_people",
+      "displayName": "My Favourite People",
+      "tagline": "",
       "detectionPrompts": [
         "a family gathering with multiple generations",
         "parents and children together",
@@ -40,7 +40,7 @@
     {
       "id": "tiny_hands",
       "displayName": "Tiny Hands",
-      "tagline": "A new favourite person arrived.",
+      "tagline": "",
       "detectionPrompts": [
         "a newborn baby",
         "a parent holding a baby",
@@ -50,9 +50,9 @@
       "threshold": 0.12
     },
     {
-      "id": "kids_at_play",
-      "displayName": "Kids at Play",
-      "tagline": "Small humans, big energy.",
+      "id": "small_humans_big_energy",
+      "displayName": "Small Humans, Big Energy",
+      "tagline": "",
       "detectionPrompts": [
         "young children playing",
         "kids at a playground",
@@ -62,9 +62,9 @@
       "threshold": 0.12
     },
     {
-      "id": "after_dark",
-      "displayName": "After Dark",
-      "tagline": "Your best stories start after 10pm.",
+      "id": "nothing_good_after_2am",
+      "displayName": "Nothing Good After 2AM",
+      "tagline": "",
       "detectionPrompts": [
         "a party at night",
         "a nightclub scene",
@@ -74,9 +74,9 @@
       "threshold": 0.12
     },
     {
-      "id": "last_round",
-      "displayName": "Last Round",
-      "tagline": "The pub is basically your second living room.",
+      "id": "last_drink_i_promise",
+      "displayName": "Last Drink, I Promise...",
+      "tagline": "",
       "detectionPrompts": [
         "a pint of beer",
         "a craft beer or pub interior",
@@ -86,9 +86,9 @@
       "threshold": 0.12
     },
     {
-      "id": "cocktail_hour",
-      "displayName": "Cocktail Hour",
-      "tagline": "Shaken, photographed, then sipped.",
+      "id": "happy_hour_hero",
+      "displayName": "Happy Hour Hero",
+      "tagline": "",
       "detectionPrompts": [
         "a cocktail in a glass",
         "a bartender making a cocktail",
@@ -98,9 +98,9 @@
       "threshold": 0.12
     },
     {
-      "id": "wine_oclock",
-      "displayName": "Wine O'Clock",
-      "tagline": "Swirl, sniff, snap.",
+      "id": "but_first_wine",
+      "displayName": "But First, Wine",
+      "tagline": "",
       "detectionPrompts": [
         "a glass of wine",
         "a bottle of wine on a table",
@@ -110,9 +110,9 @@
       "threshold": 0.12
     },
     {
-      "id": "powered_by_caffeine",
-      "displayName": "Powered by Caffeine",
-      "tagline": "Your love language is a flat white.",
+      "id": "but_first_coffee",
+      "displayName": "But First, Coffee",
+      "tagline": "",
       "detectionPrompts": [
         "a cup of coffee",
         "a latte with latte art",
@@ -122,9 +122,9 @@
       "threshold": 0.12
     },
     {
-      "id": "matcha_hour",
-      "displayName": "Matcha Hour",
-      "tagline": "Green, frothy, non-negotiable.",
+      "id": "matcha_made_in_heaven",
+      "displayName": "Matcha Made In Heaven",
+      "tagline": "",
       "detectionPrompts": [
         "a matcha latte",
         "a green matcha drink",
@@ -136,7 +136,7 @@
     {
       "id": "boba_run",
       "displayName": "Boba Run",
-      "tagline": "There's always a half-finished cup with a fat straw.",
+      "tagline": "",
       "detectionPrompts": [
         "a cup of bubble tea",
         "boba milk tea",
@@ -146,9 +146,9 @@
       "threshold": 0.12
     },
     {
-      "id": "tea_ceremony",
-      "displayName": "Tea Ceremony",
-      "tagline": "Steeped, never rushed.",
+      "id": "spill_the_tea",
+      "displayName": "Spill The Tea",
+      "tagline": "",
       "detectionPrompts": [
         "a teapot and teacup",
         "loose leaf tea being poured",
@@ -158,9 +158,21 @@
       "threshold": 0.12
     },
     {
-      "id": "eats_first_questions_later",
-      "displayName": "Eats First, Questions Later",
-      "tagline": "The food gets photographed before the first bite.",
+      "id": "just_one_energy_drink_left",
+      "displayName": "Just One Energy Drink Left",
+      "tagline": "",
+      "detectionPrompts": [
+        "a can of energy drink",
+        "a Monster or Red Bull energy drink",
+        "a fizzy soda can like coke or sprite"
+      ],
+      "rarityIndex": 0.35,
+      "threshold": 0.12
+    },
+    {
+      "id": "eat_first_questions_later",
+      "displayName": "Eat First, Questions Later",
+      "tagline": "",
       "detectionPrompts": [
         "a plated meal at a restaurant",
         "a close-up photo of food",
@@ -170,9 +182,9 @@
       "threshold": 0.12
     },
     {
-      "id": "rise_and_bake",
-      "displayName": "Rise and Bake",
-      "tagline": "Flour on the counter, joy in the oven.",
+      "id": "bake_it_till_you_make_it",
+      "displayName": "Bake It Till You Make It",
+      "tagline": "",
       "detectionPrompts": [
         "home-baked bread or cake",
         "a person baking in a kitchen",
@@ -182,9 +194,9 @@
       "threshold": 0.12
     },
     {
-      "id": "medium_rare",
-      "displayName": "Medium Rare",
-      "tagline": "You take your steak seriously.",
+      "id": "steak_your_claim",
+      "displayName": "Steak Your Claim",
+      "tagline": "",
       "detectionPrompts": [
         "a steak on a plate",
         "a grilled steak close-up",
@@ -194,9 +206,9 @@
       "threshold": 0.12
     },
     {
-      "id": "bird_and_sauce",
-      "displayName": "Bird and Sauce",
-      "tagline": "The crispier the better.",
+      "id": "certified_crispy",
+      "displayName": "Certified Crispy",
+      "tagline": "",
       "detectionPrompts": [
         "fried chicken",
         "a plate of fried chicken",
@@ -206,9 +218,9 @@
       "threshold": 0.12
     },
     {
-      "id": "glaze_days",
-      "displayName": "Glaze Days",
-      "tagline": "A dozen is a serving size.",
+      "id": "donut_worry_be_happy",
+      "displayName": "Donut Worry, Be Happy",
+      "tagline": "",
       "detectionPrompts": [
         "a box of doughnuts",
         "a glazed doughnut close-up",
@@ -218,9 +230,9 @@
       "threshold": 0.12
     },
     {
-      "id": "green_juice",
-      "displayName": "Green Juice",
-      "tagline": "Health, but make it photogenic.",
+      "id": "drink_your_greens",
+      "displayName": "Drink Your Greens",
+      "tagline": "",
       "detectionPrompts": [
         "a green smoothie or juice",
         "a smoothie bowl",
@@ -230,21 +242,9 @@
       "threshold": 0.12
     },
     {
-      "id": "slice_of_life",
-      "displayName": "Slice of Life",
-      "tagline": "Folded, never forked.",
-      "detectionPrompts": [
-        "a pizza",
-        "a slice of pizza",
-        "a whole pizza on a table"
-      ],
-      "rarityIndex": 0.18,
-      "threshold": 0.12
-    },
-    {
-      "id": "sushi_hour",
-      "displayName": "Sushi Hour",
-      "tagline": "Raw talent.",
+      "id": "its_raw_gordon_voice",
+      "displayName": "It's RAW! (Gordon Voice)",
+      "tagline": "",
       "detectionPrompts": [
         "a plate of sushi",
         "sushi rolls and sashimi",
@@ -254,9 +254,9 @@
       "threshold": 0.12
     },
     {
-      "id": "ramen_run",
-      "displayName": "Ramen Run",
-      "tagline": "Slurp now, talk later.",
+      "id": "slurp_now_talk_later",
+      "displayName": "Slurp Now, Talk Later",
+      "tagline": "",
       "detectionPrompts": [
         "a bowl of ramen",
         "a steaming bowl of noodle soup",
@@ -266,21 +266,9 @@
       "threshold": 0.12
     },
     {
-      "id": "taco_bout_it",
-      "displayName": "Taco 'Bout It",
-      "tagline": "Folded happiness.",
-      "detectionPrompts": [
-        "tacos on a plate",
-        "mexican street tacos",
-        "a taco close-up"
-      ],
-      "rarityIndex": 0.32,
-      "threshold": 0.12
-    },
-    {
-      "id": "burger_joint",
-      "displayName": "Burger Joint",
-      "tagline": "Two hands required.",
+      "id": "two_hands_required",
+      "displayName": "Two Hands Required",
+      "tagline": "",
       "detectionPrompts": [
         "a burger",
         "a cheeseburger and fries",
@@ -290,9 +278,9 @@
       "threshold": 0.12
     },
     {
-      "id": "brunch_club",
-      "displayName": "Brunch Club",
-      "tagline": "Late mornings, runny yolks.",
+      "id": "brunch_so_hard",
+      "displayName": "Brunch So Hard",
+      "tagline": "",
       "detectionPrompts": [
         "a brunch spread",
         "pancakes or waffles with toppings",
@@ -302,9 +290,9 @@
       "threshold": 0.12
     },
     {
-      "id": "sweet_tooth",
-      "displayName": "Sweet Tooth",
-      "tagline": "Dessert is a personality trait.",
+      "id": "dessert_is_a_personality",
+      "displayName": "Dessert Is A Personality",
+      "tagline": "",
       "detectionPrompts": [
         "a dessert plate",
         "a slice of cake",
@@ -314,21 +302,9 @@
       "threshold": 0.12
     },
     {
-      "id": "spice_route",
-      "displayName": "Spice Route",
-      "tagline": "The hotter the better.",
-      "detectionPrompts": [
-        "a curry dish",
-        "an indian thali",
-        "a bowl of curry with rice"
-      ],
-      "rarityIndex": 0.35,
-      "threshold": 0.12
-    },
-    {
-      "id": "cheese_and_charcuterie",
-      "displayName": "Cheese & Charcuterie",
-      "tagline": "A grazing board is a love letter.",
+      "id": "girl_dinner",
+      "displayName": "Girl Dinner",
+      "tagline": "",
       "detectionPrompts": [
         "a charcuterie board",
         "a cheese board with crackers",
@@ -338,9 +314,9 @@
       "threshold": 0.12
     },
     {
-      "id": "fire_and_smoke",
-      "displayName": "Fire and Smoke",
-      "tagline": "Low and slow is a lifestyle.",
+      "id": "low_and_slow",
+      "displayName": "Low And Slow",
+      "tagline": "",
       "detectionPrompts": [
         "a barbecue grill with food",
         "meat on a grill",
@@ -350,9 +326,9 @@
       "threshold": 0.12
     },
     {
-      "id": "street_eats",
-      "displayName": "Street Eats",
-      "tagline": "The best meals have no menu.",
+      "id": "no_menu_no_problem",
+      "displayName": "No Menu, No Problem",
+      "tagline": "",
       "detectionPrompts": [
         "street food at a market",
         "a food stall or food truck",
@@ -362,9 +338,9 @@
       "threshold": 0.12
     },
     {
-      "id": "farmers_market",
-      "displayName": "Farmers Market",
-      "tagline": "You shop with a tote and a plan.",
+      "id": "that_girl_grocery_haul",
+      "displayName": "That Girl Grocery Haul",
+      "tagline": "",
       "detectionPrompts": [
         "fresh produce at a farmers market",
         "a market stall of fruit and vegetables",
@@ -374,9 +350,9 @@
       "threshold": 0.12
     },
     {
-      "id": "home_chef",
-      "displayName": "Home Chef",
-      "tagline": "Restaurant energy, kitchen prices.",
+      "id": "restaurant_energy_kitchen_prices",
+      "displayName": "Restaurant Energy, Kitchen Prices",
+      "tagline": "",
       "detectionPrompts": [
         "a home cooked meal being prepared",
         "ingredients laid out for cooking",
@@ -386,9 +362,143 @@
       "threshold": 0.12
     },
     {
-      "id": "paws_and_claws",
-      "displayName": "Paws & Claws",
-      "tagline": "Ruled by a creature who ignores you.",
+      "id": "a_slice_of_my_italian_side",
+      "displayName": "A Slice Of My Italian Side",
+      "tagline": "",
+      "detectionPrompts": [
+        "a pizza",
+        "a plate of pasta",
+        "lasagna",
+        "risotto",
+        "tiramisu"
+      ],
+      "rarityIndex": 0.2,
+      "threshold": 0.12
+    },
+    {
+      "id": "a_slice_of_my_indian_side",
+      "displayName": "A Slice Of My Indian Side",
+      "tagline": "",
+      "detectionPrompts": [
+        "a curry dish",
+        "an indian thali",
+        "biryani rice",
+        "naan bread",
+        "samosas"
+      ],
+      "rarityIndex": 0.32,
+      "threshold": 0.12
+    },
+    {
+      "id": "a_slice_of_my_chinese_side",
+      "displayName": "A Slice Of My Chinese Side",
+      "tagline": "",
+      "detectionPrompts": [
+        "dim sum dumplings",
+        "chinese stir fry",
+        "peking duck",
+        "a hot pot meal",
+        "fried rice"
+      ],
+      "rarityIndex": 0.3,
+      "threshold": 0.12
+    },
+    {
+      "id": "a_slice_of_my_korean_side",
+      "displayName": "A Slice Of My Korean Side",
+      "tagline": "",
+      "detectionPrompts": [
+        "a korean bbq grill",
+        "bibimbap in a bowl",
+        "kimchi side dishes",
+        "tteokbokki rice cakes",
+        "korean fried chicken"
+      ],
+      "rarityIndex": 0.4,
+      "threshold": 0.12
+    },
+    {
+      "id": "a_slice_of_my_thai_side",
+      "displayName": "A Slice Of My Thai Side",
+      "tagline": "",
+      "detectionPrompts": [
+        "pad thai noodles",
+        "a thai green curry",
+        "tom yum soup",
+        "mango sticky rice"
+      ],
+      "rarityIndex": 0.42,
+      "threshold": 0.12
+    },
+    {
+      "id": "a_slice_of_my_french_side",
+      "displayName": "A Slice Of My French Side",
+      "tagline": "",
+      "detectionPrompts": [
+        "a croissant and pastries",
+        "a fresh baguette",
+        "creme brulee",
+        "escargot",
+        "a french cheese plate"
+      ],
+      "rarityIndex": 0.4,
+      "threshold": 0.12
+    },
+    {
+      "id": "a_slice_of_my_greek_side",
+      "displayName": "A Slice Of My Greek Side",
+      "tagline": "",
+      "detectionPrompts": [
+        "a greek gyro or souvlaki",
+        "a greek salad with feta",
+        "moussaka",
+        "baklava dessert"
+      ],
+      "rarityIndex": 0.45,
+      "threshold": 0.12
+    },
+    {
+      "id": "a_slice_of_my_nigerian_side",
+      "displayName": "A Slice Of My Nigerian Side",
+      "tagline": "",
+      "detectionPrompts": [
+        "a plate of jollof rice",
+        "suya grilled meat skewers",
+        "egusi soup with pounded yam",
+        "fried plantain"
+      ],
+      "rarityIndex": 0.6,
+      "threshold": 0.12
+    },
+    {
+      "id": "a_slice_of_my_egyptian_side",
+      "displayName": "A Slice Of My Egyptian Side",
+      "tagline": "",
+      "detectionPrompts": [
+        "a bowl of koshari",
+        "ful medames beans",
+        "falafel ta'ameya",
+        "molokhia stew"
+      ],
+      "rarityIndex": 0.7,
+      "threshold": 0.12
+    },
+    {
+      "id": "a_slice_of_my_austrian_side",
+      "displayName": "A Slice Of My Austrian Side",
+      "tagline": "",
+      "detectionPrompts": [
+        "a wiener schnitzel",
+        "sachertorte chocolate cake",
+        "apple strudel"
+      ],
+      "rarityIndex": 0.72,
+      "threshold": 0.12
+    },
+    {
+      "id": "cat_distribution_system",
+      "displayName": "Cat Distribution System",
+      "tagline": "",
       "detectionPrompts": [
         "a pet cat",
         "a cat close-up",
@@ -398,9 +508,9 @@
       "threshold": 0.12
     },
     {
-      "id": "good_boy",
-      "displayName": "Good Boy",
-      "tagline": "Your phone is 40% this dog.",
+      "id": "whos_a_good_boy",
+      "displayName": "Who's A Good Boy?",
+      "tagline": "",
       "detectionPrompts": [
         "a pet dog",
         "a dog close-up",
@@ -410,9 +520,9 @@
       "threshold": 0.12
     },
     {
-      "id": "feathered_friends",
-      "displayName": "Feathered Friends",
-      "tagline": "You stop for every bird.",
+      "id": "birdwatching_era",
+      "displayName": "Birdwatching Era",
+      "tagline": "",
       "detectionPrompts": [
         "a wild bird",
         "a bird perched on a branch",
@@ -424,19 +534,19 @@
     {
       "id": "tank_life",
       "displayName": "Tank Life",
-      "tagline": "A whole world behind glass.",
+      "tagline": "",
       "detectionPrompts": [
         "a home aquarium with fish",
         "tropical fish in a fish tank",
         "an aquarium close-up"
       ],
-      "rarityIndex": 0.6,
+      "rarityIndex": 0.7,
       "threshold": 0.12
     },
     {
-      "id": "scales_and_tails",
-      "displayName": "Scales & Tails",
-      "tagline": "Cold-blooded, warmly loved.",
+      "id": "cold_blooded_warmly_loved",
+      "displayName": "Cold-Blooded, Warmly Loved",
+      "tagline": "",
       "detectionPrompts": [
         "a pet reptile",
         "a lizard or snake in a terrarium",
@@ -446,9 +556,9 @@
       "threshold": 0.12
     },
     {
-      "id": "farmyard",
-      "displayName": "Farmyard",
-      "tagline": "Fresh air and animal noises.",
+      "id": "fresh_air_and_animal_noises",
+      "displayName": "Fresh Air & Animal Noises",
+      "tagline": "",
       "detectionPrompts": [
         "farm animals in a field",
         "cows sheep or chickens on a farm",
@@ -460,7 +570,7 @@
     {
       "id": "on_safari",
       "displayName": "On Safari",
-      "tagline": "You came for the wildlife.",
+      "tagline": "",
       "detectionPrompts": [
         "wild animals on a safari",
         "an elephant or lion in the wild",
@@ -470,9 +580,9 @@
       "threshold": 0.12
     },
     {
-      "id": "always_on_the_run",
-      "displayName": "Always on the Run",
-      "tagline": "Your camera roll has logged more miles than most people's cars.",
+      "id": "just_one_more_mile",
+      "displayName": "Just One More Mile",
+      "tagline": "",
       "detectionPrompts": [
         "a person running outdoors",
         "a road race or marathon",
@@ -482,9 +592,9 @@
       "threshold": 0.12
     },
     {
-      "id": "iron_paradise",
-      "displayName": "Iron Paradise",
-      "tagline": "The gym is your second home.",
+      "id": "we_go_jim",
+      "displayName": "We Go Jim",
+      "tagline": "",
       "detectionPrompts": [
         "a gym with weights",
         "a person lifting weights",
@@ -494,9 +604,9 @@
       "threshold": 0.12
     },
     {
-      "id": "flow_state",
-      "displayName": "Flow State",
-      "tagline": "Breathe in, bend, repeat.",
+      "id": "namaslay",
+      "displayName": "Namaslay",
+      "tagline": "",
       "detectionPrompts": [
         "a person doing yoga",
         "a yoga pose on a mat",
@@ -506,9 +616,9 @@
       "threshold": 0.12
     },
     {
-      "id": "on_the_pitch",
-      "displayName": "On the Pitch",
-      "tagline": "Weekends are measured in 90-minute halves.",
+      "id": "the_beautiful_game",
+      "displayName": "The Beautiful Game",
+      "tagline": "",
       "detectionPrompts": [
         "a person playing football soccer",
         "a football pitch",
@@ -518,9 +628,9 @@
       "threshold": 0.12
     },
     {
-      "id": "hoop_dreams",
-      "displayName": "Hoop Dreams",
-      "tagline": "The court is where you think clearest.",
+      "id": "ball_is_life",
+      "displayName": "Ball Is Life",
+      "tagline": "",
       "detectionPrompts": [
         "a basketball court",
         "a person playing basketball",
@@ -530,9 +640,9 @@
       "threshold": 0.12
     },
     {
-      "id": "court_vision",
-      "displayName": "Court Vision",
-      "tagline": "Love means nothing here.",
+      "id": "new_balls_please",
+      "displayName": "New Balls, Please",
+      "tagline": "",
       "detectionPrompts": [
         "a tennis court",
         "a person playing tennis",
@@ -542,9 +652,9 @@
       "threshold": 0.12
     },
     {
-      "id": "tee_time",
-      "displayName": "Tee Time",
-      "tagline": "Four hours of walking and one good shot.",
+      "id": "a_good_walk_spoiled",
+      "displayName": "A Good Walk, Spoiled",
+      "tagline": "",
       "detectionPrompts": [
         "a golf course",
         "a person golfing",
@@ -554,9 +664,9 @@
       "threshold": 0.12
     },
     {
-      "id": "two_wheels",
-      "displayName": "Two Wheels",
-      "tagline": "Happiest somewhere between point A and point B.",
+      "id": "two_wheels_one_obsession",
+      "displayName": "Two Wheels, One Obsession",
+      "tagline": "",
       "detectionPrompts": [
         "a bicycle",
         "a person cycling outdoors",
@@ -566,9 +676,9 @@
       "threshold": 0.12
     },
     {
-      "id": "board_feet",
-      "displayName": "Board Feet",
-      "tagline": "Bruises heal, the clip lives forever.",
+      "id": "pretending_to_be_tony_hawk",
+      "displayName": "Pretending To Be Tony Hawk",
+      "tagline": "",
       "detectionPrompts": [
         "a person skateboarding",
         "a skateboard at a skatepark",
@@ -578,9 +688,9 @@
       "threshold": 0.12
     },
     {
-      "id": "glove_up",
-      "displayName": "Glove Up",
-      "tagline": "Stress has nowhere to hide.",
+      "id": "float_like_a_butterfly",
+      "displayName": "Float Like A Butterfly",
+      "tagline": "",
       "detectionPrompts": [
         "a boxing gym",
         "a person with boxing gloves",
@@ -590,9 +700,9 @@
       "threshold": 0.12
     },
     {
-      "id": "powder_days",
-      "displayName": "Powder Days",
-      "tagline": "You chase the snow.",
+      "id": "snow_chaser",
+      "displayName": "Snow Chaser",
+      "tagline": "",
       "detectionPrompts": [
         "a person skiing or snowboarding",
         "a ski slope on a mountain",
@@ -602,9 +712,9 @@
       "threshold": 0.12
     },
     {
-      "id": "surfs_up",
-      "displayName": "Surf's Up",
-      "tagline": "Dawn patrol, every time.",
+      "id": "hang_ten",
+      "displayName": "Hang Ten",
+      "tagline": "",
       "detectionPrompts": [
         "a surfer riding a wave",
         "a person with a surfboard at the beach",
@@ -614,9 +724,9 @@
       "threshold": 0.12
     },
     {
-      "id": "send_it",
-      "displayName": "Send It",
-      "tagline": "Chalk up, look up, climb.",
+      "id": "just_send_it",
+      "displayName": "Just Send It",
+      "tagline": "",
       "detectionPrompts": [
         "a person rock climbing",
         "indoor bouldering at a climbing gym",
@@ -626,9 +736,9 @@
       "threshold": 0.12
     },
     {
-      "id": "gone_fishing",
-      "displayName": "Gone Fishing",
-      "tagline": "Patience with a rod.",
+      "id": "the_one_that_got_away",
+      "displayName": "The One That Got Away",
+      "tagline": "",
       "detectionPrompts": [
         "a person fishing",
         "a fishing rod by the water",
@@ -638,9 +748,9 @@
       "threshold": 0.12
     },
     {
-      "id": "fresh_ice",
-      "displayName": "Fresh Ice",
-      "tagline": "Born for the rink.",
+      "id": "built_for_the_rink",
+      "displayName": "Built For The Rink",
+      "tagline": "",
       "detectionPrompts": [
         "a person ice skating",
         "an ice rink",
@@ -650,9 +760,9 @@
       "threshold": 0.12
     },
     {
-      "id": "on_the_baize",
-      "displayName": "On the Baize",
-      "tagline": "You call your shots.",
+      "id": "pool_shark",
+      "displayName": "Pool Shark",
+      "tagline": "",
       "detectionPrompts": [
         "a pool or billiards table",
         "a person playing pool",
@@ -662,9 +772,9 @@
       "threshold": 0.12
     },
     {
-      "id": "net_result",
-      "displayName": "Net Result",
-      "tagline": "Fast hands, faster trash talk.",
+      "id": "ping_pong_bros",
+      "displayName": "Ping Pong Bros",
+      "tagline": "",
       "detectionPrompts": [
         "a table tennis game",
         "a person playing ping pong",
@@ -674,9 +784,9 @@
       "threshold": 0.12
     },
     {
-      "id": "bullseye",
-      "displayName": "Bullseye",
-      "tagline": "Steady hand, sharp eye.",
+      "id": "one_hundred_and_eighty",
+      "displayName": "One Hundred And Eighty!",
+      "tagline": "",
       "detectionPrompts": [
         "a dartboard",
         "a person throwing darts",
@@ -686,9 +796,9 @@
       "threshold": 0.12
     },
     {
-      "id": "strike_zone",
-      "displayName": "Strike Zone",
-      "tagline": "Rent the shoes, keep the pride.",
+      "id": "rented_shoes_real_pride",
+      "displayName": "Rented Shoes, Real Pride",
+      "tagline": "",
       "detectionPrompts": [
         "a bowling alley",
         "a person bowling",
@@ -698,9 +808,9 @@
       "threshold": 0.12
     },
     {
-      "id": "apex_hunter",
-      "displayName": "Apex Hunter",
-      "tagline": "You take corners for fun.",
+      "id": "hit_the_apex",
+      "displayName": "Hit The Apex",
+      "tagline": "",
       "detectionPrompts": [
         "a go-kart on a track",
         "a person karting",
@@ -711,8 +821,8 @@
     },
     {
       "id": "howzat",
-      "displayName": "Howzat",
-      "tagline": "Tea breaks and long innings.",
+      "displayName": "Howzat!",
+      "tagline": "",
       "detectionPrompts": [
         "a cricket match",
         "a person batting in cricket",
@@ -722,9 +832,9 @@
       "threshold": 0.12
     },
     {
-      "id": "summit_chaser",
-      "displayName": "Summit Chaser",
-      "tagline": "You measure a good day in elevation gained.",
+      "id": "peak_bagger",
+      "displayName": "Peak Bagger",
+      "tagline": "",
       "detectionPrompts": [
         "a mountain summit",
         "a scenic mountain peak view",
@@ -734,9 +844,9 @@
       "threshold": 0.12
     },
     {
-      "id": "trailblazer",
-      "displayName": "Trailblazer",
-      "tagline": "Boots on, signal off.",
+      "id": "boots_on_signal_off",
+      "displayName": "Boots On, Signal Off",
+      "tagline": "",
       "detectionPrompts": [
         "a person hiking on a forest trail",
         "a hiking trail through the woods",
@@ -746,9 +856,9 @@
       "threshold": 0.12
     },
     {
-      "id": "salt_in_the_air",
-      "displayName": "Salt in the Air",
-      "tagline": "You gravitate to wherever water meets sand.",
+      "id": "beach_please",
+      "displayName": "Beach Please",
+      "tagline": "",
       "detectionPrompts": [
         "a beach",
         "the ocean or sea",
@@ -758,21 +868,24 @@
       "threshold": 0.12
     },
     {
-      "id": "wheels_up",
-      "displayName": "Wheels Up",
-      "tagline": "Your phone storage is mostly other time zones.",
+      "id": "always_on_the_next_flight",
+      "displayName": "Always On The Next Flight",
+      "tagline": "",
       "detectionPrompts": [
         "a famous landmark or tourist site",
         "a travel photo in a foreign city",
-        "luggage or an airport terminal"
+        "luggage or an airport terminal",
+        "an airplane in flight",
+        "a jet aircraft on a runway",
+        "a view from an airplane window"
       ],
-      "rarityIndex": 0.3,
+      "rarityIndex": 0.4,
       "threshold": 0.12
     },
     {
-      "id": "golden_hour_loyalist",
-      "displayName": "Golden Hour Loyalist",
-      "tagline": "You stop everything when the light goes gold.",
+      "id": "chasing_golden_hour",
+      "displayName": "Chasing Golden Hour",
+      "tagline": "",
       "detectionPrompts": [
         "a sunset or sunrise",
         "a dramatic sky with clouds",
@@ -782,9 +895,9 @@
       "threshold": 0.12
     },
     {
-      "id": "last_light",
-      "displayName": "Last Light",
-      "tagline": "Stillness over water, every time.",
+      "id": "stillness_over_water",
+      "displayName": "Stillness Over Water",
+      "tagline": "",
       "detectionPrompts": [
         "a calm lake at dusk",
         "a reflection on still water",
@@ -794,9 +907,9 @@
       "threshold": 0.12
     },
     {
-      "id": "city_lights",
-      "displayName": "City Lights",
-      "tagline": "The skyline is your screensaver.",
+      "id": "concrete_jungle",
+      "displayName": "Concrete Jungle",
+      "tagline": "",
       "detectionPrompts": [
         "a city skyline at night",
         "skyscrapers lit up at night",
@@ -806,9 +919,9 @@
       "threshold": 0.12
     },
     {
-      "id": "old_town",
-      "displayName": "Old Town",
-      "tagline": "You photograph every cobblestone.",
+      "id": "cobblestone_era",
+      "displayName": "Cobblestone Era",
+      "tagline": "",
       "detectionPrompts": [
         "a historic old town street",
         "cobblestone streets and old buildings",
@@ -818,21 +931,21 @@
       "threshold": 0.12
     },
     {
-      "id": "into_the_wild",
-      "displayName": "Into the Wild",
-      "tagline": "Trees, trails and zero bars.",
+      "id": "touch_grass_pro_edition",
+      "displayName": "Touch Grass, Pro Edition",
+      "tagline": "",
       "detectionPrompts": [
         "a forest of tall trees",
         "a dense green woodland",
         "sunlight through a forest"
       ],
-      "rarityIndex": 0.4,
+      "rarityIndex": 0.7,
       "threshold": 0.12
     },
     {
-      "id": "desert_lines",
-      "displayName": "Desert Lines",
-      "tagline": "Sand, silence, and big skies.",
+      "id": "sand_silence_big_skies",
+      "displayName": "Sand, Silence, Big Skies",
+      "tagline": "",
       "detectionPrompts": [
         "a sand desert with dunes",
         "a desert landscape",
@@ -844,31 +957,31 @@
     {
       "id": "chasing_waterfalls",
       "displayName": "Chasing Waterfalls",
-      "tagline": "You'll hike for the roar.",
+      "tagline": "",
       "detectionPrompts": [
         "a waterfall",
         "a cascading waterfall in nature",
         "a person near a large waterfall"
       ],
-      "rarityIndex": 0.6,
+      "rarityIndex": 0.7,
       "threshold": 0.12
     },
     {
-      "id": "under_canvas",
-      "displayName": "Under Canvas",
-      "tagline": "Home is wherever the tent is.",
+      "id": "out_of_office_literally",
+      "displayName": "Out Of Office, Literally",
+      "tagline": "",
       "detectionPrompts": [
         "a tent at a campsite",
         "a campfire at night",
         "camping in nature"
       ],
-      "rarityIndex": 0.5,
+      "rarityIndex": 0.7,
       "threshold": 0.12
     },
     {
       "id": "holy_ground",
       "displayName": "Holy Ground",
-      "tagline": "Awe finds you in quiet places.",
+      "tagline": "",
       "detectionPrompts": [
         "a cathedral interior",
         "a church or temple",
@@ -878,9 +991,9 @@
       "threshold": 0.12
     },
     {
-      "id": "cave_dweller",
-      "displayName": "Cave Dweller",
-      "tagline": "The best parts are underground.",
+      "id": "the_best_parts_are_underground",
+      "displayName": "The Best Parts Are Underground",
+      "tagline": "",
       "detectionPrompts": [
         "inside a cave",
         "a cave with rock formations",
@@ -890,9 +1003,9 @@
       "threshold": 0.12
     },
     {
-      "id": "steam_engine",
-      "displayName": "Steam Engine",
-      "tagline": "The journey beats the destination.",
+      "id": "all_aboard",
+      "displayName": "All Aboard",
+      "tagline": "",
       "detectionPrompts": [
         "a train journey",
         "a scenic railway",
@@ -902,21 +1015,9 @@
       "threshold": 0.12
     },
     {
-      "id": "plane_spotter",
-      "displayName": "Plane Spotter",
-      "tagline": "You look up when others look down.",
-      "detectionPrompts": [
-        "an airplane in flight",
-        "a jet aircraft on a runway",
-        "a view from an airplane window"
-      ],
-      "rarityIndex": 0.6,
-      "threshold": 0.12
-    },
-    {
-      "id": "star_gazer",
-      "displayName": "Star Gazer",
-      "tagline": "You point the camera up.",
+      "id": "eyes_on_the_skies",
+      "displayName": "Eyes On The Skies",
+      "tagline": "",
       "detectionPrompts": [
         "a night sky full of stars",
         "the moon close-up",
@@ -928,9 +1029,9 @@
     {
       "id": "aurora_chaser",
       "displayName": "Aurora Chaser",
-      "tagline": "You'd freeze for that sky.",
+      "tagline": "",
       "detectionPrompts": [
-        "the northern lights",
+        "a picture of the northern lights",
         "aurora borealis in the sky",
         "green lights over a night landscape"
       ],
@@ -938,9 +1039,9 @@
       "threshold": 0.12
     },
     {
-      "id": "storm_watcher",
-      "displayName": "Storm Watcher",
-      "tagline": "You drive toward the weather.",
+      "id": "driving_toward_the_weather",
+      "displayName": "Driving Toward The Weather",
+      "tagline": "",
       "detectionPrompts": [
         "a dramatic storm cloud",
         "lightning in the sky",
@@ -950,9 +1051,9 @@
       "threshold": 0.12
     },
     {
-      "id": "in_bloom",
-      "displayName": "In Bloom",
-      "tagline": "You can't walk past a flower.",
+      "id": "in_full_bloom",
+      "displayName": "In Full Bloom",
+      "tagline": "",
       "detectionPrompts": [
         "a close-up of flowers",
         "a garden full of blooming flowers",
@@ -964,7 +1065,7 @@
     {
       "id": "petal_season",
       "displayName": "Petal Season",
-      "tagline": "Spring stops you in your tracks.",
+      "tagline": "",
       "detectionPrompts": [
         "cherry blossom trees in bloom",
         "pink blossom branches",
@@ -974,9 +1075,9 @@
       "threshold": 0.12
     },
     {
-      "id": "falling_leaves",
-      "displayName": "Falling Leaves",
-      "tagline": "You live for sweater weather.",
+      "id": "sweater_weather",
+      "displayName": "Sweater Weather",
+      "tagline": "",
       "detectionPrompts": [
         "autumn leaves in fall colours",
         "a path covered in orange leaves",
@@ -988,7 +1089,7 @@
     {
       "id": "plant_parent",
       "displayName": "Plant Parent",
-      "tagline": "Your windowsill is a jungle.",
+      "tagline": "",
       "detectionPrompts": [
         "houseplants by a window",
         "a collection of potted plants indoors",
@@ -998,21 +1099,21 @@
       "threshold": 0.12
     },
     {
-      "id": "front_row_energy",
-      "displayName": "Front Row Energy",
-      "tagline": "A graveyard of blurry stage photos and zero regrets.",
+      "id": "moshpit_energy",
+      "displayName": "Moshpit Energy",
+      "tagline": "",
       "detectionPrompts": [
         "a live concert",
         "a music festival stage with lights",
         "a crowd at a concert with stage lights"
       ],
-      "rarityIndex": 0.35,
+      "rarityIndex": 0.45,
       "threshold": 0.12
     },
     {
-      "id": "crowd_surfer",
-      "displayName": "Crowd Surfer",
-      "tagline": "Mud, lights, and zero regrets.",
+      "id": "festival_era",
+      "displayName": "Festival Era",
+      "tagline": "",
       "detectionPrompts": [
         "a music festival crowd",
         "a festival stage outdoors",
@@ -1022,9 +1123,9 @@
       "threshold": 0.12
     },
     {
-      "id": "six_strings",
-      "displayName": "Six Strings",
-      "tagline": "There's always an instrument within reach.",
+      "id": "wonderwall_anyone",
+      "displayName": "Wonderwall, Anyone?",
+      "tagline": "",
       "detectionPrompts": [
         "a person playing guitar",
         "a guitar or musical instrument",
@@ -1034,9 +1135,9 @@
       "threshold": 0.12
     },
     {
-      "id": "eighty_eight_keys",
-      "displayName": "Eighty-Eight Keys",
-      "tagline": "You'll find the nearest piano.",
+      "id": "piano_man",
+      "displayName": "Piano Man",
+      "tagline": "",
       "detectionPrompts": [
         "a person playing a piano",
         "a grand piano",
@@ -1046,9 +1147,9 @@
       "threshold": 0.12
     },
     {
-      "id": "keep_the_beat",
-      "displayName": "Keep the Beat",
-      "tagline": "Loud is the point.",
+      "id": "not_quite_my_tempo",
+      "displayName": "Not Quite My Tempo",
+      "tagline": "",
       "detectionPrompts": [
         "a drum kit",
         "a person playing drums",
@@ -1058,9 +1159,9 @@
       "threshold": 0.12
     },
     {
-      "id": "on_the_decks",
-      "displayName": "On the Decks",
-      "tagline": "You read the room through a mixer.",
+      "id": "on_the_ones_and_twos",
+      "displayName": "On The Ones And Twos",
+      "tagline": "",
       "detectionPrompts": [
         "a dj with turntables",
         "a dj mixing at a party",
@@ -1070,9 +1171,9 @@
       "threshold": 0.12
     },
     {
-      "id": "crate_digger",
-      "displayName": "Crate Digger",
-      "tagline": "The hiss is part of the charm.",
+      "id": "vinyl_era",
+      "displayName": "Vinyl Era",
+      "tagline": "",
       "detectionPrompts": [
         "a vinyl record",
         "a record player turntable",
@@ -1082,9 +1183,9 @@
       "threshold": 0.12
     },
     {
-      "id": "mic_night",
-      "displayName": "Mic Night",
-      "tagline": "You'll grab the mic without being asked.",
+      "id": "grab_the_mic",
+      "displayName": "Grab The Mic",
+      "tagline": "",
       "detectionPrompts": [
         "a karaoke night",
         "a person singing into a microphone",
@@ -1094,9 +1195,9 @@
       "threshold": 0.12
     },
     {
-      "id": "curtain_call",
-      "displayName": "Curtain Call",
-      "tagline": "You clap loudest at the bows.",
+      "id": "theatre_kid_forever",
+      "displayName": "Theatre Kid Forever",
+      "tagline": "",
       "detectionPrompts": [
         "a theatre stage with performers",
         "a theatre auditorium",
@@ -1106,9 +1207,9 @@
       "threshold": 0.12
     },
     {
-      "id": "one_more_chapter",
-      "displayName": "One More Chapter",
-      "tagline": "There's always a current read in the camera roll.",
+      "id": "booktok_made_me_buy_it",
+      "displayName": "BookTok Made Me Buy It",
+      "tagline": "",
       "detectionPrompts": [
         "a book or books",
         "a bookshelf or bookstore",
@@ -1118,9 +1219,9 @@
       "threshold": 0.12
     },
     {
-      "id": "sawdust",
-      "displayName": "Sawdust",
-      "tagline": "Measure twice, post once.",
+      "id": "measure_twice_post_once",
+      "displayName": "Measure Twice, Post Once",
+      "tagline": "",
       "detectionPrompts": [
         "a woodworking project",
         "tools and timber in a workshop",
@@ -1130,9 +1231,9 @@
       "threshold": 0.12
     },
     {
-      "id": "brick_by_brick",
-      "displayName": "Brick by Brick",
-      "tagline": "Some builds take all weekend, and that's the point.",
+      "id": "everything_is_awesome",
+      "displayName": "Everything Is Awesome",
+      "tagline": "",
       "detectionPrompts": [
         "a lego build",
         "a model kit",
@@ -1142,9 +1243,9 @@
       "threshold": 0.12
     },
     {
-      "id": "your_move",
-      "displayName": "Your Move",
-      "tagline": "The board comes out and the night's decided.",
+      "id": "en_passant_holy_hell",
+      "displayName": "En Passant! (Holy Hell)",
+      "tagline": "",
       "detectionPrompts": [
         "a chessboard",
         "people playing a board game",
@@ -1154,9 +1255,9 @@
       "threshold": 0.12
     },
     {
-      "id": "in_character",
-      "displayName": "In Character",
-      "tagline": "You don't dress up, you transform.",
+      "id": "not_a_costume_a_calling",
+      "displayName": "Not A Costume, A Calling",
+      "tagline": "",
       "detectionPrompts": [
         "a person in a cosplay costume",
         "a costume at a convention",
@@ -1166,9 +1267,9 @@
       "threshold": 0.12
     },
     {
-      "id": "brush_strokes",
-      "displayName": "Brush Strokes",
-      "tagline": "Blank canvas, full heart.",
+      "id": "blank_canvas_full_heart",
+      "displayName": "Blank Canvas, Full Heart",
+      "tagline": "",
       "detectionPrompts": [
         "a painting on a canvas",
         "a person painting with a brush",
@@ -1178,9 +1279,9 @@
       "threshold": 0.12
     },
     {
-      "id": "sketchbook",
-      "displayName": "Sketchbook",
-      "tagline": "You think in pencil.",
+      "id": "sketchbook_era",
+      "displayName": "Sketchbook Era",
+      "tagline": "",
       "detectionPrompts": [
         "a pencil sketch in a sketchbook",
         "a person drawing",
@@ -1190,9 +1291,9 @@
       "threshold": 0.12
     },
     {
-      "id": "throwing_clay",
-      "displayName": "Throwing Clay",
-      "tagline": "Mud, wheel, magic.",
+      "id": "unleash_your_inner_ghost",
+      "displayName": "Unleash Your Inner Ghost",
+      "tagline": "",
       "detectionPrompts": [
         "a pottery wheel with clay",
         "handmade ceramic pottery",
@@ -1202,9 +1303,9 @@
       "threshold": 0.12
     },
     {
-      "id": "yarn_over",
-      "displayName": "Yarn Over",
-      "tagline": "Slow stitches, warm results.",
+      "id": "hooked_on_yarn",
+      "displayName": "Hooked On Yarn",
+      "tagline": "",
       "detectionPrompts": [
         "knitting or crochet with yarn",
         "a ball of yarn and needles",
@@ -1214,9 +1315,9 @@
       "threshold": 0.12
     },
     {
-      "id": "inked_skin",
-      "displayName": "Inked Skin",
-      "tagline": "A gallery you carry with you.",
+      "id": "a_gallery_you_carry",
+      "displayName": "A Gallery You Carry",
+      "tagline": "",
       "detectionPrompts": [
         "a tattoo on skin",
         "a tattoo artist working",
@@ -1226,9 +1327,9 @@
       "threshold": 0.12
     },
     {
-      "id": "puzzle_mode",
-      "displayName": "Puzzle Mode",
-      "tagline": "A thousand pieces, zero rush.",
+      "id": "a_thousand_pieces_zero_rush",
+      "displayName": "A Thousand Pieces, Zero Rush",
+      "tagline": "",
       "detectionPrompts": [
         "a jigsaw puzzle in progress",
         "puzzle pieces on a table",
@@ -1238,21 +1339,21 @@
       "threshold": 0.12
     },
     {
-      "id": "inked_pages",
-      "displayName": "Inked Pages",
-      "tagline": "A shelf you'll never thin out.",
+      "id": "stan_lee_approved",
+      "displayName": "Stan Lee Approved",
+      "tagline": "",
       "detectionPrompts": [
         "a comic book",
-        "manga pages",
+        "a marvel or dc comics character",
         "a comic book collection"
       ],
       "rarityIndex": 0.45,
       "threshold": 0.12
     },
     {
-      "id": "anime_heart",
-      "displayName": "Anime Heart",
-      "tagline": "A whole world in every frame.",
+      "id": "otaku",
+      "displayName": "Otaku!",
+      "tagline": "",
       "detectionPrompts": [
         "anime artwork",
         "an anime figure or poster",
@@ -1262,9 +1363,9 @@
       "threshold": 0.12
     },
     {
-      "id": "deck_builder",
-      "displayName": "Deck Builder",
-      "tagline": "The collection is never finished.",
+      "id": "mint_condition_only",
+      "displayName": "Mint Condition Only",
+      "tagline": "",
       "detectionPrompts": [
         "trading cards",
         "a trading card collection",
@@ -1274,9 +1375,9 @@
       "threshold": 0.12
     },
     {
-      "id": "tech_forward",
-      "displayName": "Tech Forward",
-      "tagline": "First in line, every launch.",
+      "id": "day_one_pre_order",
+      "displayName": "Day One Pre-Order",
+      "tagline": "",
       "detectionPrompts": [
         "new tech gadgets",
         "a new smartphone or device",
@@ -1288,19 +1389,20 @@
     {
       "id": "battlestation",
       "displayName": "Battlestation",
-      "tagline": "Cable management is self-care.",
+      "tagline": "",
       "detectionPrompts": [
         "a computer desk setup with rgb lighting",
         "a gaming pc battlestation",
-        "multiple monitors on a desk"
+        "multiple monitors on a desk",
+        "a modern pc setup"
       ],
       "rarityIndex": 0.5,
       "threshold": 0.12
     },
     {
-      "id": "player_one",
-      "displayName": "Player One",
-      "tagline": "Your screenshots have a high score.",
+      "id": "one_more_game_i_swear",
+      "displayName": "One More Game, I Swear",
+      "tagline": "",
       "detectionPrompts": [
         "a video game screenshot",
         "a gaming console setup",
@@ -1310,9 +1412,9 @@
       "threshold": 0.12
     },
     {
-      "id": "arcade_days",
-      "displayName": "Arcade Days",
-      "tagline": "Insert coin to continue.",
+      "id": "insert_coin_to_continue",
+      "displayName": "Insert Coin To Continue",
+      "tagline": "",
       "detectionPrompts": [
         "a retro arcade machine",
         "an arcade with game cabinets",
@@ -1322,9 +1424,9 @@
       "threshold": 0.12
     },
     {
-      "id": "drone_pilot",
-      "displayName": "Drone Pilot",
-      "tagline": "You see the world from above.",
+      "id": "gods_eye_view",
+      "displayName": "God's Eye View",
+      "tagline": "",
       "detectionPrompts": [
         "a drone aircraft",
         "an aerial drone photo from above",
@@ -1334,9 +1436,9 @@
       "threshold": 0.12
     },
     {
-      "id": "lens_hunter",
-      "displayName": "Lens Hunter",
-      "tagline": "Digital's fine, but film has soul.",
+      "id": "film_is_not_dead",
+      "displayName": "Film Is Not Dead",
+      "tagline": "",
       "detectionPrompts": [
         "a film camera",
         "a vintage analog camera",
@@ -1346,9 +1448,9 @@
       "threshold": 0.12
     },
     {
-      "id": "through_the_viewfinder",
-      "displayName": "Through the Viewfinder",
-      "tagline": "You frame the world for a living, or might as well.",
+      "id": "behind_the_lens",
+      "displayName": "Behind The Lens",
+      "tagline": "",
       "detectionPrompts": [
         "a dslr or mirrorless camera",
         "a photographer with a camera and lens",
@@ -1358,9 +1460,9 @@
       "threshold": 0.12
     },
     {
-      "id": "maker_mode",
-      "displayName": "Maker Mode",
-      "tagline": "Layer by layer, idea to object.",
+      "id": "layer_by_layer",
+      "displayName": "Layer By Layer",
+      "tagline": "",
       "detectionPrompts": [
         "a 3d printer printing an object",
         "a 3d printed model",
@@ -1370,9 +1472,9 @@
       "threshold": 0.12
     },
     {
-      "id": "beat_face",
-      "displayName": "Beat Face",
-      "tagline": "Your face is the canvas.",
+      "id": "the_beat_is_beating",
+      "displayName": "The Beat Is Beating",
+      "tagline": "",
       "detectionPrompts": [
         "a makeup look close-up",
         "makeup products and brushes",
@@ -1382,9 +1484,9 @@
       "threshold": 0.12
     },
     {
-      "id": "skin_first",
-      "displayName": "Skin First",
-      "tagline": "Glow is a long game and you're winning it.",
+      "id": "glazed_donut_skin",
+      "displayName": "Glazed Donut Skin",
+      "tagline": "",
       "detectionPrompts": [
         "skincare products on a shelf",
         "a facial skincare routine",
@@ -1396,7 +1498,7 @@
     {
       "id": "nailed_it",
       "displayName": "Nailed It",
-      "tagline": "Your hands are the accessory.",
+      "tagline": "",
       "detectionPrompts": [
         "a manicure with nail art",
         "painted fingernails close-up",
@@ -1408,7 +1510,7 @@
     {
       "id": "fit_check",
       "displayName": "Fit Check",
-      "tagline": "The mirror gets a daily feature.",
+      "tagline": "",
       "detectionPrompts": [
         "an outfit of the day mirror photo",
         "a fashion outfit laid out",
@@ -1418,9 +1520,9 @@
       "threshold": 0.12
     },
     {
-      "id": "thrift_finds",
-      "displayName": "Thrift Finds",
-      "tagline": "One person's closet clear-out is your jackpot.",
+      "id": "one_mans_trash",
+      "displayName": "One Man's Trash",
+      "tagline": "",
       "detectionPrompts": [
         "vintage clothing on a rack",
         "a thrift or vintage clothing store",
@@ -1430,9 +1532,9 @@
       "threshold": 0.12
     },
     {
-      "id": "sole_collector",
-      "displayName": "Sole Collector",
-      "tagline": "Boxes you'll never throw away.",
+      "id": "dont_crease_em",
+      "displayName": "Don't Crease 'Em",
+      "tagline": "",
       "detectionPrompts": [
         "sneakers or trainers",
         "a collection of shoes on display",
@@ -1442,9 +1544,9 @@
       "threshold": 0.12
     },
     {
-      "id": "layered_up",
-      "displayName": "Layered Up",
-      "tagline": "The right piece finishes everything.",
+      "id": "drip_check",
+      "displayName": "Drip Check",
+      "tagline": "",
       "detectionPrompts": [
         "jewellery close-up",
         "rings and necklaces",
@@ -1454,9 +1556,9 @@
       "threshold": 0.12
     },
     {
-      "id": "time_piece",
-      "displayName": "Time Piece",
-      "tagline": "It's never just about telling the time.",
+      "id": "its_not_about_the_time",
+      "displayName": "It's Not About The Time",
+      "tagline": "",
       "detectionPrompts": [
         "a wristwatch close-up",
         "a luxury watch",
@@ -1466,9 +1568,9 @@
       "threshold": 0.12
     },
     {
-      "id": "signature_scent",
-      "displayName": "Signature Scent",
-      "tagline": "You're remembered by how you smelled.",
+      "id": "smell_goods",
+      "displayName": "Smell Goods",
+      "tagline": "",
       "detectionPrompts": [
         "a perfume bottle",
         "a fragrance collection",
@@ -1478,9 +1580,9 @@
       "threshold": 0.12
     },
     {
-      "id": "designer_eye",
-      "displayName": "Designer Eye",
-      "tagline": "You know quality on sight.",
+      "id": "if_you_know_you_know",
+      "displayName": "If You Know, You Know",
+      "tagline": "",
       "detectionPrompts": [
         "a designer handbag",
         "a luxury fashion item",
@@ -1490,9 +1592,9 @@
       "threshold": 0.12
     },
     {
-      "id": "engine_heart",
-      "displayName": "Engine Heart",
-      "tagline": "You'd photograph a parked car you'll never own.",
+      "id": "car_guy_things",
+      "displayName": "Car Guy Things",
+      "tagline": "",
       "detectionPrompts": [
         "a car",
         "a sports car or classic car",
@@ -1502,9 +1604,9 @@
       "threshold": 0.12
     },
     {
-      "id": "full_throttle",
-      "displayName": "Full Throttle",
-      "tagline": "Two wheels, one obsession.",
+      "id": "loud_pipes_save_lives",
+      "displayName": "Loud Pipes Save Lives",
+      "tagline": "",
       "detectionPrompts": [
         "a motorcycle",
         "a person riding a motorbike",
@@ -1516,7 +1618,7 @@
     {
       "id": "sea_legs",
       "displayName": "Sea Legs",
-      "tagline": "Land is fine, but the water's better.",
+      "tagline": "",
       "detectionPrompts": [
         "a sailboat or yacht",
         "a person on a boat",
@@ -1526,9 +1628,9 @@
       "threshold": 0.12
     },
     {
-      "id": "in_the_saddle",
-      "displayName": "In the Saddle",
-      "tagline": "Reins in hand, head clear.",
+      "id": "horse_girl_era",
+      "displayName": "Horse Girl Era",
+      "tagline": "",
       "detectionPrompts": [
         "a person horse riding",
         "a horse and rider",
@@ -1538,9 +1640,9 @@
       "threshold": 0.12
     },
     {
-      "id": "up_and_away",
-      "displayName": "Up and Away",
-      "tagline": "The best views need a basket.",
+      "id": "up_up_and_away",
+      "displayName": "Up, Up And Away",
+      "tagline": "",
       "detectionPrompts": [
         "a hot air balloon in the sky",
         "colourful hot air balloons",
@@ -1550,9 +1652,9 @@
       "threshold": 0.12
     },
     {
-      "id": "off_the_grid",
-      "displayName": "Off the Grid",
-      "tagline": "Pavement is optional.",
+      "id": "pavement_is_optional",
+      "displayName": "Pavement Is Optional",
+      "tagline": "",
       "detectionPrompts": [
         "an off-road 4x4 vehicle",
         "a truck on a dirt trail",
@@ -1562,9 +1664,9 @@
       "threshold": 0.12
     },
     {
-      "id": "make_a_wish",
-      "displayName": "Make a Wish",
-      "tagline": "Cake, candles, chaos.",
+      "id": "cake_candles_chaos",
+      "displayName": "Cake, Candles, Chaos",
+      "tagline": "",
       "detectionPrompts": [
         "a birthday cake with candles",
         "a birthday party with balloons",
@@ -1575,8 +1677,8 @@
     },
     {
       "id": "she_said_yes",
-      "displayName": "She Said Yes",
-      "tagline": "A yes worth photographing forever.",
+      "displayName": "She Said Yes!",
+      "tagline": "",
       "detectionPrompts": [
         "an engagement ring on a hand",
         "a proposal moment",
@@ -1588,7 +1690,7 @@
     {
       "id": "just_married",
       "displayName": "Just Married",
-      "tagline": "The big day, frame by frame.",
+      "tagline": "",
       "detectionPrompts": [
         "a wedding ceremony",
         "a bride and groom",
@@ -1598,9 +1700,9 @@
       "threshold": 0.12
     },
     {
-      "id": "cap_and_gown",
-      "displayName": "Cap and Gown",
-      "tagline": "You earned the tassel.",
+      "id": "we_did_it",
+      "displayName": "We Did It!",
+      "tagline": "",
       "detectionPrompts": [
         "a graduation ceremony",
         "a person in a graduation cap and gown",
@@ -1610,9 +1712,9 @@
       "threshold": 0.12
     },
     {
-      "id": "lights_up",
-      "displayName": "Lights Up",
-      "tagline": "You'll stand in the cold for a good display.",
+      "id": "oohs_and_aahs",
+      "displayName": "Oohs And Aahs",
+      "tagline": "",
       "detectionPrompts": [
         "a fireworks display",
         "fireworks in the night sky",
@@ -1622,9 +1724,9 @@
       "threshold": 0.12
     },
     {
-      "id": "seasons_greetings",
-      "displayName": "Season's Greetings",
-      "tagline": "You go all out in December.",
+      "id": "most_wonderful_time",
+      "displayName": "Most Wonderful Time",
+      "tagline": "",
       "detectionPrompts": [
         "christmas decorations and lights",
         "a decorated christmas tree",
@@ -1636,7 +1738,7 @@
     {
       "id": "spooky_season",
       "displayName": "Spooky Season",
-      "tagline": "October is a whole personality.",
+      "tagline": "",
       "detectionPrompts": [
         "halloween decorations and pumpkins",
         "a carved jack-o-lantern",
@@ -1647,8 +1749,8 @@
     },
     {
       "id": "all_the_fun_of_the_fair",
-      "displayName": "All the Fun of the Fair",
-      "tagline": "Lights, rides, and questionable hot dogs.",
+      "displayName": "All The Fun Of The Fair",
+      "tagline": "",
       "detectionPrompts": [
         "a funfair or carnival at night",
         "a ferris wheel lit up",
@@ -1658,9 +1760,9 @@
       "threshold": 0.12
     },
     {
-      "id": "cosy_corner",
-      "displayName": "Cosy Corner",
-      "tagline": "Soft light, softer evenings.",
+      "id": "soft_life",
+      "displayName": "Soft Life",
+      "tagline": "",
       "detectionPrompts": [
         "a cosy home interior",
         "a styled living room",
@@ -1670,9 +1772,9 @@
       "threshold": 0.12
     },
     {
-      "id": "candle_glow",
-      "displayName": "Candle Glow",
-      "tagline": "Ambience is a hobby.",
+      "id": "ambience_is_a_hobby",
+      "displayName": "Ambience Is A Hobby",
+      "tagline": "",
       "detectionPrompts": [
         "lit candles",
         "a candle close-up with flame",
@@ -1682,9 +1784,9 @@
       "threshold": 0.12
     },
     {
-      "id": "fresh_cut",
-      "displayName": "Fresh Cut",
-      "tagline": "There are always flowers on the table.",
+      "id": "always_fresh_flowers",
+      "displayName": "Always Fresh Flowers",
+      "tagline": "",
       "detectionPrompts": [
         "a bouquet of flowers in a vase",
         "fresh cut flowers on a table",
@@ -1694,9 +1796,9 @@
       "threshold": 0.12
     },
     {
-      "id": "new_keys",
-      "displayName": "New Keys",
-      "tagline": "New keys, new chapter.",
+      "id": "we_got_the_keys",
+      "displayName": "We Got The Keys!",
+      "tagline": "",
       "detectionPrompts": [
         "a set of house keys held up",
         "an empty new home interior",
@@ -1706,9 +1808,9 @@
       "threshold": 0.12
     },
     {
-      "id": "sunday_reset",
-      "displayName": "Sunday Reset",
-      "tagline": "Tidy space, tidy mind.",
+      "id": "tidy_space_tidy_mind",
+      "displayName": "Tidy Space, Tidy Mind",
+      "tagline": "",
       "detectionPrompts": [
         "an organised and tidy room",
         "a clean minimalist home",
@@ -1718,9 +1820,9 @@
       "threshold": 0.12
     },
     {
-      "id": "page_and_pour",
-      "displayName": "Page and Pour",
-      "tagline": "Productive, but make it aesthetic.",
+      "id": "locked_in",
+      "displayName": "Locked In",
+      "tagline": "",
       "detectionPrompts": [
         "a laptop at a cafe",
         "a notebook and coffee on a desk",
@@ -1730,9 +1832,9 @@
       "threshold": 0.12
     },
     {
-      "id": "study_grind",
-      "displayName": "Study Grind",
-      "tagline": "Deadlines build character.",
+      "id": "library_arc",
+      "displayName": "Library Arc",
+      "tagline": "",
       "detectionPrompts": [
         "a study desk with books and notes",
         "a person studying",
@@ -1742,9 +1844,9 @@
       "threshold": 0.12
     },
     {
-      "id": "nine_to_five",
-      "displayName": "Nine to Five",
-      "tagline": "The grind, documented.",
+      "id": "corporate_era",
+      "displayName": "Corporate Era",
+      "tagline": "",
       "detectionPrompts": [
         "an office workspace",
         "a business meeting",
@@ -1754,9 +1856,9 @@
       "threshold": 0.12
     },
     {
-      "id": "self_care_sunday",
-      "displayName": "Self Care Sunday",
-      "tagline": "You booked the appointment.",
+      "id": "self_care_is_mandatory",
+      "displayName": "Self Care Is Mandatory",
+      "tagline": "",
       "detectionPrompts": [
         "a spa setting",
         "a relaxing spa treatment",
@@ -1768,7 +1870,7 @@
     {
       "id": "dear_diary",
       "displayName": "Dear Diary",
-      "tagline": "Your thoughts deserve nice paper.",
+      "tagline": "",
       "detectionPrompts": [
         "a bullet journal or planner",
         "a handwritten journal with pens",
@@ -1778,33 +1880,34 @@
       "threshold": 0.12
     },
     {
-      "id": "caption_material",
-      "displayName": "Caption Material",
-      "tagline": "Half your gallery is things you meant to send.",
+      "id": "one_piece_is_peak",
+      "displayName": "One Piece Is Peak",
+      "tagline": "",
       "detectionPrompts": [
-        "a meme screenshot",
-        "a funny social media post screenshot",
-        "a screenshot of a funny message"
+        "a screenshot of a manga panel",
+        "a screenshot of a manga",
+        "a photo of a manga",
+        "manga page or manhwa page"
       ],
-      "rarityIndex": 0.3,
+      "rarityIndex": 0.4,
       "threshold": 0.12
     },
     {
-      "id": "note_to_self",
-      "displayName": "Note to Self",
-      "tagline": "Your camera is basically your memory.",
+      "id": "academic_weapon",
+      "displayName": "Academic Weapon",
+      "tagline": "",
       "detectionPrompts": [
         "a photo of handwritten notes",
         "a photo of a whiteboard with notes",
-        "a screenshot of a note or list"
+        "a screenshot of academic content"
       ],
       "rarityIndex": 0.3,
       "threshold": 0.12
     },
     {
-      "id": "big_screen",
-      "displayName": "Big Screen",
-      "tagline": "Trailers are non-negotiable.",
+      "id": "trailers_are_non_negotiable",
+      "displayName": "Trailers Are Non-Negotiable",
+      "tagline": "",
       "detectionPrompts": [
         "a cinema screen and seats",
         "popcorn at the movies",
@@ -1814,9 +1917,9 @@
       "threshold": 0.12
     },
     {
-      "id": "ice_cream_dreams",
-      "displayName": "Ice Cream Dreams",
-      "tagline": "Summer in a cone.",
+      "id": "summer_in_a_cone",
+      "displayName": "Summer In A Cone",
+      "tagline": "",
       "detectionPrompts": [
         "an ice cream cone",
         "gelato in a cup",
@@ -1828,7 +1931,7 @@
     {
       "id": "gardeners_world",
       "displayName": "Gardener's World",
-      "tagline": "Dirt under the nails, joy in the rows.",
+      "tagline": "",
       "detectionPrompts": [
         "a vegetable garden",
         "a person gardening outdoors",
@@ -1838,9 +1941,9 @@
       "threshold": 0.12
     },
     {
-      "id": "high_roller",
-      "displayName": "High Roller",
-      "tagline": "The felt is calling.",
+      "id": "the_house_always_wins",
+      "displayName": "The House Always Wins",
+      "tagline": "",
       "detectionPrompts": [
         "a casino table with chips",
         "playing poker with cards and chips",

@@ -49,17 +49,46 @@ class PhotoRepository(private val context: Context) {
         return out
     }
 
-    /** Downsampled bitmap suitable for inference; null if it can't be decoded. */
-    fun loadBitmap(uri: Uri, targetSide: Int): Bitmap? = try {
+    /**
+     * Downsampled bitmap suitable for inference / rendering; null if it can't be decoded.
+     * `applyExif` rotates the bitmap to its display orientation — BitmapFactory ignores EXIF,
+     * so without it a portrait photo with a rotation tag draws sideways (the export bug).
+     * Coil already handles EXIF for the live grid, so inference leaves it off for speed.
+     */
+    fun loadBitmap(uri: Uri, targetSide: Int, applyExif: Boolean = false): Bitmap? = try {
         val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
         context.contentResolver.openInputStream(uri)?.use { BitmapFactory.decodeStream(it, null, bounds) }
         var sample = 1
         val maxDim = maxOf(bounds.outWidth, bounds.outHeight)
         while (maxDim > 0 && maxDim / sample > targetSide * 2) sample *= 2
         val opts = BitmapFactory.Options().apply { inSampleSize = sample }
-        context.contentResolver.openInputStream(uri)?.use { BitmapFactory.decodeStream(it, null, opts) }
+        val bmp = context.contentResolver.openInputStream(uri)?.use { BitmapFactory.decodeStream(it, null, opts) }
+        if (applyExif && bmp != null) orientedToExif(uri, bmp) else bmp
     } catch (e: Exception) {
         null
+    }
+
+    /** Rotates/flips a bitmap to match its EXIF orientation tag (no-op when already upright). */
+    private fun orientedToExif(uri: Uri, bmp: Bitmap): Bitmap = try {
+        val orientation = context.contentResolver.openInputStream(uri)?.use { stream ->
+            ExifInterface(stream).getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
+        } ?: ExifInterface.ORIENTATION_NORMAL
+        val m = android.graphics.Matrix()
+        when (orientation) {
+            ExifInterface.ORIENTATION_ROTATE_90 -> m.postRotate(90f)
+            ExifInterface.ORIENTATION_ROTATE_180 -> m.postRotate(180f)
+            ExifInterface.ORIENTATION_ROTATE_270 -> m.postRotate(270f)
+            ExifInterface.ORIENTATION_FLIP_HORIZONTAL -> m.postScale(-1f, 1f)
+            ExifInterface.ORIENTATION_FLIP_VERTICAL -> m.postScale(1f, -1f)
+            ExifInterface.ORIENTATION_TRANSPOSE -> { m.postRotate(90f); m.postScale(-1f, 1f) }
+            ExifInterface.ORIENTATION_TRANSVERSE -> { m.postRotate(270f); m.postScale(-1f, 1f) }
+            else -> return bmp
+        }
+        val rotated = Bitmap.createBitmap(bmp, 0, 0, bmp.width, bmp.height, m, true)
+        if (rotated !== bmp) bmp.recycle()
+        rotated
+    } catch (e: Exception) {
+        bmp
     }
 
     /** Coarse GPS from EXIF (requires ACCESS_MEDIA_LOCATION). Null when absent. */

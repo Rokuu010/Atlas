@@ -50,7 +50,7 @@ final class AnalysisEngine {
         var heroInspectTopN = 8
         var defaultDisplayName = "My Tastecard"
         /// Cap analysis to the most recent N photos to bound scan time on large libraries.
-        var maxScanPhotos = 3000
+        var maxScanPhotos = 2000
         /// Relative margin above the photo's mean affinity (bias-corrected, scale-invariant).
         var relativeMargin: Float = 0.05
         /// Absolute cosine floor — a match must also clear this, removing weak noise matches.

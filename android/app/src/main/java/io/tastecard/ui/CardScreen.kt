@@ -314,7 +314,9 @@ private fun DetailContent(theme: EmergentTheme, vm: TastecardViewModel, onClose:
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Mono("ATLAS INSIGHT", Color.White.copy(alpha = 0.6f), 10, letter = 1.0)
-            Text(theme.tagline, color = Color.White.copy(alpha = 0.9f), fontSize = 15.sp)
+            if (theme.tagline.isNotEmpty()) {
+                Text(theme.tagline, color = Color.White.copy(alpha = 0.9f), fontSize = 15.sp)
+            }
             Text("Seen across ${theme.photoCount} of your photos.", color = Color.White.copy(alpha = 0.55f), fontSize = 12.sp)
         }
         // "Change photo" — pick from this category's own matches (pick-from-matches parity).

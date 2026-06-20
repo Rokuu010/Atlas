@@ -58,10 +58,12 @@ struct MiniThemeCardView: View {
                     Text("· \(theme.photoCount) photos")
                         .font(AppFont.sans(12)).foregroundColor(.white.opacity(0.7))
                 }
-                Text(theme.tagline)
-                    .font(AppFont.sans(14)).italic()
-                    .foregroundColor(.white.opacity(0.85))
-                    .fixedSize(horizontal: false, vertical: true)
+                if !theme.tagline.isEmpty {
+                    Text(theme.tagline)
+                        .font(AppFont.sans(14)).italic()
+                        .foregroundColor(.white.opacity(0.85))
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
             .padding(24)
 

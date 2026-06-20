@@ -41,7 +41,7 @@ def slugify(name: str) -> str:
 def build() -> list[dict]:
     out: list[dict] = []
     seen: set[str] = set()
-    for name, tagline, rarity, prompts in CATEGORIES:
+    for name, rarity, prompts in CATEGORIES:
         cid = slugify(name)
         if not cid:
             raise ValueError(f"empty id for category {name!r}")
@@ -56,7 +56,9 @@ def build() -> list[dict]:
         out.append({
             "id": cid,
             "displayName": name.strip(),
-            "tagline": tagline.strip(),
+            # Taglines were removed from the app; keep the key (empty) so the bundled
+            # schema and both platforms' parsers stay unchanged.
+            "tagline": "",
             "detectionPrompts": prompts,
             "rarityIndex": round(float(rarity), 2),
             "threshold": DEFAULT_THRESHOLD,

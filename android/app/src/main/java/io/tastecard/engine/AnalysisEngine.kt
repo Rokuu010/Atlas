@@ -38,12 +38,15 @@ class AnalysisEngine(
     private val absoluteFloor: Float = 0.06f,
     private val backupPool: Int = 10,
     private val heroInspectTopN: Int = 8,
+    // Cap analysis to the most recent N photos to bound scan time on large libraries.
+    private val maxScanPhotos: Int = 2000,
 ) {
     private data class Aligned(val category: Category, val vector: FloatArray)
     private data class HeroCandidate(val uri: String, val similarity: Float, val screenshot: Boolean, val pixelCount: Int)
 
     suspend fun run(onProgress: (Int, Int) -> Unit): EngineResult = withContext(Dispatchers.Default) {
-        val metas = photos.queryImages()
+        // queryImages() is newest-first, so take() keeps the most recent maxScanPhotos.
+        val metas = photos.queryImages().take(maxScanPhotos)
         val total = metas.size
         if (total < config.globalMinimumPhotos) {
             return@withContext EngineResult.WarmingUp(WarmingReason.NOT_ENOUGH_PHOTOS, total)

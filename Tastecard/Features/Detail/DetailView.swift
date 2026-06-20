@@ -131,10 +131,12 @@ struct DetailView: View {
                 Text("ATLAS INSIGHT")
                     .font(AppFont.mono(10)).tracking(1).foregroundColor(.white.opacity(0.6))
             }
-            Text(theme.tagline)
-                .font(AppFont.sans(15))
-                .foregroundColor(.white.opacity(0.9))
-                .fixedSize(horizontal: false, vertical: true)
+            if !theme.tagline.isEmpty {
+                Text(theme.tagline)
+                    .font(AppFont.sans(15))
+                    .foregroundColor(.white.opacity(0.9))
+                    .fixedSize(horizontal: false, vertical: true)
+            }
             Text(shareOfRoll)
                 .font(AppFont.sans(12))
                 .foregroundColor(.white.opacity(0.55))

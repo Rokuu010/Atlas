@@ -146,11 +146,16 @@ object SnapshotRenderer {
             } else {
                 canvas.drawRect(r, Paint().apply { color = android.graphics.Color.parseColor("#5B5680") })
             }
-            canvas.drawRect(RectF(r.left, r.bottom - 90f, r.right, r.bottom),
+            canvas.drawRect(RectF(r.left, r.bottom - 120f, r.right, r.bottom),
                 Paint().apply { color = android.graphics.Color.BLACK; alpha = 150 })
             canvas.restore()
-            canvas.drawText(ellipsize(t.displayName, 18), left + 18f, r.bottom - 26f,
-                paint(26f, bold = true, color = android.graphics.Color.WHITE))
+            // Theme name — wrapped to 2 lines so longer names aren't hard-truncated.
+            val labelP = paint(26f, bold = true, color = android.graphics.Color.WHITE)
+            var ly = r.bottom - 26f
+            for (line in wrap(t.displayName, cw - 36f, labelP, 2).reversed()) {
+                canvas.drawText(line, left + 18f, ly, labelP)
+                ly -= 32f
+            }
         }
 
         // Footer.
@@ -244,8 +249,6 @@ object SnapshotRenderer {
             android.graphics.Rect(0, yy, bw, yy + h)
         }
     }
-
-    private fun ellipsize(s: String, max: Int): String = if (s.length <= max) s else s.take(max - 1) + "…"
 }
 
 fun Int.abbreviated(): String =

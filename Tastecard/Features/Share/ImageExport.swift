@@ -2,8 +2,8 @@
 //  ImageExport.swift
 //  Tastecard
 //
-//  Shared helpers for the engagement features: render any SwiftUI view to a shareable PNG
-//  (ImageRenderer, @3x) and pre-resolve theme hero images so renders/slides aren't blank.
+//  Renders any SwiftUI view to a shareable PNG (ImageRenderer, @3x). Used by the
+//  single-theme share card (MiniThemeCard).
 //
 
 import SwiftUI
@@ -29,20 +29,5 @@ enum ImageExport {
         } catch {
             return nil
         }
-    }
-}
-
-/// Pre-resolves theme hero images (keyed by PHAsset local id) for slides/renders.
-enum ThemeImageLoader {
-    static func heroes(for themes: [EmergentTheme], targetSide: CGFloat = 900) async -> [String: UIImage] {
-        let loader = PhotoAssetLoader()
-        var dict: [String: UIImage] = [:]
-        for theme in themes {
-            guard let id = theme.heroPhotoLocalId, dict[id] == nil else { continue }
-            if let img = await loader.requestImage(forIdentifier: id, targetSide: targetSide) {
-                dict[id] = img
-            }
-        }
-        return dict
     }
 }

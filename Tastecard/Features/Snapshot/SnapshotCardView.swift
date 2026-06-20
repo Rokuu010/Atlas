@@ -208,10 +208,14 @@ struct SnapshotCardView: View {
                                        .init(color: .clear, location: 0.55)],
                                startPoint: .bottom, endPoint: .top)
                 Text(theme.displayName)
-                    .font(AppFont.sans(9, weight: .bold))
+                    .font(AppFont.sans(10, weight: .bold))
                     .foregroundColor(.white)
                     .lineLimit(2)
-                    .padding(7)
+                    .minimumScaleFactor(0.5)
+                    .multilineTextAlignment(.leading)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 8)
+                    .padding(.bottom, 8)
             }
             .frame(width: w, height: h)
             .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))

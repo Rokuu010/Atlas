@@ -295,6 +295,9 @@ private fun ThemeCard(theme: EmergentTheme, highlighted: Boolean, modifier: Modi
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun DetailContent(theme: EmergentTheme, vm: TastecardViewModel, onClose: () -> Unit) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    var sharing by remember { mutableStateOf(false) }
     Column(Modifier.fillMaxWidth().padding(20.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Mono(theme.displayName.uppercase(), Color.White.copy(alpha = 0.9f), 12, FontWeight.Bold, 2.0)
         Box(Modifier.fillMaxWidth().aspectRatio(4f / 3f).clip(RoundedCornerShape(16.dp))) {
@@ -318,6 +321,28 @@ private fun DetailContent(theme: EmergentTheme, vm: TastecardViewModel, onClose:
                 Text(theme.tagline, color = Color.White.copy(alpha = 0.9f), fontSize = 15.sp)
             }
             Text("Seen across ${theme.photoCount} of your photos.", color = Color.White.copy(alpha = 0.55f), fontSize = 12.sp)
+        }
+        // Share this single theme as its own punchy 9:16 card (mirrors iOS "Share this theme").
+        Box(
+            Modifier.fillMaxWidth()
+                .clip(RoundedCornerShape(16.dp))
+                .background(Brush.horizontalGradient(listOf(Color(0xFFEC4899), Color(0xFFE11D48))))
+                .clickable(enabled = !sharing) {
+                    val card = vm.card ?: return@clickable
+                    sharing = true
+                    scope.launch {
+                        val uri = MiniThemeRenderer.renderToShareUri(context, card, theme)
+                        sharing = false
+                        if (uri != null) shareImage(context, uri) else vm.showToast("Couldn't create the image")
+                    }
+                }
+                .padding(vertical = 14.dp),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(
+                if (sharing) "PREPARING…" else "SHARE THIS THEME",
+                color = Color.White, fontWeight = FontWeight.Black, fontSize = 13.sp, letterSpacing = 1.sp,
+            )
         }
         // "Change photo" — pick from this category's own matches (pick-from-matches parity).
         if (theme.candidatePhotoUris.size > 1) {

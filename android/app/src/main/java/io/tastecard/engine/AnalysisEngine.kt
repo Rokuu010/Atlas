@@ -2,6 +2,7 @@ package io.tastecard.engine
 
 import android.net.Uri
 import io.tastecard.model.Category
+import io.tastecard.model.CategoryStat
 import io.tastecard.model.EmergentTheme
 import io.tastecard.model.Tastecard
 import kotlinx.coroutines.Dispatchers
@@ -38,8 +39,9 @@ class AnalysisEngine(
     private val absoluteFloor: Float = 0.06f,
     private val backupPool: Int = 10,
     private val heroInspectTopN: Int = 8,
-    // Cap analysis to the most recent N photos to bound scan time on large libraries.
-    private val maxScanPhotos: Int = 2000,
+    // Cap analysis to the most recent N photos. 500 ≈ a typical 1–2 month camera roll,
+    // keeping the scan fast and the surfaced themes the ones the user relates to most.
+    private val maxScanPhotos: Int = 500,
 ) {
     private data class Aligned(val category: Category, val vector: FloatArray)
     private data class HeroCandidate(val uri: String, val similarity: Float, val screenshot: Boolean, val pixelCount: Int)
@@ -61,7 +63,6 @@ class AnalysisEngine(
 
         val counts = HashMap<String, Int>()
         val scores = HashMap<String, Double>()
-        val softScores = HashMap<String, Double>()
         val softCounts = HashMap<String, Int>()
         val heroes = HashMap<String, MutableList<HeroCandidate>>()
         val coords = ArrayList<GeoClustering.Coordinate>()
@@ -105,7 +106,6 @@ class AnalysisEngine(
                 if (delta <= 0f) continue
                 val cid = aligned[i].category.id
 
-                softScores[cid] = (softScores[cid] ?: 0.0) + delta.toDouble()
                 softCounts[cid] = (softCounts[cid] ?: 0) + 1
 
                 val list = heroes.getOrPut(cid) { mutableListOf() }
@@ -129,10 +129,6 @@ class AnalysisEngine(
         val byId = categories.associateBy { it.id }
 
         fun photoCount(id: String): Int = counts[id] ?: softCounts[id] ?: 1
-        fun backups(excluding: List<String>): List<String> =
-            aligned.map { it.category.id }
-                .filter { it !in excluding && (softScores[it] ?: 0.0) > 0.0 }
-                .sortedByDescending { softScores[it] ?: 0.0 }
 
         val tallies = aligned.mapNotNull { a ->
             val count = counts[a.category.id] ?: 0
@@ -141,29 +137,17 @@ class AnalysisEngine(
 
         when (val outcome = ThemeSelector.select(tallies, processed, config)) {
             is SelectionOutcome.Themes -> {
-                val primary = outcome.themes.map { it.categoryId }
-                val pool = primary + backups(primary).take(backupPool)
+                // outcome.themes is EVERY qualifying category (most-photos-first). assembleThemes
+                // shows the strongest 3–6 with a usable hero; the full list becomes the shadow set.
+                val pool = outcome.themes.map { it.categoryId }
                 val themes = assembleThemes(pool, byId, heroes, ::photoCount)
-                EngineResult.Card(assemble(themes, processed, placesCount))
-            }
-            is SelectionOutcome.WarmingUp -> when (outcome.reason) {
-                WarmingReason.NOT_ENOUGH_PHOTOS ->
-                    EngineResult.WarmingUp(WarmingReason.NOT_ENOUGH_PHOTOS, processed)
-
-                WarmingReason.NOT_ENOUGH_EVIDENCE -> {
-                    val ranked = backups(emptyList())
-                    if (processed < config.relativeFallbackMinPhotos || ranked.size < config.minThemes) {
-                        EngineResult.WarmingUp(WarmingReason.NOT_ENOUGH_EVIDENCE, processed)
-                    } else {
-                        val themes = assembleThemes(ranked, byId, heroes, ::photoCount)
-                        if (themes.size < config.minThemes) {
-                            EngineResult.WarmingUp(WarmingReason.NOT_ENOUGH_EVIDENCE, processed)
-                        } else {
-                            EngineResult.Card(assemble(themes, processed, placesCount))
-                        }
-                    }
+                val allCategories = outcome.themes.mapNotNull { t ->
+                    byId[t.categoryId]?.let { c -> CategoryStat(c.id, c.displayName, t.count, c.rarityIndex) }
                 }
+                EngineResult.Card(assemble(themes, allCategories, processed, placesCount))
             }
+            is SelectionOutcome.WarmingUp ->
+                EngineResult.WarmingUp(outcome.reason, processed)
         }
     }
 
@@ -232,7 +216,12 @@ class AnalysisEngine(
         return bestId
     }
 
-    private fun assemble(themes: List<EmergentTheme>, processed: Int, places: Int): Tastecard =
+    private fun assemble(
+        themes: List<EmergentTheme>,
+        allCategories: List<CategoryStat>,
+        processed: Int,
+        places: Int,
+    ): Tastecard =
         Tastecard.assemble(
             displayName = defaultDisplayName,
             themeIndex = (0 until 16).random(),
@@ -240,6 +229,7 @@ class AnalysisEngine(
             photosAnalysed = processed,
             placesCount = places,
             themes = themes,
+            allCategories = allCategories,
         )
 
     private fun ranked(candidates: List<HeroCandidate>): List<HeroCandidate> =

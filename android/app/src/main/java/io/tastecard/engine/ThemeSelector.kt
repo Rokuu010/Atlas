@@ -1,13 +1,14 @@
 package io.tastecard.engine
 
-import kotlin.math.ceil
-
 /**
- * Emergent-theme selection (§4) — a faithful Kotlin port of the iOS ThemeSelector,
- * including the recalibrated evidence floor and the large-library fallback.
+ * Emergent-theme selection (§4) — a faithful Kotlin port of the iOS ThemeSelector.
  *
  *   count: photos that cleared this category's threshold (multi-label)
  *   score: strength = sum of margins (similarity - threshold), for ranking
+ *
+ * A category only "exists" once detected in at least [SelectionConfig.minPhotosPerCategory]
+ * photos. select() returns EVERY qualifying category (most-photos-first); the engine displays
+ * the strongest 3–6 and saves the rest as the shadow set.
  */
 data class CategoryTally(val categoryId: String, val count: Int, val score: Double)
 
@@ -22,16 +23,9 @@ data class SelectionConfig(
     val globalMinimumPhotos: Int = 50,
     val minThemes: Int = 3,
     val maxThemes: Int = 6,
-    val guaranteedTopSlots: Int = 3,
-    val floorBase: Int = 3,
-    val floorPerThousand: Double = 3.0,
-    val relativeFallbackMinPhotos: Int = 400,
-) {
-    fun evidenceFloor(librarySize: Int): Int {
-        val scaled = ceil(librarySize / 1000.0 * floorPerThousand).toInt()
-        return maxOf(floorBase, scaled)
-    }
-}
+    // User spec: a category needs 10 photos to count (both displayed + shadow).
+    val minPhotosPerCategory: Int = 10,
+)
 
 object ThemeSelector {
     fun select(
@@ -43,36 +37,19 @@ object ThemeSelector {
             return SelectionOutcome.WarmingUp(WarmingReason.NOT_ENOUGH_PHOTOS)
         }
 
-        val floor = config.evidenceFloor(photosAnalysed)
-
-        val ranked = tallies
-            .filter { it.count > 0 }
+        // Most-photos-first, with strength then id as deterministic tie-breakers.
+        val qualified = tallies
+            .filter { it.count >= config.minPhotosPerCategory }
             .sortedWith(
-                compareByDescending<CategoryTally> { it.score }
-                    .thenByDescending { it.count }
+                compareByDescending<CategoryTally> { it.count }
+                    .thenByDescending { it.score }
                     .thenBy { it.categoryId }
             )
 
-        val clearedCount = ranked.count { it.count >= floor }
-
-        // Primary path: enough categories clear the evidence floor.
-        if (clearedCount >= config.minThemes) {
-            val selected = mutableListOf<CategoryTally>()
-            for ((rank, candidate) in ranked.withIndex()) {
-                if (selected.size >= config.maxThemes) break
-                val guaranteedByStrength = rank < config.guaranteedTopSlots
-                if (candidate.count >= floor || guaranteedByStrength) {
-                    selected.add(candidate)
-                }
-            }
-            return SelectionOutcome.Themes(selected)
+        return if (qualified.size >= config.minThemes) {
+            SelectionOutcome.Themes(qualified)
+        } else {
+            SelectionOutcome.WarmingUp(WarmingReason.NOT_ENOUGH_EVIDENCE)
         }
-
-        // Safety net: a non-sparse library should never be left with nothing.
-        if (photosAnalysed >= config.relativeFallbackMinPhotos && ranked.size >= config.minThemes) {
-            return SelectionOutcome.Themes(ranked.take(config.maxThemes))
-        }
-
-        return SelectionOutcome.WarmingUp(WarmingReason.NOT_ENOUGH_EVIDENCE)
     }
 }

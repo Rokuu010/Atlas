@@ -12,6 +12,20 @@ data class Category(
     val rarityTier: RarityTier get() = Rarity.tier(rarityIndex)
 }
 
+/**
+ * Lightweight per-category summary saved for EVERY found category that reached the
+ * per-category photo floor — not just the 3–6 displayed. Powers the "rarest find" insight
+ * and future cross-user category comparison. Derived, non-identifying data only.
+ */
+data class CategoryStat(
+    val categoryId: String,
+    val displayName: String,
+    val photoCount: Int,
+    val rarityIndex: Double,
+) {
+    val rarityTier: RarityTier get() = Rarity.tier(rarityIndex)
+}
+
 /** A theme that emerged from the gallery (§5) — display + persistence data only. */
 data class EmergentTheme(
     val categoryId: String,
@@ -37,6 +51,9 @@ data class Tastecard(
     var cardRarity: RarityTier,
     val themes: List<EmergentTheme>,
     val createdAt: Long,
+    /** Every found category (>= the photo floor), including ones too small to display.
+     *  Saved for the rarest-find insight + future cross-user comparison. */
+    val allCategories: List<CategoryStat> = emptyList(),
     // Appearance + profile (mirrors iOS). All optional/backward-compatible.
     var aboutMe: String? = null,
     var profileImagePath: String? = null,        // local file path of the profile picture
@@ -52,6 +69,9 @@ data class Tastecard(
 
     /** The card headline: "<name>'s Tastecard"; the default name is shown as-is. */
     val cardTitle: String get() = title(displayName)
+
+    /** Highest-rarity found category (even if too small to be an emergent theme). */
+    val rarestCategory: CategoryStat? get() = allCategories.maxByOrNull { it.rarityIndex }
 
     companion object {
         private val ALPHABET = "23456789ABCDEFGHJKMNPQRSTVWXYZ"
@@ -74,6 +94,7 @@ data class Tastecard(
             photosAnalysed: Int,
             placesCount: Int,
             themes: List<EmergentTheme>,
+            allCategories: List<CategoryStat> = emptyList(),
         ): Tastecard = Tastecard(
             id = makeLocalCode(),
             displayName = displayName,
@@ -85,6 +106,7 @@ data class Tastecard(
             cardRarity = Rarity.cardRarity(themes.map { it.rarityTier }),
             themes = themes,
             createdAt = System.currentTimeMillis(),
+            allCategories = allCategories,
         )
     }
 }

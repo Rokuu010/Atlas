@@ -9,6 +9,20 @@
 
 import Foundation
 
+/// A lightweight per-category summary saved for EVERY category found in the scan that reached
+/// the per-category photo floor — not just the 3–6 displayed as emergent themes. Powers the
+/// "rarest find" insight and future cross-user category comparison. Derived, non-identifying:
+/// no pixels, no coordinates.
+struct CategoryStat: Codable, Equatable, Identifiable {
+    let categoryId: String
+    let displayName: String
+    let photoCount: Int
+    let rarityIndex: Double
+
+    var id: String { categoryId }
+    var rarityTier: RarityTier { Rarity.tier(forIndex: rarityIndex) }
+}
+
 struct Tastecard: Codable, Equatable {
     /// Local, per-device short code (§11 decision b) — e.g. "#A7F3". NOT a global serial.
     let id: String
@@ -35,8 +49,12 @@ struct Tastecard: Codable, Equatable {
     let placesCount: Int
 
     var cardRarity: RarityTier
-    /// Length 3–6 (enforced by ThemeSelector).
+    /// Length 3–6 (enforced by ThemeSelector) — the themes shown on the card.
     var themes: [EmergentTheme]
+    /// EVERY found category (>= the per-category photo floor), including ones too small to be
+    /// displayed. Saved for the "rarest find" insight + future cross-user comparison.
+    /// Optional so cards saved by older builds still decode.
+    var allCategories: [CategoryStat]?
     let createdAt: Date
 
     /// The serial as displayed (e.g. "#A7F3").
@@ -59,6 +77,15 @@ struct Tastecard: Codable, Equatable {
 
     /// Effective glass tint multiplier with a safe default for cards saved before this field.
     var glassTintMultiplier: Double { glassOpacity ?? 1.0 }
+
+    /// All found categories (shadow set + displayed), safe-defaulted for older cards.
+    var foundCategories: [CategoryStat] { allCategories ?? [] }
+
+    /// The highest-rarity category found in the scan — even if it had too few photos to be
+    /// displayed as an emergent theme (e.g. a rare "Aurora Chaser" with just 10 shots).
+    var rarestCategory: CategoryStat? {
+        foundCategories.max { $0.rarityIndex < $1.rarityIndex }
+    }
 }
 
 extension Tastecard {
@@ -77,6 +104,7 @@ extension Tastecard {
          photosAnalysed: Int,
          placesCount: Int,
          themes: [EmergentTheme],
+         allCategories: [CategoryStat]? = nil,
          id: String = Tastecard.makeLocalCode(),
          createdAt: Date = Date()) {
         self.id = id
@@ -93,6 +121,7 @@ extension Tastecard {
         self.placesCount = placesCount
         self.cardRarity = Rarity.cardRarity(from: themes.map(\.rarityTier))
         self.themes = themes
+        self.allCategories = allCategories
         self.createdAt = createdAt
     }
 }

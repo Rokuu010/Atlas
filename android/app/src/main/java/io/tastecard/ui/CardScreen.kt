@@ -160,6 +160,15 @@ fun CardScreen(vm: TastecardViewModel, card: Tastecard) {
                 // About Me (replaces the category chips).
                 AboutMeSection(card.aboutMe, ink) { showSettings = true }
 
+                // Rarest find — the highest-rarity found category, even when it had too few
+                // photos to be displayed as an emergent theme (from the saved shadow set).
+                card.rarestCategory?.let { rarest ->
+                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                        Mono("RAREST FIND · ${rarest.displayName.uppercase()}", ink.copy(alpha = 0.75f), 10, FontWeight.Bold, 0.5)
+                        RarityBadge(rarest.rarityTier, 10)
+                    }
+                }
+
                 Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                     Mono("EMERGENT THEMES", ink.copy(alpha = 0.9f), 13, FontWeight.Bold, 3.0)
                 }

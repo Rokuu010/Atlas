@@ -116,6 +116,7 @@ struct CardView: View {
             identity
             stats
             aboutMe
+            rarestFind
             emergentHeader
             grid
             shareButton
@@ -232,6 +233,23 @@ struct CardView: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    /// The highest-rarity category found in the scan — surfaced even when it had too few
+    /// photos to become a displayed theme (powered by the saved shadow set).
+    @ViewBuilder private var rarestFind: some View {
+        if let rarest = card.rarestCategory {
+            HStack(spacing: 6) {
+                Image(systemName: "sparkle").font(.system(size: 10))
+                Text("Rarest find · \(rarest.displayName)")
+                    .font(AppFont.mono(10, weight: .bold)).tracking(0.5)
+                    .lineLimit(1).minimumScaleFactor(0.7)
+                RarityBadge(tier: rarest.rarityTier, fontSize: 9)
+                Spacer(minLength: 0)
+            }
+            .foregroundColor(vm.textColor.opacity(0.75))
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
     }
 
     private var emergentHeader: some View {

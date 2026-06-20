@@ -14,8 +14,8 @@
       "threshold": 0.12
     },
     {
-      "id": "the_group_chat_in_person",
-      "displayName": "The Group Chat, In Person",
+      "id": "my_circle",
+      "displayName": "My Circle",
       "tagline": "",
       "detectionPrompts": [
         "a group photo of friends together",
@@ -86,8 +86,8 @@
       "threshold": 0.12
     },
     {
-      "id": "happy_hour_hero",
-      "displayName": "Happy Hour Hero",
+      "id": "happy_hours",
+      "displayName": "Happy Hours",
       "tagline": "",
       "detectionPrompts": [
         "a cocktail in a glass",
@@ -158,8 +158,8 @@
       "threshold": 0.12
     },
     {
-      "id": "just_one_energy_drink_left",
-      "displayName": "Just One Energy Drink Left",
+      "id": "high_on_energy",
+      "displayName": "High On Energy",
       "tagline": "",
       "detectionPrompts": [
         "a can of energy drink",
@@ -242,8 +242,8 @@
       "threshold": 0.12
     },
     {
-      "id": "its_raw_gordon_voice",
-      "displayName": "It's RAW! (Gordon Voice)",
+      "id": "always_raw_the_sushi_i_mean",
+      "displayName": "Always Raw! The Sushi I Mean",
       "tagline": "",
       "detectionPrompts": [
         "a plate of sushi",
@@ -302,8 +302,8 @@
       "threshold": 0.12
     },
     {
-      "id": "girl_dinner",
-      "displayName": "Girl Dinner",
+      "id": "girls_dinner",
+      "displayName": "Girl's Dinner",
       "tagline": "",
       "detectionPrompts": [
         "a charcuterie board",
@@ -314,8 +314,8 @@
       "threshold": 0.12
     },
     {
-      "id": "low_and_slow",
-      "displayName": "Low And Slow",
+      "id": "i_like_it_grilled",
+      "displayName": "I Like It Grilled!",
       "tagline": "",
       "detectionPrompts": [
         "a barbecue grill with food",
@@ -338,8 +338,8 @@
       "threshold": 0.12
     },
     {
-      "id": "that_girl_grocery_haul",
-      "displayName": "That Girl Grocery Haul",
+      "id": "a_refined_market_taste",
+      "displayName": "A Refined Market Taste",
       "tagline": "",
       "detectionPrompts": [
         "fresh produce at a farmers market",
@@ -532,8 +532,8 @@
       "threshold": 0.12
     },
     {
-      "id": "tank_life",
-      "displayName": "Tank Life",
+      "id": "my_definition_of_an_ocean",
+      "displayName": "My Definition Of An Ocean",
       "tagline": "",
       "detectionPrompts": [
         "a home aquarium with fish",
@@ -568,8 +568,8 @@
       "threshold": 0.12
     },
     {
-      "id": "on_safari",
-      "displayName": "On Safari",
+      "id": "creatures_you_see_only_on_discorvery_channel",
+      "displayName": "Creatures You See Only On Discorvery Channel",
       "tagline": "",
       "detectionPrompts": [
         "wild animals on a safari",
@@ -592,20 +592,21 @@
       "threshold": 0.12
     },
     {
-      "id": "we_go_jim",
-      "displayName": "We Go Jim",
+      "id": "chasing_the_pump",
+      "displayName": "Chasing The Pump",
       "tagline": "",
       "detectionPrompts": [
         "a gym with weights",
         "a person lifting weights",
-        "dumbbells and gym equipment"
+        "dumbbells and gym equipment",
+        "a person flexing a muscle"
       ],
       "rarityIndex": 0.3,
       "threshold": 0.12
     },
     {
-      "id": "namaslay",
-      "displayName": "Namaslay",
+      "id": "namaste",
+      "displayName": "Namaste!",
       "tagline": "",
       "detectionPrompts": [
         "a person doing yoga",
@@ -628,8 +629,8 @@
       "threshold": 0.12
     },
     {
-      "id": "ball_is_life",
-      "displayName": "Ball Is Life",
+      "id": "emergency_hoop_shorts_always_on_me",
+      "displayName": "Emergency Hoop Shorts Always On Me",
       "tagline": "",
       "detectionPrompts": [
         "a basketball court",
@@ -772,8 +773,8 @@
       "threshold": 0.12
     },
     {
-      "id": "ping_pong_bros",
-      "displayName": "Ping Pong Bros",
+      "id": "ping_and_pong",
+      "displayName": "Ping & Pong",
       "tagline": "",
       "detectionPrompts": [
         "a table tennis game",
@@ -832,8 +833,8 @@
       "threshold": 0.12
     },
     {
-      "id": "peak_bagger",
-      "displayName": "Peak Bagger",
+      "id": "summit_chaser",
+      "displayName": "Summit Chaser",
       "tagline": "",
       "detectionPrompts": [
         "a mountain summit",
@@ -844,8 +845,8 @@
       "threshold": 0.12
     },
     {
-      "id": "boots_on_signal_off",
-      "displayName": "Boots On, Signal Off",
+      "id": "trailblazer",
+      "displayName": "Trailblazer",
       "tagline": "",
       "detectionPrompts": [
         "a person hiking on a forest trail",
@@ -856,8 +857,8 @@
       "threshold": 0.12
     },
     {
-      "id": "beach_please",
-      "displayName": "Beach Please",
+      "id": "too_much_salt_in_the_air",
+      "displayName": "Too Much Salt In the Air",
       "tagline": "",
       "detectionPrompts": [
         "a beach",
@@ -883,8 +884,8 @@
       "threshold": 0.12
     },
     {
-      "id": "chasing_golden_hour",
-      "displayName": "Chasing Golden Hour",
+      "id": "golden_hour_loyalist",
+      "displayName": "Golden Hour Loyalist",
       "tagline": "",
       "detectionPrompts": [
         "a sunset or sunrise",
@@ -931,8 +932,8 @@
       "threshold": 0.12
     },
     {
-      "id": "touch_grass_pro_edition",
-      "displayName": "Touch Grass, Pro Edition",
+      "id": "tarzan_on_weekends",
+      "displayName": "Tarzan, On Weekends",
       "tagline": "",
       "detectionPrompts": [
         "a forest of tall trees",
@@ -967,8 +968,8 @@
       "threshold": 0.12
     },
     {
-      "id": "out_of_office_literally",
-      "displayName": "Out Of Office, Literally",
+      "id": "home_is_wherever_this_tent_is",
+      "displayName": "Home Is Wherever This Tent Is",
       "tagline": "",
       "detectionPrompts": [
         "a tent at a campsite",
@@ -1087,8 +1088,8 @@
       "threshold": 0.12
     },
     {
-      "id": "plant_parent",
-      "displayName": "Plant Parent",
+      "id": "green_thumb",
+      "displayName": "Green Thumb",
       "tagline": "",
       "detectionPrompts": [
         "houseplants by a window",
@@ -1111,8 +1112,8 @@
       "threshold": 0.12
     },
     {
-      "id": "festival_era",
-      "displayName": "Festival Era",
+      "id": "mud_lights_music_and_zero_regrets",
+      "displayName": "Mud, Lights, Music And Zero Regrets",
       "tagline": "",
       "detectionPrompts": [
         "a music festival crowd",
@@ -1159,8 +1160,8 @@
       "threshold": 0.12
     },
     {
-      "id": "on_the_ones_and_twos",
-      "displayName": "On The Ones And Twos",
+      "id": "in_the_kitchen_cooking",
+      "displayName": "In The Kitchen, Cooking",
       "tagline": "",
       "detectionPrompts": [
         "a dj with turntables",
@@ -1171,8 +1172,8 @@
       "threshold": 0.12
     },
     {
-      "id": "vinyl_era",
-      "displayName": "Vinyl Era",
+      "id": "old_school",
+      "displayName": "Old School",
       "tagline": "",
       "detectionPrompts": [
         "a vinyl record",
@@ -1195,8 +1196,8 @@
       "threshold": 0.12
     },
     {
-      "id": "theatre_kid_forever",
-      "displayName": "Theatre Kid Forever",
+      "id": "curtain_call",
+      "displayName": "Curtain Call",
       "tagline": "",
       "detectionPrompts": [
         "a theatre stage with performers",
@@ -1207,8 +1208,8 @@
       "threshold": 0.12
     },
     {
-      "id": "booktok_made_me_buy_it",
-      "displayName": "BookTok Made Me Buy It",
+      "id": "one_more_chapter",
+      "displayName": "One More Chapter",
       "tagline": "",
       "detectionPrompts": [
         "a book or books",
@@ -1243,8 +1244,8 @@
       "threshold": 0.12
     },
     {
-      "id": "en_passant_holy_hell",
-      "displayName": "En Passant! (Holy Hell)",
+      "id": "en_passant",
+      "displayName": "En Passant!",
       "tagline": "",
       "detectionPrompts": [
         "a chessboard",
@@ -1279,8 +1280,8 @@
       "threshold": 0.12
     },
     {
-      "id": "sketchbook_era",
-      "displayName": "Sketchbook Era",
+      "id": "brush_strokes",
+      "displayName": "Brush Strokes",
       "tagline": "",
       "detectionPrompts": [
         "a pencil sketch in a sketchbook",
@@ -1291,8 +1292,8 @@
       "threshold": 0.12
     },
     {
-      "id": "unleash_your_inner_ghost",
-      "displayName": "Unleash Your Inner Ghost",
+      "id": "mud_wheel_magic",
+      "displayName": "Mud, Wheel, Magic!",
       "tagline": "",
       "detectionPrompts": [
         "a pottery wheel with clay",
@@ -1303,8 +1304,8 @@
       "threshold": 0.12
     },
     {
-      "id": "hooked_on_yarn",
-      "displayName": "Hooked On Yarn",
+      "id": "slow_stitches_warm_results",
+      "displayName": "Slow Stitches, Warm Results",
       "tagline": "",
       "detectionPrompts": [
         "knitting or crochet with yarn",
@@ -1315,8 +1316,8 @@
       "threshold": 0.12
     },
     {
-      "id": "a_gallery_you_carry",
-      "displayName": "A Gallery You Carry",
+      "id": "inked_skin",
+      "displayName": "Inked Skin",
       "tagline": "",
       "detectionPrompts": [
         "a tattoo on skin",
@@ -1508,8 +1509,8 @@
       "threshold": 0.12
     },
     {
-      "id": "fit_check",
-      "displayName": "Fit Check",
+      "id": "always_fitted_up",
+      "displayName": "Always Fitted Up",
       "tagline": "",
       "detectionPrompts": [
         "an outfit of the day mirror photo",
@@ -1544,8 +1545,8 @@
       "threshold": 0.12
     },
     {
-      "id": "drip_check",
-      "displayName": "Drip Check",
+      "id": "layered_up",
+      "displayName": "Layered Up",
       "tagline": "",
       "detectionPrompts": [
         "jewellery close-up",
@@ -1568,8 +1569,8 @@
       "threshold": 0.12
     },
     {
-      "id": "smell_goods",
-      "displayName": "Smell Goods",
+      "id": "signature_scents",
+      "displayName": "Signature Scents",
       "tagline": "",
       "detectionPrompts": [
         "a perfume bottle",
@@ -1616,8 +1617,8 @@
       "threshold": 0.12
     },
     {
-      "id": "sea_legs",
-      "displayName": "Sea Legs",
+      "id": "pirate_on_weekends",
+      "displayName": "Pirate On Weekends",
       "tagline": "",
       "detectionPrompts": [
         "a sailboat or yacht",
@@ -1640,8 +1641,8 @@
       "threshold": 0.12
     },
     {
-      "id": "up_up_and_away",
-      "displayName": "Up, Up And Away",
+      "id": "up",
+      "displayName": "Up!",
       "tagline": "",
       "detectionPrompts": [
         "a hot air balloon in the sky",
@@ -1664,8 +1665,8 @@
       "threshold": 0.12
     },
     {
-      "id": "cake_candles_chaos",
-      "displayName": "Cake, Candles, Chaos",
+      "id": "make_a_wish",
+      "displayName": "Make A Wish",
       "tagline": "",
       "detectionPrompts": [
         "a birthday cake with candles",
@@ -1724,8 +1725,8 @@
       "threshold": 0.12
     },
     {
-      "id": "most_wonderful_time",
-      "displayName": "Most Wonderful Time",
+      "id": "santa_is_real_right_guys",
+      "displayName": "Santa Is Real Right? Guys?",
       "tagline": "",
       "detectionPrompts": [
         "christmas decorations and lights",
@@ -1772,8 +1773,8 @@
       "threshold": 0.12
     },
     {
-      "id": "ambience_is_a_hobby",
-      "displayName": "Ambience Is A Hobby",
+      "id": "my_soft_glow",
+      "displayName": "My Soft Glow",
       "tagline": "",
       "detectionPrompts": [
         "lit candles",
@@ -1880,8 +1881,8 @@
       "threshold": 0.12
     },
     {
-      "id": "one_piece_is_peak",
-      "displayName": "One Piece Is Peak",
+      "id": "sub_or_dub",
+      "displayName": "Sub or Dub?",
       "tagline": "",
       "detectionPrompts": [
         "a screenshot of a manga panel",

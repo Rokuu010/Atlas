@@ -1,6 +1,7 @@
 package io.tastecard.persistence
 
 import android.content.Context
+import io.tastecard.model.CategoryStat
 import io.tastecard.model.EmergentTheme
 import io.tastecard.model.Rarity
 import io.tastecard.model.RarityTier
@@ -40,6 +41,16 @@ class CardStore(context: Context) {
                     .put("candidatePhotoUris", JSONArray(t.candidatePhotoUris))
             )
         }
+        val allCategories = JSONArray()
+        for (s in card.allCategories) {
+            allCategories.put(
+                JSONObject()
+                    .put("categoryId", s.categoryId)
+                    .put("displayName", s.displayName)
+                    .put("photoCount", s.photoCount)
+                    .put("rarityIndex", s.rarityIndex)
+            )
+        }
         return JSONObject()
             .put("id", card.id)
             .put("displayName", card.displayName)
@@ -51,6 +62,7 @@ class CardStore(context: Context) {
             .put("cardRarity", card.cardRarity.name)
             .put("createdAt", card.createdAt)
             .put("themes", themes)
+            .put("allCategories", allCategories)
             .put("aboutMe", card.aboutMe ?: JSONObject.NULL)
             .put("profileImagePath", card.profileImagePath ?: JSONObject.NULL)
             .put("customBackgroundPath", card.customBackgroundPath ?: JSONObject.NULL)
@@ -80,6 +92,17 @@ class CardStore(context: Context) {
                 )
             )
         }
+        val allCatArr = o.optJSONArray("allCategories")
+        val allCategories = if (allCatArr == null) emptyList() else
+            (0 until allCatArr.length()).map { i ->
+                val s = allCatArr.getJSONObject(i)
+                CategoryStat(
+                    categoryId = s.getString("categoryId"),
+                    displayName = s.getString("displayName"),
+                    photoCount = s.getInt("photoCount"),
+                    rarityIndex = s.getDouble("rarityIndex"),
+                )
+            }
         return Tastecard(
             id = o.getString("id"),
             displayName = o.getString("displayName"),
@@ -96,6 +119,7 @@ class CardStore(context: Context) {
             customBackgroundPath = if (o.isNull("customBackgroundPath")) null else o.optString("customBackgroundPath", null),
             customBackgroundColorArgb = if (o.has("customBackgroundColorArgb") && !o.isNull("customBackgroundColorArgb")) o.getLong("customBackgroundColorArgb") else null,
             glassOpacity = if (o.has("glassOpacity") && !o.isNull("glassOpacity")) o.getDouble("glassOpacity") else null,
+            allCategories = allCategories,
         )
     }
 

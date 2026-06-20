@@ -25,7 +25,10 @@ enum WarmingReason: Equatable {
 }
 
 enum SelectionOutcome: Equatable {
-    case themes([CategoryTally])   // 3...6, ranked by score (strongest first)
+    /// ALL categories that reached the per-category photo floor, ranked most-photos-first.
+    /// The engine displays the top 3–6 (those with a usable hero) and saves the rest as the
+    /// "shadow" set for the rarest-find insight + future cross-user comparison.
+    case themes([CategoryTally])
     case warmingUp(WarmingReason)
 }
 
@@ -34,21 +37,10 @@ struct SelectionConfig: Equatable {
     var globalMinimumPhotos: Int = 50
     var minThemes: Int = 3
     var maxThemes: Int = 6
-    /// Top-N by strength always qualify for a slot, even if marginally under the floor.
-    var guaranteedTopSlots: Int = 3
-    /// Evidence floor = max(floorBase, ceil(librarySize/1000 * floorPerThousand)).
-    /// Larger libraries demand more evidence (someone with 2k photos needs more than 100).
-    var floorBase: Int = 3
-    var floorPerThousand: Double = 3.0
-    /// Above this library size we never show "warming up": if the evidence floor isn't met
-    /// we still surface the strongest themes by score. Keeps a big, varied gallery from
-    /// being left with nothing when thresholds are conservative.
-    var relativeFallbackMinPhotos: Int = 400
-
-    func evidenceFloor(librarySize: Int) -> Int {
-        let scaled = Int((Double(librarySize) / 1000.0 * floorPerThousand).rounded(.up))
-        return max(floorBase, scaled)
-    }
+    /// A category only "exists" once it's detected in at least this many photos (user spec:
+    /// 10 photos make a category). Applies to both the displayed themes and the saved shadow
+    /// set, so nothing built on a couple of stray matches ever counts.
+    var minPhotosPerCategory: Int = 10
 }
 
 enum ThemeSelector {
@@ -61,41 +53,21 @@ enum ThemeSelector {
             return .warmingUp(.notEnoughPhotos)
         }
 
-        let floor = config.evidenceFloor(librarySize: photosAnalysed)
-
-        // Rank by strength; tie-break on count then id for determinism.
-        let ranked = tallies
-            .filter { $0.count > 0 }
+        // A category qualifies only if it reaches the per-category photo floor. Rank
+        // most-photos-first (the card shows the categories you photograph the most), with
+        // strength then id as deterministic tie-breakers.
+        let qualified = tallies
+            .filter { $0.count >= config.minPhotosPerCategory }
             .sorted { a, b in
-                if a.score != b.score { return a.score > b.score }
                 if a.count != b.count { return a.count > b.count }
+                if a.score != b.score { return a.score > b.score }
                 return a.categoryId < b.categoryId
             }
 
-        let clearedCount = ranked.filter { $0.count >= floor }.count
-
-        // Primary path: enough categories clear the evidence floor. Fill 3rd–6th slots
-        // only with categories that appear in >= floor photos OR are top-N by strength,
-        // so a fragile statistical hiccup never fills a slot.
-        if clearedCount >= config.minThemes {
-            var selected: [CategoryTally] = []
-            for (rank, candidate) in ranked.enumerated() {
-                if selected.count >= config.maxThemes { break }
-                let isGuaranteedByStrength = rank < config.guaranteedTopSlots
-                if candidate.count >= floor || isGuaranteedByStrength {
-                    selected.append(candidate)
-                }
-            }
-            return .themes(selected)
+        // Need at least minThemes distinct qualifying categories to build a card.
+        guard qualified.count >= config.minThemes else {
+            return .warmingUp(.notEnoughEvidence)
         }
-
-        // Safety net: a clearly non-sparse library should never be left with nothing.
-        // If at least minThemes categories registered any matches, surface the strongest.
-        if photosAnalysed >= config.relativeFallbackMinPhotos, ranked.count >= config.minThemes {
-            return .themes(Array(ranked.prefix(config.maxThemes)))
-        }
-
-        // Truly sparse / weak signal -> "still warming up".
-        return .warmingUp(.notEnoughEvidence)
+        return .themes(qualified)
     }
 }

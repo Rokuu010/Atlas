@@ -49,8 +49,9 @@ final class AnalysisEngine {
         var batchSize = 32
         var heroInspectTopN = 8
         var defaultDisplayName = "My Tastecard"
-        /// Cap analysis to the most recent N photos to bound scan time on large libraries.
-        var maxScanPhotos = 2000
+        /// Cap analysis to the most recent N photos. 500 ≈ a typical 1–2 month camera roll,
+        /// which keeps the scan fast and the surfaced themes the ones the user relates to most.
+        var maxScanPhotos = 500
         /// Relative margin above the photo's mean affinity (bias-corrected, scale-invariant).
         var relativeMargin: Float = 0.05
         /// Absolute cosine floor — a match must also clear this, removing weak noise matches.
@@ -101,7 +102,6 @@ final class AnalysisEngine {
 
         var counts: [String: Int] = [:]
         var scores: [String: Double] = [:]
-        var softScores: [String: Double] = [:]
         var softCounts: [String: Int] = [:]
         var heroCandidates: [String: [HeroCandidate]] = [:]
         var coords: [GeoClustering.Coordinate] = []
@@ -156,7 +156,6 @@ final class AnalysisEngine {
                     guard delta > 0 else { continue }
                     let cid = aligned[i].category.id
 
-                    softScores[cid, default: 0] += Double(delta)
                     softCounts[cid, default: 0] += 1
 
                     heroCandidates[cid, default: []].append(
@@ -184,48 +183,38 @@ final class AnalysisEngine {
         }
 
         func photoCount(_ id: String) -> Int { counts[id] ?? softCounts[id] ?? 1 }
-        func backups(excluding primary: [String]) -> [String] {
-            aligned.map { $0.category.id }
-                .filter { !primary.contains($0) && (softScores[$0] ?? 0) > 0 }
-                .sorted { (softScores[$0] ?? 0) > (softScores[$1] ?? 0) }
-        }
 
         switch ThemeSelector.select(tallies: tallies, photosAnalysed: processed, config: config.selection) {
-        case .themes(let selected):
-            let primary = selected.map(\.categoryId)
-            let pool = primary + Array(backups(excluding: primary).prefix(config.backupPool))
+        case .themes(let qualified):
+            // `qualified` is EVERY category that reached the photo floor (most-photos-first).
+            // assembleThemes walks it and shows the strongest 3–6 that have a usable hero;
+            // the full list is saved as the shadow set for insights + future comparison.
+            let pool = qualified.map(\.categoryId)
             let themes = await assembleThemes(pool, categoryById: categoryById,
                                               heroCandidates: heroCandidates, photoCount: photoCount)
-            return .card(assemble(themes: themes, processed: processed, places: placesCount))
+            let allCategories: [CategoryStat] = qualified.compactMap { t in
+                guard let c = categoryById[t.categoryId] else { return nil }
+                return CategoryStat(categoryId: c.id, displayName: c.displayName,
+                                    photoCount: t.count, rarityIndex: c.rarityIndex)
+            }
+            return .card(assemble(themes: themes, allCategories: allCategories,
+                                  processed: processed, places: placesCount))
 
-        case .warmingUp(.notEnoughPhotos):
-            return .warmingUp(.notEnoughPhotos, photosScanned: processed)
-
-        case .warmingUp(.notEnoughEvidence):
-            guard processed >= config.selection.relativeFallbackMinPhotos else {
-                return .warmingUp(.notEnoughEvidence, photosScanned: processed)
-            }
-            let ranked = backups(excluding: [])
-            guard ranked.count >= config.selection.minThemes else {
-                return .warmingUp(.notEnoughEvidence, photosScanned: processed)
-            }
-            let themes = await assembleThemes(ranked, categoryById: categoryById,
-                                              heroCandidates: heroCandidates, photoCount: photoCount)
-            guard themes.count >= config.selection.minThemes else {
-                return .warmingUp(.notEnoughEvidence, photosScanned: processed)
-            }
-            return .card(assemble(themes: themes, processed: processed, places: placesCount))
+        case .warmingUp(let reason):
+            return .warmingUp(reason, photosScanned: processed)
         }
     }
 
-    private func assemble(themes: [EmergentTheme], processed: Int, places: Int) -> Tastecard {
+    private func assemble(themes: [EmergentTheme], allCategories: [CategoryStat],
+                          processed: Int, places: Int) -> Tastecard {
         Tastecard(
             displayName: config.defaultDisplayName,
             themeIndex: Int.random(in: 0..<AppTheme.all.count),
             heroPhotoLocalId: themes.first?.heroPhotoLocalId,
             photosAnalysed: processed,
             placesCount: places,
-            themes: themes
+            themes: themes,
+            allCategories: allCategories
         )
     }
 

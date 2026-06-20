@@ -39,9 +39,10 @@ class AnalysisEngine(
     private val absoluteFloor: Float = 0.06f,
     private val backupPool: Int = 10,
     private val heroInspectTopN: Int = 8,
-    // Cap analysis to the most recent N photos. 500 ≈ a typical 1–2 month camera roll,
-    // keeping the scan fast and the surfaced themes the ones the user relates to most.
-    private val maxScanPhotos: Int = 500,
+    // Cap analysis to the most recent N photos — recent enough that the surfaced themes are
+    // ones the user relates to, but large enough that categories comfortably reach the
+    // per-category photo floor for a meaningful shadow set.
+    private val maxScanPhotos: Int = 1000,
 ) {
     private data class Aligned(val category: Category, val vector: FloatArray)
     private data class HeroCandidate(val uri: String, val similarity: Float, val screenshot: Boolean, val pixelCount: Int)
@@ -137,12 +138,15 @@ class AnalysisEngine(
 
         when (val outcome = ThemeSelector.select(tallies, processed, config)) {
             is SelectionOutcome.Themes -> {
-                // outcome.themes is EVERY qualifying category (most-photos-first). assembleThemes
-                // shows the strongest 3–6 with a usable hero; the full list becomes the shadow set.
+                // outcome.themes is EVERY matched category (most-photos-first). assembleThemes
+                // shows the strongest 3–6 with a usable hero.
                 val pool = outcome.themes.map { it.categoryId }
                 val themes = assembleThemes(pool, byId, heroes, ::photoCount)
+                // Shadow set = only categories that reached the per-category photo floor.
+                val floor = config.minPhotosPerCategory
                 val allCategories = outcome.themes.mapNotNull { t ->
-                    byId[t.categoryId]?.let { c -> CategoryStat(c.id, c.displayName, t.count, c.rarityIndex) }
+                    if (t.count < floor) null
+                    else byId[t.categoryId]?.let { c -> CategoryStat(c.id, c.displayName, t.count, c.rarityIndex) }
                 }
                 EngineResult.Card(assemble(themes, allCategories, processed, placesCount))
             }

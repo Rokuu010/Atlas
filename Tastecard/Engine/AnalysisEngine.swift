@@ -49,9 +49,10 @@ final class AnalysisEngine {
         var batchSize = 32
         var heroInspectTopN = 8
         var defaultDisplayName = "My Tastecard"
-        /// Cap analysis to the most recent N photos. 500 ≈ a typical 1–2 month camera roll,
-        /// which keeps the scan fast and the surfaced themes the ones the user relates to most.
-        var maxScanPhotos = 500
+        /// Cap analysis to the most recent N photos — recent enough that the surfaced themes
+        /// are ones the user relates to, but large enough that categories comfortably reach
+        /// the per-category photo floor for a meaningful shadow set.
+        var maxScanPhotos = 1000
         /// Relative margin above the photo's mean affinity (bias-corrected, scale-invariant).
         var relativeMargin: Float = 0.05
         /// Absolute cosine floor — a match must also clear this, removing weak noise matches.
@@ -185,15 +186,17 @@ final class AnalysisEngine {
         func photoCount(_ id: String) -> Int { counts[id] ?? softCounts[id] ?? 1 }
 
         switch ThemeSelector.select(tallies: tallies, photosAnalysed: processed, config: config.selection) {
-        case .themes(let qualified):
-            // `qualified` is EVERY category that reached the photo floor (most-photos-first).
-            // assembleThemes walks it and shows the strongest 3–6 that have a usable hero;
-            // the full list is saved as the shadow set for insights + future comparison.
-            let pool = qualified.map(\.categoryId)
+        case .themes(let ranked):
+            // `ranked` is EVERY matched category (most-photos-first). assembleThemes walks it
+            // and shows the strongest 3–6 that have a usable hero.
+            let pool = ranked.map(\.categoryId)
             let themes = await assembleThemes(pool, categoryById: categoryById,
                                               heroCandidates: heroCandidates, photoCount: photoCount)
-            let allCategories: [CategoryStat] = qualified.compactMap { t in
-                guard let c = categoryById[t.categoryId] else { return nil }
+            // Shadow set = only the categories that reached the per-category photo floor
+            // ("10 photos make a category"). Powers the rarest-find insight + future comparison.
+            let floor = config.selection.minPhotosPerCategory
+            let allCategories: [CategoryStat] = ranked.compactMap { t in
+                guard t.count >= floor, let c = categoryById[t.categoryId] else { return nil }
                 return CategoryStat(categoryId: c.id, displayName: c.displayName,
                                     photoCount: t.count, rarityIndex: c.rarityIndex)
             }

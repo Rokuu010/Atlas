@@ -53,21 +53,22 @@ enum ThemeSelector {
             return .warmingUp(.notEnoughPhotos)
         }
 
-        // A category qualifies only if it reaches the per-category photo floor. Rank
-        // most-photos-first (the card shows the categories you photograph the most), with
-        // strength then id as deterministic tie-breakers.
-        let qualified = tallies
-            .filter { $0.count >= config.minPhotosPerCategory }
+        // Rank EVERY category that matched anything, most-photos-first (strength then id as
+        // deterministic tie-breakers). The card is built from your strongest categories — the
+        // per-category photo floor (minPhotosPerCategory) governs only the saved shadow set,
+        // not whether a card can be made, so a normal roll is never left with nothing.
+        let ranked = tallies
+            .filter { $0.count > 0 }
             .sorted { a, b in
                 if a.count != b.count { return a.count > b.count }
                 if a.score != b.score { return a.score > b.score }
                 return a.categoryId < b.categoryId
             }
 
-        // Need at least minThemes distinct qualifying categories to build a card.
-        guard qualified.count >= config.minThemes else {
+        // Only warm up if fewer than minThemes categories matched at all (a tiny/empty roll).
+        guard ranked.count >= config.minThemes else {
             return .warmingUp(.notEnoughEvidence)
         }
-        return .themes(qualified)
+        return .themes(ranked)
     }
 }

@@ -37,17 +37,19 @@ object ThemeSelector {
             return SelectionOutcome.WarmingUp(WarmingReason.NOT_ENOUGH_PHOTOS)
         }
 
-        // Most-photos-first, with strength then id as deterministic tie-breakers.
-        val qualified = tallies
-            .filter { it.count >= config.minPhotosPerCategory }
+        // Rank EVERY matched category, most-photos-first. The card is built from your strongest
+        // categories; the per-category photo floor governs only the saved shadow set, so a normal
+        // roll is never left with nothing.
+        val ranked = tallies
+            .filter { it.count > 0 }
             .sortedWith(
                 compareByDescending<CategoryTally> { it.count }
                     .thenByDescending { it.score }
                     .thenBy { it.categoryId }
             )
 
-        return if (qualified.size >= config.minThemes) {
-            SelectionOutcome.Themes(qualified)
+        return if (ranked.size >= config.minThemes) {
+            SelectionOutcome.Themes(ranked)
         } else {
             SelectionOutcome.WarmingUp(WarmingReason.NOT_ENOUGH_EVIDENCE)
         }

@@ -25,6 +25,18 @@ enum RarityStyle {
     static func gradient(for tier: RarityTier) -> LinearGradient {
         LinearGradient(colors: colors(for: tier), startPoint: .leading, endPoint: .trailing)
     }
+
+    /// Flat per-tier accent used by the grid redesign (Tailwind *-400 values): drives the
+    /// rarity sub-label colour and each card's outline (at reduced opacity).
+    ///   common = teal-400 · rare = rose-400 · epic = amber-400 · legendary = emerald-400
+    static func solid(for tier: RarityTier) -> Color {
+        switch tier {
+        case .common:    return Color(hex: 0x2DD4BF)
+        case .rare:      return Color(hex: 0xFB7185)
+        case .epic:      return Color(hex: 0xFBBF24)
+        case .legendary: return Color(hex: 0x34D399)
+        }
+    }
 }
 
 /// A rarity word rendered with the tier gradient (matches the bg-clip-text look).

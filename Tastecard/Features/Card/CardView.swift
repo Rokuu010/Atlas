@@ -2,10 +2,11 @@
 //  CardView.swift
 //  Tastecard
 //
-//  The identity card — a faithful native port of App.tsx. Header (settings • title •
-//  background upload), name + dynamic rarity badge, "the drop" randomiser, the
-//  Photos/Themes/Places stats, theme filter chips, the 2-col emergent-themes grid with
-//  highlight/dim, the Share CTA, and the footer with the local code. Real data only.
+//  The results screen after a scan — "My Gallery's Top Themes". A full-bleed hero photo
+//  under a dark glassmatic scrim, a back · title · EDIT header, the rarity line, a 2-column
+//  grid of rarity-outlined theme cards, and the Share CTA. Recreated from the provided
+//  grid-view reference. Profile/about/appearance live behind EDIT (Settings); tapping a
+//  card opens its detail. Real data only.
 //
 
 import SwiftUI
@@ -16,9 +17,7 @@ struct CardView: View {
     @ObservedObject var vm: CardViewModel
     @EnvironmentObject private var model: AppModel
 
-    @State private var selectedThemeId: String?
     @State private var sheet: CardSheet?
-    @State private var profilePickerItem: PhotosPickerItem?
 
     private var card: Tastecard { vm.card }
 
@@ -39,22 +38,25 @@ struct CardView: View {
     }
 
     var body: some View {
-        GeometryReader { geo in
-            ZStack {
-                background
-                ScrollView(showsIndicators: false) {
-                    VStack {
-                        Spacer(minLength: 0)
-                        cardSurface(screen: geo.size)
-                            .frame(maxWidth: 420)
-                            .padding(.horizontal, 14)
-                            .padding(.vertical, 18)
-                        Spacer(minLength: 0)
-                    }
-                    .frame(minHeight: geo.size.height)
+        ZStack {
+            background
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: 0) {
+                    header
+                        .padding(.horizontal, 20)
+                        .padding(.top, 8)
+                    titleBlock
+                        .padding(.top, 26)
+                        .padding(.bottom, 22)
+                    grid
+                        .padding(.horizontal, 20)
+                    shareButton
+                        .padding(.horizontal, 20)
+                        .padding(.top, 24)
+                        .padding(.bottom, 28)
                 }
-                toastIsland
             }
+            toastIsland
         }
         .sheet(item: $sheet) { which in
             switch which {
@@ -68,231 +70,144 @@ struct CardView: View {
                              isBgDark: vm.isBgDark,
                              glassOpacity: vm.glassOpacity,
                              profileImage: vm.profileImage,
-                             selectedThemeId: selectedThemeId)
+                             selectedThemeId: nil)
             case .settings:
                 SettingsView(vm: vm).environmentObject(model)
             case .appearance:
                 AppearanceSheet(vm: vm)
             }
         }
-        .onChange(of: profilePickerItem) { item in
-            guard let item else { return }
-            Task {
-                if let data = try? await item.loadTransferable(type: Data.self) {
-                    vm.setProfileImage(data: data)
-                }
-                profilePickerItem = nil
-            }
-        }
     }
 
-    // MARK: - Background (whole screen)
+    // MARK: - Background (full-bleed hero photo + dark scrim)
 
     private var background: some View {
-        GeometryReader { g in
-            ZStack {
-                vm.backgroundColor
-                if let bg = vm.customBackground {
-                    // Bound + clip the image to the screen so a wide photo can't overflow
-                    // its bounds and push the centred card sideways.
+        ZStack {
+            Color.black
+            if let bg = vm.customBackground {
+                GeometryReader { g in
                     Image(uiImage: bg)
                         .resizable()
                         .scaledToFill()
                         .frame(width: g.size.width, height: g.size.height)
                         .clipped()
-                    if let scrim = vm.backgroundScrim { scrim }
                 }
+            } else {
+                AssetImage(assetId: card.heroPhotoLocalId,
+                           categoryId: card.themes.first?.categoryId,
+                           targetSide: 1200)
             }
-            .frame(width: g.size.width, height: g.size.height)
+            // Glassmatic darkening so the white UI reads over any photo.
+            Color.black.opacity(0.62)
+            LinearGradient(colors: [.black.opacity(0.45), .clear, .black.opacity(0.5)],
+                           startPoint: .top, endPoint: .bottom)
         }
         .ignoresSafeArea()
     }
 
-    // MARK: - The glass card
-
-    private func cardSurface(screen: CGSize) -> some View {
-        VStack(spacing: 20) {
-            header
-            identity
-            stats
-            aboutMe
-            rarestFind
-            emergentHeader
-            grid
-            shareButton
-            footer
-        }
-        .padding(22)
-        .cardGlass(cornerRadius: 40,
-                   customBackground: vm.customBackground,
-                   screen: screen,
-                   fill: vm.cardFill,
-                   border: vm.cardBorder,
-                   themeGlassFill: vm.materialGlassFill)
-        .foregroundColor(vm.textColor)
-    }
+    // MARK: - Header (back · title · edit)
 
     private var header: some View {
-        HStack {
-            roundIconButton(systemImage: "gearshape") { sheet = .settings }
-            Spacer()
-            Text("Tastecard")
-                .font(AppFont.mono(12, weight: .bold))
-                .tracking(3)
-                .foregroundColor(vm.textColor.opacity(0.9))
-            Spacer()
-            // The droplet now opens the Appearance menu (colour, photo, opacity).
-            Button(action: { Haptics.tap(); sheet = .appearance }) {
-                DropletIcon()
-                    .stroke(vm.textColor, style: StrokeStyle(lineWidth: 2.4, lineCap: .round, lineJoin: .round))
-                    .frame(width: 18, height: 18)
-                    .frame(width: 36, height: 36)
-                    .background(Circle().fill(vm.textColor.opacity(0.10)))
-                    .contentShape(Circle())
-            }
-            .buttonStyle(.plain)
-            .accessibilityLabel("Customise appearance")
-        }
-    }
-
-    private var identity: some View {
-        HStack(alignment: .center, spacing: 14) {
-            ProfileAvatar(image: vm.profileImage, ink: vm.textColor, size: 56)
-                .overlay(alignment: .bottomTrailing) {
-                    PhotosPicker(selection: $profilePickerItem, matching: .images, photoLibrary: .shared()) {
-                        Image(systemName: "pencil")
-                            .font(.system(size: 9, weight: .bold))
-                            .foregroundColor(vm.textColor)
-                            .frame(width: 20, height: 20)
-                            .background(Circle().fill(.ultraThinMaterial))
-                            .overlay(Circle().strokeBorder(vm.textColor.opacity(0.25)))
-                    }
-                    .buttonStyle(.plain)
-                }
-            VStack(alignment: .leading, spacing: 4) {
-                Text(card.cardTitle)
-                    .font(AppFont.display(26, weight: .bold))
-                    .foregroundColor(vm.textColor)
-                    .lineLimit(2)
-                    .minimumScaleFactor(0.6)
-                HStack(spacing: 8) {
-                    Text("TASTECARD RARITY:")
-                        .font(AppFont.mono(10))
-                        .tracking(0.5)
-                        .foregroundColor(vm.textColor.opacity(0.6))
-                    RarityBadge(tier: card.cardRarity, fontSize: 12)
-                }
-            }
-            Spacer(minLength: 0)
-        }
-    }
-
-    private var stats: some View {
-        HStack(spacing: 8) {
-            statCell(value: card.photosAnalysed.abbreviated, label: "Photos")
-            statCell(value: "\(card.emergentThemeCount)", label: "emerging themes")
-            statCell(value: "\(card.placesCount)", label: "Places")
-        }
-        .padding(.vertical, 4)
-    }
-
-    private func statCell(value: String, label: String) -> some View {
-        VStack(alignment: .leading, spacing: 2) {
-            Text(value)
-                .font(AppFont.mono(18, weight: .heavy))
-                .foregroundColor(vm.textColor)
-            Text(label.uppercased())
-                .font(AppFont.sans(9, weight: .semibold))
-                .tracking(0.5)
-                .foregroundColor(vm.textColor.opacity(0.7))
-                .lineLimit(1)
-                .minimumScaleFactor(0.7)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-    }
-
-    private var aboutMe: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Text("About Me")
-                .font(AppFont.mono(11, weight: .bold))
+        ZStack {
+            Text(card.cardTitle.uppercased())
+                .font(AppFont.display(18, weight: .black))
                 .tracking(2)
-                .foregroundColor(vm.textColor.opacity(0.7))
-            if let about = card.aboutMe, !about.isEmpty {
-                Text(about)
-                    .font(AppFont.sans(14))
-                    .foregroundColor(vm.textColor.opacity(0.9))
-                    .fixedSize(horizontal: false, vertical: true)
-            } else {
-                Button { sheet = .settings } label: {
-                    Text("Add yours in Settings")
-                        .font(AppFont.sans(14))
-                        .foregroundColor(vm.textColor.opacity(0.45))
-                        .italic()
+                .foregroundStyle(.white)
+                .lineLimit(1)
+                .minimumScaleFactor(0.6)
+                .frame(maxWidth: .infinity)
+                .padding(.horizontal, 56)
+
+            HStack {
+                Button {
+                    Haptics.tap(); model.phase = .greeting
+                } label: {
+                    Image(systemName: "arrow.left")
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundStyle(.white.opacity(0.9))
+                        .frame(width: 40, height: 40)
+                        .background(Circle().fill(.white.opacity(0.06)))
+                        .overlay(Circle().strokeBorder(.white.opacity(0.12)))
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Back")
+
+                Spacer()
+
+                Button {
+                    Haptics.tap(); sheet = .settings
+                } label: {
+                    Text("EDIT")
+                        .font(AppFont.mono(10, weight: .black))
+                        .tracking(2)
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 9)
+                        .background(Capsule().fill(.white.opacity(0.06)))
+                        .overlay(Capsule().strokeBorder(.white.opacity(0.12)))
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Edit Tastecard")
+            }
+        }
+    }
+
+    // MARK: - Title block
+
+    private var titleBlock: some View {
+        VStack(spacing: 8) {
+            Text("My Gallery's Top Themes".uppercased())
+                .font(AppFont.display(14, weight: .black))
+                .tracking(2)
+                .foregroundStyle(.white)
+                .multilineTextAlignment(.center)
+            HStack(spacing: 6) {
+                Text("TASTECARD RARITY:")
+                    .font(AppFont.mono(10))
+                    .tracking(1)
+                    .foregroundStyle(.white.opacity(0.7))
+                Text(card.cardRarity.displayName.uppercased())
+                    .font(AppFont.mono(10, weight: .black))
+                    .tracking(1)
+                    .foregroundStyle(RarityStyle.solid(for: card.cardRarity))
+            }
+        }
+        .frame(maxWidth: .infinity)
+    }
+
+    // MARK: - Grid
+
+    private var grid: some View {
+        LazyVGrid(columns: [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)],
+                  spacing: 12) {
+            ForEach(card.themes) { theme in
+                Button {
+                    Haptics.tap(); sheet = .detail(theme)
+                } label: {
+                    GridThemeCard(theme: theme)
                 }
                 .buttonStyle(.plain)
             }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    /// The highest-rarity category found in the scan — surfaced even when it had too few
-    /// photos to become a displayed theme (powered by the saved shadow set).
-    @ViewBuilder private var rarestFind: some View {
-        if let rarest = card.rarestCategory {
-            HStack(spacing: 6) {
-                Image(systemName: "sparkle").font(.system(size: 10))
-                Text("Rarest find · \(rarest.displayName)")
-                    .font(AppFont.mono(10, weight: .bold)).tracking(0.5)
-                    .lineLimit(1).minimumScaleFactor(0.7)
-                RarityBadge(tier: rarest.rarityTier, fontSize: 9)
-                Spacer(minLength: 0)
-            }
-            .foregroundColor(vm.textColor.opacity(0.75))
-            .frame(maxWidth: .infinity, alignment: .leading)
-        }
-    }
-
-    private var emergentHeader: some View {
-        Text("Emergent Themes")
-            .font(AppFont.mono(13, weight: .bold))
-            .tracking(3)
-            .foregroundColor(vm.textColor.opacity(0.9))
-            .frame(maxWidth: .infinity)
-    }
-
-    private var grid: some View {
-        LazyVGrid(columns: [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)], spacing: 12) {
-            ForEach(card.themes) { theme in
-                let highlighted = selectedThemeId == nil || selectedThemeId == theme.categoryId
-                ThemeGridCard(theme: theme, highlighted: highlighted)
-                    .onTapGesture { Haptics.tap(); sheet = .detail(theme) }
-            }
-        }
-    }
+    // MARK: - Share
 
     private var shareButton: some View {
         Button {
             Haptics.tap(); sheet = .snapshot
         } label: {
-            Text("Share Tastecard".uppercased())
-                .font(AppFont.sans(12, weight: .black))
+            Text("✨ Share Tastecard".uppercased())
+                .font(AppFont.sans(13, weight: .black))
                 .tracking(2)
-                .foregroundColor(vm.textColor)
+                .foregroundStyle(.white)
                 .frame(maxWidth: .infinity)
-                .padding(.vertical, 14)
-                .glassPill(cornerRadius: 16, fill: .white.opacity(0.15), border: .white.opacity(0.35))
+                .padding(.vertical, 16)
+                .background(Capsule().fill(.ultraThinMaterial))
+                .overlay(Capsule().fill(.white.opacity(0.08)))
+                .overlay(Capsule().strokeBorder(.white.opacity(0.18)))
         }
         .buttonStyle(.plain)
-    }
-
-    private var footer: some View {
-        Text("\(card.cardTitle) • \(card.serialDisplay)".uppercased())
-            .font(AppFont.mono(10))
-            .tracking(2)
-            .foregroundColor(vm.textColor.opacity(0.4))
-            .frame(maxWidth: .infinity)
-            .lineLimit(1)
-            .minimumScaleFactor(0.6)
     }
 
     // MARK: - Toast
@@ -304,7 +219,7 @@ struct CardView: View {
                     Circle().fill(Color(hex: 0xF59E0B)).frame(width: 6, height: 6)
                     Text(toast)
                         .font(AppFont.sans(12, weight: .medium))
-                        .foregroundColor(.white)
+                        .foregroundStyle(.white)
                 }
                 .padding(.horizontal, 24).padding(.vertical, 12)
                 .background(Capsule().fill(Color(hex: 0x0C1519).opacity(0.95)))
@@ -317,51 +232,48 @@ struct CardView: View {
             .animation(.spring(response: 0.4, dampingFraction: 0.8), value: vm.toast)
         }
     }
-
-    // MARK: - Buttons
-
-    private func roundIconButton(systemImage: String, action: @escaping () -> Void) -> some View {
-        Button(action: { Haptics.tap(); action() }) { roundIconLabel(systemImage: systemImage) }
-            .buttonStyle(.plain)
-    }
-
-    private func roundIconLabel(systemImage: String) -> some View {
-        Image(systemName: systemImage)
-            .font(.system(size: 15, weight: .medium))
-            .foregroundColor(vm.textColor)
-            .frame(width: 36, height: 36)
-            .background(Circle().fill(vm.textColor.opacity(0.10)))
-    }
 }
 
-/// One photo tile in the emergent-themes grid.
-struct ThemeGridCard: View {
+/// One rarity-outlined theme card in the grid: title + rarity sub-label over a square hero.
+struct GridThemeCard: View {
     let theme: EmergentTheme
-    let highlighted: Bool
 
     var body: some View {
-        ZStack(alignment: .bottomLeading) {
-            AssetImage(assetId: theme.heroPhotoLocalId,
-                       categoryId: theme.categoryId,
-                       targetSide: 500)
-            PhotoVignette()
-            Text(theme.displayName)
-                .font(AppFont.sans(12, weight: .medium))
-                .foregroundColor(.white)
-                .lineLimit(2)
-                .minimumScaleFactor(0.6)
-                .multilineTextAlignment(.leading)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(12)
+        let accent = RarityStyle.solid(for: theme.rarityTier)
+        VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(theme.displayName.uppercased())
+                    .font(AppFont.display(12, weight: .black))
+                    .tracking(1.2)
+                    .foregroundStyle(.white)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.7)
+                    .multilineTextAlignment(.leading)
+                    .fixedSize(horizontal: false, vertical: true)
+                Text("RARITY: \(theme.rarityTier.displayName.uppercased())")
+                    .font(AppFont.mono(8, weight: .bold))
+                    .tracking(1)
+                    .foregroundStyle(accent)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+
+            ZStack {
+                AssetImage(assetId: theme.heroPhotoLocalId,
+                           categoryId: theme.categoryId,
+                           targetSide: 600)
+            }
+            .aspectRatio(1, contentMode: .fit)
+            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+            .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(.white.opacity(0.06)))
         }
-        .aspectRatio(3.0/4.0, contentMode: .fit)
-        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
-        .overlay(RoundedRectangle(cornerRadius: 24, style: .continuous).strokeBorder(.black.opacity(0.05)))
-        .shadow(color: .black.opacity(0.15), radius: 6, y: 3)
-        .opacity(highlighted ? 1 : 0.35)
-        .scaleEffect(highlighted ? 1 : 0.95)
-        .blur(radius: highlighted ? 0 : 0.5)
-        .animation(.easeInOut(duration: 0.3), value: highlighted)
+        .padding(14)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: 24, style: .continuous)
+                .fill(.ultraThinMaterial)
+                .overlay(RoundedRectangle(cornerRadius: 24, style: .continuous).fill(.black.opacity(0.40)))
+        )
+        .overlay(RoundedRectangle(cornerRadius: 24, style: .continuous).strokeBorder(accent.opacity(0.30), lineWidth: 1))
     }
 }
 
@@ -390,7 +302,7 @@ struct ProfileAvatar: View {
             } else {
                 Image(systemName: "person.fill")
                     .font(.system(size: size * 0.42, weight: .medium))
-                    .foregroundColor(ink.opacity(0.55))
+                    .foregroundStyle(ink.opacity(0.55))
             }
         }
         .frame(width: size, height: size)
@@ -400,7 +312,7 @@ struct ProfileAvatar: View {
 }
 
 /// The Appearance menu: a colour wheel, a photo background, a glass-opacity slider, the
-/// preset "Shuffle palette", and a reset — replacing the old top photo button (§ user req 3).
+/// preset "Shuffle palette", and a reset. Reached from EDIT → Settings.
 struct AppearanceSheet: View {
     @ObservedObject var vm: CardViewModel
     @Environment(\.dismiss) private var dismiss

@@ -52,7 +52,7 @@ final class AnalysisEngine {
         /// Cap analysis to the most recent N photos — recent enough that the surfaced themes
         /// are ones the user relates to, but large enough that categories comfortably reach
         /// the per-category photo floor for a meaningful shadow set.
-        var maxScanPhotos = 1000
+        var maxScanPhotos = 5000
         /// Relative margin above the photo's mean affinity (bias-corrected, scale-invariant).
         var relativeMargin: Float = 0.05
         /// Absolute cosine floor — a match must also clear this, removing weak noise matches.

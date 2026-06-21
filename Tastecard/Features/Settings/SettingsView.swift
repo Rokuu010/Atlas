@@ -19,6 +19,7 @@ struct SettingsView: View {
     @State private var aboutText: String = ""
     @State private var profilePickerItem: PhotosPickerItem?
     @State private var showDeleteConfirm = false
+    @State private var showAppearance = false
     @State private var legal: LegalDocument?
 
     var body: some View {
@@ -64,6 +65,7 @@ struct SettingsView: View {
                 }
 
                 Section("Photos & appearance") {
+                    Button("Appearance (colour, background, opacity)") { showAppearance = true }
                     if model.photoService.isLimited {
                         Button("Select more photos") { model.presentLimitedPicker() }
                     }
@@ -120,6 +122,7 @@ struct SettingsView: View {
                 Text("This permanently removes your card and on-device cache.")
             }
             .sheet(item: $legal) { doc in LegalView(document: doc) }
+            .sheet(isPresented: $showAppearance) { AppearanceSheet(vm: vm) }
         }
     }
 

@@ -225,6 +225,10 @@ struct SnapshotCardView: View {
     @ViewBuilder private func tile(_ theme: EmergentTheme?, w: CGFloat, h: CGFloat) -> some View {
         if let theme {
             let accent = RarityStyle.solid(for: theme.rarityTier)
+            // EXPLICIT photo size cropped to its box (not "fill remaining"), so the photo can
+            // never be taller than its tile. Reserve = tile padding(20) + header(~30) + spacing(6).
+            let photoW = w - 20
+            let photoH = max(h - 56, 44)
             VStack(alignment: .leading, spacing: 6) {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(theme.displayName.uppercased())
@@ -239,9 +243,8 @@ struct SnapshotCardView: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
 
-                // Photo fills whatever height is left in the tile after the header.
                 heroImage(for: theme)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .frame(width: photoW, height: photoH)
                     .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                     .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous)
                         .strokeBorder(.white.opacity(0.10)))

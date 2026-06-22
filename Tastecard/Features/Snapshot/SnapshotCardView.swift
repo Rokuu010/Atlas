@@ -10,9 +10,9 @@
 //  Fidelity to the on-screen card: the background is the SAME photo shown on the card
 //  screen (custom background if set, otherwise the card hero), under a dark legibility
 //  scrim with WHITE text — so the export reads identically to the app, not as a flat
-//  coloured panel. The 2x2 theme grid mirrors the on-screen GridThemeCard (title + rarity
-//  on top, photo crop below) so every label TRUNCATES inside its tile and can never be
-//  clipped at the edge of the card.
+//  coloured panel. The theme grid (up to 3 rows × 2 = 6 themes) mirrors the on-screen
+//  GridThemeCard (title + rarity on top, photo crop below) so every label TRUNCATES inside
+//  its tile and can never be clipped, and the rows fill the card with no dead space.
 //
 
 import SwiftUI
@@ -36,7 +36,7 @@ struct SnapshotCardView: View {
     /// White-ish ink — readable over the dark scrim, matching the app's white-on-photo card.
     private let ink = Color(hex: 0xFDF9F6)
 
-    private var themes: [EmergentTheme] { Array(card.themes.prefix(4)) }
+    private var themes: [EmergentTheme] { Array(card.themes.prefix(6)) }
 
     /// The background photo — the SAME image the card screen shows: a user-chosen custom
     /// background if set, otherwise the card hero (first theme's hero). nil -> category art.
@@ -99,12 +99,15 @@ struct SnapshotCardView: View {
     }
 
     private var brandRow: some View {
-        HStack {
-            Text("MY TASTECARD")
+        HStack(spacing: 8) {
+            // Reflects the user's name (e.g. "ROHAN'S TASTECARD"); "MY TASTECARD" by default.
+            Text(card.cardTitle.uppercased())
                 .font(AppFont.mono(11, weight: .heavy)).tracking(2)
-            Spacer()
+                .lineLimit(1).minimumScaleFactor(0.6)
+            Spacer(minLength: 8)
             Text(card.serialDisplay)
                 .font(AppFont.mono(11, weight: .bold))
+                .layoutPriority(1)
         }
         .foregroundStyle(ink.opacity(0.85))
     }
@@ -116,8 +119,7 @@ struct SnapshotCardView: View {
             identityRow
             stats
             aboutMe
-            grid
-            Spacer(minLength: 0)
+            grid                 // up to 3×2, fills the remaining height (no dead space)
             footer
         }
         .foregroundStyle(ink)
@@ -199,26 +201,30 @@ struct SnapshotCardView: View {
 
     private var grid: some View {
         let gap: CGFloat = 10
-        // interior width = surface - outer .horizontal(22*2) - card .padding(18*2)
+        // interior width = surface - outer .horizontal(22*2) - card .padding(18*2). Cell WIDTH
+        // is a constant so tiles never overflow horizontally; cell HEIGHT comes from the
+        // measured leftover so the rows fill the card with no dead space (2 or 3 rows).
         let cellW = (baseWidth - 44 - 36 - gap) / 2
-        return VStack(spacing: gap) {
-            ForEach(Array(gridRows.enumerated()), id: \.offset) { _, row in
-                HStack(spacing: gap) {
-                    tile(row.first, w: cellW)
-                    tile(row.count > 1 ? row[1] : nil, w: cellW)
+        return GeometryReader { geo in
+            let rowCount = max(gridRows.count, 1)
+            let cellH = (geo.size.height - gap * CGFloat(rowCount - 1)) / CGFloat(rowCount)
+            VStack(spacing: gap) {
+                ForEach(Array(gridRows.enumerated()), id: \.offset) { _, row in
+                    HStack(spacing: gap) {
+                        tile(row.first, w: cellW, h: cellH)
+                        tile(row.count > 1 ? row[1] : nil, w: cellW, h: cellH)
+                    }
                 }
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         }
-        .frame(maxWidth: .infinity)
+        .frame(maxHeight: .infinity)
     }
 
-    @ViewBuilder private func tile(_ theme: EmergentTheme?, w: CGFloat) -> some View {
+    @ViewBuilder private func tile(_ theme: EmergentTheme?, w: CGFloat, h: CGFloat) -> some View {
         if let theme {
             let accent = RarityStyle.solid(for: theme.rarityTier)
-            let pad: CGFloat = 10
-            let photoW = w - pad * 2
-            let photoH = photoW * 0.78
-            VStack(alignment: .leading, spacing: 7) {
+            VStack(alignment: .leading, spacing: 6) {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(theme.displayName.uppercased())
                         .font(AppFont.display(11, weight: .black)).tracking(0.8)
@@ -232,19 +238,20 @@ struct SnapshotCardView: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
 
+                // Photo fills whatever height is left in the tile after the header.
                 heroImage(for: theme)
-                    .frame(width: photoW, height: photoH)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                     .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous)
                         .strokeBorder(.white.opacity(0.10)))
             }
-            .padding(pad)
-            .frame(width: w, alignment: .leading)
+            .padding(10)
+            .frame(width: w, height: h, alignment: .top)
             .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(.white.opacity(0.07)))
             .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).strokeBorder(.white.opacity(0.12)))
         } else {
             // Keeps the surviving cell column-aligned when a row has a single theme.
-            Color.clear.frame(width: w, height: 10)
+            Color.clear.frame(width: w, height: h)
         }
     }
 

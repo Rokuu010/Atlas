@@ -126,7 +126,7 @@ struct SnapshotView: View {
     private func prewarm() async {
         let loader = PhotoAssetLoader()
         var dict: [String: UIImage] = [:]
-        for theme in card.themes.prefix(4) {
+        for theme in card.themes.prefix(6) {
             guard let id = theme.heroPhotoLocalId else { continue }
             if let img = await loader.requestImage(forIdentifier: id, targetSide: 900) {
                 dict[id] = img

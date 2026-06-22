@@ -171,6 +171,10 @@ struct CardView: View {
                     .tracking(1)
                     .foregroundStyle(RarityStyle.solid(for: card.cardRarity))
             }
+            Text("\(card.photosAnalysed.abbreviated) PHOTOS ANALYSED")
+                .font(AppFont.mono(9, weight: .bold))
+                .tracking(1.5)
+                .foregroundStyle(.white.opacity(0.5))
         }
         .frame(maxWidth: .infinity)
     }
@@ -234,46 +238,45 @@ struct CardView: View {
     }
 }
 
-/// One rarity-outlined theme card in the grid: title + rarity sub-label over a square hero.
+/// One rarity card in the grid (Rollcard spec): a near-black, rarity-tinted tile with the
+/// title + rarity label up top and a photo crop filling the rest. Fixed height so a 1- vs
+/// 2-line title never knocks the grid out of alignment, and the photo always reads ~h-120.
 struct GridThemeCard: View {
     let theme: EmergentTheme
 
     var body: some View {
-        let accent = RarityStyle.solid(for: theme.rarityTier)
-        VStack(alignment: .leading, spacing: 12) {
-            VStack(alignment: .leading, spacing: 4) {
+        let tier = theme.rarityTier
+        let accent = RarityStyle.solid(for: tier)
+        VStack(alignment: .leading, spacing: 10) {
+            VStack(alignment: .leading, spacing: 3) {
                 Text(theme.displayName.uppercased())
                     .font(AppFont.display(12, weight: .black))
-                    .tracking(1.2)
+                    .tracking(1.5)
                     .foregroundStyle(.white)
                     .lineLimit(2)
                     .minimumScaleFactor(0.7)
                     .multilineTextAlignment(.leading)
-                    .fixedSize(horizontal: false, vertical: true)
-                Text("RARITY: \(theme.rarityTier.displayName.uppercased())")
-                    .font(AppFont.mono(8, weight: .bold))
-                    .tracking(1)
+                    .frame(maxWidth: .infinity, minHeight: 30, alignment: .topLeading)
+                Text("RARITY: \(tier.displayName.uppercased())")
+                    .font(AppFont.mono(8, weight: .heavy))
+                    .tracking(1.2)
                     .foregroundStyle(accent)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
 
-            ZStack {
-                AssetImage(assetId: theme.heroPhotoLocalId,
-                           categoryId: theme.categoryId,
-                           targetSide: 600)
-            }
-            .aspectRatio(1, contentMode: .fit)
-            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-            .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(.white.opacity(0.06)))
+            AssetImage(assetId: theme.heroPhotoLocalId,
+                       categoryId: theme.categoryId,
+                       targetSide: 600)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).fill(.black.opacity(0.06))) // brightness-95
+                .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(.white.opacity(0.08)))
         }
-        .padding(14)
+        .padding(12)
+        .frame(height: 196)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            RoundedRectangle(cornerRadius: 24, style: .continuous)
-                .fill(.ultraThinMaterial)
-                .overlay(RoundedRectangle(cornerRadius: 24, style: .continuous).fill(.black.opacity(0.40)))
-        )
-        .overlay(RoundedRectangle(cornerRadius: 24, style: .continuous).strokeBorder(accent.opacity(0.30), lineWidth: 1))
+        .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(RarityStyle.cardTint(for: tier)))
+        .overlay(RoundedRectangle(cornerRadius: 22, style: .continuous).strokeBorder(RarityStyle.cardStroke(for: tier), lineWidth: 1))
+        .shadow(color: accent.opacity(0.12), radius: 16, y: 8)
     }
 }
 

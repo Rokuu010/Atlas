@@ -127,8 +127,8 @@ struct SnapshotCardView: View {
     }
 
     private var identityRow: some View {
-        HStack(alignment: .center, spacing: 10) {
-            ProfileAvatar(image: profileImage, ink: ink, size: 44)
+        HStack(alignment: .center, spacing: 12) {
+            ProfileAvatar(image: profileImage, ink: ink, size: 52)
             VStack(alignment: .leading, spacing: 3) {
                 Text(card.cardTitle)
                     .font(AppFont.display(22, weight: .black))
@@ -136,7 +136,12 @@ struct SnapshotCardView: View {
                 HStack(spacing: 5) {
                     Text("TASTECARD RARITY:")
                         .font(AppFont.mono(8)).tracking(0.5).opacity(0.7)
-                    RarityBadge(tier: card.cardRarity, fontSize: 10)
+                    // Export rarity reads in gold with a soft glow (doc §3), distinct from
+                    // the per-tile accent colours.
+                    Text(card.cardRarity.displayName.uppercased())
+                        .font(AppFont.mono(10, weight: .heavy)).tracking(1)
+                        .foregroundStyle(Color(hex: 0xFBBF24))
+                        .shadow(color: Color(hex: 0xFBBF24).opacity(0.5), radius: 6)
                 }
             }
             Spacer(minLength: 0)
@@ -190,7 +195,8 @@ struct SnapshotCardView: View {
                 .foregroundStyle(LinearGradient(colors: [.white, .white.opacity(0.7)],
                                                 startPoint: .top, endPoint: .bottom))
             Text(label.uppercased())
-                .font(AppFont.mono(7, weight: .bold)).tracking(1).opacity(0.65)
+                .font(AppFont.mono(7, weight: .bold)).tracking(1)
+                .foregroundStyle(Color(hex: 0x8F9BAC).opacity(0.8))
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
@@ -235,13 +241,14 @@ struct SnapshotCardView: View {
                 heroImage(for: theme)
                     .frame(width: photoW, height: photoH)
                     .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(.black.opacity(0.06))) // brightness-95
                     .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous)
                         .strokeBorder(.white.opacity(0.10)))
             }
             .padding(pad)
             .frame(width: w, alignment: .leading)
-            .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(.white.opacity(0.07)))
-            .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).strokeBorder(.white.opacity(0.12)))
+            .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(RarityStyle.cardTint(for: theme.rarityTier)))
+            .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).strokeBorder(RarityStyle.cardStroke(for: theme.rarityTier), lineWidth: 1))
         } else {
             // Keeps the surviving cell column-aligned when a row has a single theme.
             Color.clear.frame(width: w, height: 10)

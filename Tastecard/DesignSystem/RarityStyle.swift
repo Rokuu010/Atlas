@@ -26,16 +26,33 @@ enum RarityStyle {
         LinearGradient(colors: colors(for: tier), startPoint: .leading, endPoint: .trailing)
     }
 
-    /// Flat per-tier accent used by the grid redesign (Tailwind *-400 values): drives the
-    /// rarity sub-label colour and each card's outline (at reduced opacity).
-    ///   common = teal-400 · rare = rose-400 · epic = amber-400 · legendary = emerald-400
+    /// Flat per-tier accent (Rollcard spec): drives the rarity sub-label colour and each
+    /// card's outline. Pinned by the design brief — epic is purple, not amber.
+    ///   common = teal-400 · rare = rose-500 · epic = purple-400 · legendary = emerald-400
     static func solid(for tier: RarityTier) -> Color {
         switch tier {
-        case .common:    return Color(hex: 0x2DD4BF)
-        case .rare:      return Color(hex: 0xFB7185)
-        case .epic:      return Color(hex: 0xFBBF24)
-        case .legendary: return Color(hex: 0x34D399)
+        case .common:    return Color(hex: 0x2DD4BF) // teal-400
+        case .rare:      return Color(hex: 0xF43F5E) // rose-500
+        case .epic:      return Color(hex: 0xC084FC) // purple-400
+        case .legendary: return Color(hex: 0x34D399) // emerald-400
         }
+    }
+
+    /// Near-black card fill, tinted toward the tier hue (the Rollcard `bg-[#141121]/95` set).
+    /// Gives each rarity card its own quiet temperature under bright white text.
+    static func cardTint(for tier: RarityTier) -> Color {
+        switch tier {
+        case .common:    return Color(hex: 0x111A1C) // teal-tinted black
+        case .rare:      return Color(hex: 0x1C1114) // rose-tinted black
+        case .epic:      return Color(hex: 0x141121) // purple-tinted black
+        case .legendary: return Color(hex: 0x111C14) // emerald-tinted black
+        }
+    }
+
+    /// Tier-coloured hairline border for the rarity card (`border-{hue}-500/20`, nudged up
+    /// slightly so it reads over the near-black fill).
+    static func cardStroke(for tier: RarityTier) -> Color {
+        solid(for: tier).opacity(0.28)
     }
 }
 

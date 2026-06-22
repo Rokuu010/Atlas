@@ -119,7 +119,8 @@ struct SnapshotCardView: View {
             identityRow
             stats
             aboutMe
-            grid                 // up to 3×2, fills the remaining height (no dead space)
+            grid                 // up to 3×2, fixed-size rows (no overlap)
+            Spacer(minLength: 0) // absorbs the small safety margin; pins the footer to the bottom
             footer
         }
         .foregroundStyle(ink)
@@ -201,24 +202,24 @@ struct SnapshotCardView: View {
 
     private var grid: some View {
         let gap: CGFloat = 10
-        // interior width = surface - outer .horizontal(22*2) - card .padding(18*2). Cell WIDTH
-        // is a constant so tiles never overflow horizontally; cell HEIGHT comes from the
-        // measured leftover so the rows fill the card with no dead space (2 or 3 rows).
         let cellW = (baseWidth - 44 - 36 - gap) / 2
-        return GeometryReader { geo in
-            let rowCount = max(gridRows.count, 1)
-            let cellH = (geo.size.height - gap * CGFloat(rowCount - 1)) / CGFloat(rowCount)
-            VStack(spacing: gap) {
-                ForEach(Array(gridRows.enumerated()), id: \.offset) { _, row in
-                    HStack(spacing: gap) {
-                        tile(row.first, w: cellW, h: cellH)
-                        tile(row.count > 1 ? row[1] : nil, w: cellW, h: cellH)
-                    }
+        let rowCount = max(gridRows.count, 1)
+        // Deterministic tile height — NO GeometryReader (it mis-measured under ImageRenderer and
+        // made the rows overlap). A conservative fixed budget for the grid area (smaller when
+        // About Me is shown) split evenly across the rows, so 2 OR 3 rows always sit cleanly
+        // inside the card with a safety margin, never overlapping.
+        let hasAbout = !(card.aboutMe ?? "").isEmpty
+        let gridBudget: CGFloat = hasAbout ? 385 : 440
+        let cellH = (gridBudget - gap * CGFloat(rowCount - 1)) / CGFloat(rowCount)
+        return VStack(spacing: gap) {
+            ForEach(Array(gridRows.enumerated()), id: \.offset) { _, row in
+                HStack(spacing: gap) {
+                    tile(row.first, w: cellW, h: cellH)
+                    tile(row.count > 1 ? row[1] : nil, w: cellW, h: cellH)
                 }
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         }
-        .frame(maxHeight: .infinity)
+        .frame(maxWidth: .infinity)
     }
 
     @ViewBuilder private func tile(_ theme: EmergentTheme?, w: CGFloat, h: CGFloat) -> some View {

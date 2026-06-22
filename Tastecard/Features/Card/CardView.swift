@@ -155,21 +155,41 @@ struct CardView: View {
     // MARK: - Title block
 
     private var titleBlock: some View {
-        VStack(spacing: 8) {
-            Text("My Gallery's Top Themes".uppercased())
-                .font(AppFont.display(14, weight: .black))
-                .tracking(2)
-                .foregroundStyle(.white)
-                .multilineTextAlignment(.center)
-            HStack(spacing: 6) {
-                Text("TASTECARD RARITY:")
-                    .font(AppFont.mono(10))
-                    .tracking(1)
-                    .foregroundStyle(.white.opacity(0.7))
-                Text(card.cardRarity.displayName.uppercased())
-                    .font(AppFont.mono(10, weight: .black))
-                    .tracking(1)
-                    .foregroundStyle(RarityStyle.solid(for: card.cardRarity))
+        VStack(spacing: 12) {
+            // Profile photo (tap to change it in Settings).
+            Button { Haptics.tap(); sheet = .settings } label: {
+                ProfileAvatar(image: vm.profileImage, ink: .white, size: 72)
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Profile photo")
+
+            VStack(spacing: 8) {
+                Text("My Gallery's Top Themes".uppercased())
+                    .font(AppFont.display(14, weight: .black))
+                    .tracking(2)
+                    .foregroundStyle(.white)
+                    .multilineTextAlignment(.center)
+                HStack(spacing: 6) {
+                    Text("TASTECARD RARITY:")
+                        .font(AppFont.mono(10))
+                        .tracking(1)
+                        .foregroundStyle(.white.opacity(0.7))
+                    Text(card.cardRarity.displayName.uppercased())
+                        .font(AppFont.mono(10, weight: .black))
+                        .tracking(1)
+                        .foregroundStyle(RarityStyle.solid(for: card.cardRarity))
+                }
+            }
+
+            // Description shown right on the home card (not only on the shared image).
+            if let about = card.aboutMe, !about.isEmpty {
+                Text(about)
+                    .font(AppFont.sans(13))
+                    .foregroundStyle(.white.opacity(0.85))
+                    .multilineTextAlignment(.center)
+                    .lineLimit(3)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.horizontal, 32)
             }
         }
         .frame(maxWidth: .infinity)

@@ -132,6 +132,12 @@ struct SnapshotView: View {
                 dict[id] = img
             }
         }
+        // The card hero also fills the entire export background — fetch it larger so the
+        // full-bleed photo stays crisp at 3× (a 900px thumbnail would upscale and soften).
+        if let bgId = card.heroPhotoLocalId,
+           let bg = await loader.requestImage(forIdentifier: bgId, targetSide: 1600) {
+            dict[bgId] = bg
+        }
         heroImages = dict
         isReady = true
     }

@@ -153,8 +153,8 @@ struct SnapshotCardView: View {
                 Text(about)
                     .font(AppFont.sans(11))
                     .opacity(0.92)
-                    .lineLimit(2)
-                    .fixedSize(horizontal: false, vertical: true)
+                    .lineLimit(1)
+                    .truncationMode(.tail)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
@@ -209,7 +209,10 @@ struct SnapshotCardView: View {
         // About Me is shown) split evenly across the rows, so 2 OR 3 rows always sit cleanly
         // inside the card with a safety margin, never overlapping.
         let hasAbout = !(card.aboutMe ?? "").isEmpty
-        let gridBudget: CGFloat = hasAbout ? 385 : 440
+        // Larger budget so the rows fill more of the card (less dead space at the bottom),
+        // while staying under the available height so the footer never clips. About Me is
+        // capped to one line above, keeping this deterministic.
+        let gridBudget: CGFloat = hasAbout ? 414 : 450
         let cellH = (gridBudget - gap * CGFloat(rowCount - 1)) / CGFloat(rowCount)
         return VStack(spacing: gap) {
             ForEach(Array(gridRows.enumerated()), id: \.offset) { _, row in
@@ -226,9 +229,9 @@ struct SnapshotCardView: View {
         if let theme {
             let accent = RarityStyle.solid(for: theme.rarityTier)
             // EXPLICIT photo size cropped to its box (not "fill remaining"), so the photo can
-            // never be taller than its tile. Reserve = tile padding(20) + header(~30) + spacing(6).
+            // never be taller than its tile. Reserve = tile padding(20) + header(~24) + spacing(6).
             let photoW = w - 20
-            let photoH = max(h - 56, 44)
+            let photoH = max(h - 50, 44)
             VStack(alignment: .leading, spacing: 6) {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(theme.displayName.uppercased())

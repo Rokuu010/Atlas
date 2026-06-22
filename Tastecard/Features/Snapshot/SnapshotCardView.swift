@@ -211,8 +211,9 @@ struct SnapshotCardView: View {
         let hasAbout = !(card.aboutMe ?? "").isEmpty
         // Larger budget so the rows fill more of the card (less dead space at the bottom),
         // while staying under the available height so the footer never clips. About Me is
-        // capped to one line above, keeping this deterministic.
-        let gridBudget: CGFloat = hasAbout ? 414 : 450
+        // capped to one line above, keeping this deterministic. A flexible Spacer below the
+        // grid absorbs the remaining margin, so going a little bigger here can't clip.
+        let gridBudget: CGFloat = hasAbout ? 446 : 482
         let cellH = (gridBudget - gap * CGFloat(rowCount - 1)) / CGFloat(rowCount)
         return VStack(spacing: gap) {
             ForEach(Array(gridRows.enumerated()), id: \.offset) { _, row in

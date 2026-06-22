@@ -236,9 +236,10 @@ struct SnapshotCardView: View {
             VStack(alignment: .leading, spacing: 6) {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(theme.displayName.uppercased())
-                        .font(AppFont.display(11, weight: .black)).tracking(0.8)
+                        .font(AppFont.display(11, weight: .black)).tracking(0.5)
                         .foregroundStyle(.white)
                         .lineLimit(1)
+                        .minimumScaleFactor(0.55)   // shrink long names to fit, don't truncate
                         .truncationMode(.tail)
                     Text("RARITY: \(theme.rarityTier.displayName.uppercased())")
                         .font(AppFont.mono(7, weight: .heavy)).tracking(1)

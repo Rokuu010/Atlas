@@ -23,7 +23,7 @@ object InputSanitizer {
         return if (trimmed.length > MAX_DISPLAY_NAME_LENGTH) trimmed.substring(0, MAX_DISPLAY_NAME_LENGTH) else trimmed
     }
 
-    fun displayNameOrDefault(raw: String, default: String = "My Tastecard"): String {
+    fun displayNameOrDefault(raw: String, default: String = "My Rollcard"): String {
         val s = displayName(raw)
         return s.ifEmpty { default }
     }
@@ -46,7 +46,7 @@ object InputSanitizer {
         var slug = mapped
         while (slug.contains("__")) slug = slug.replace("__", "_")
         slug = slug.trim('_')
-        return slug.ifEmpty { "tastecard" }
+        return slug.ifEmpty { "rollcard" }
     }
 
     private fun isDisallowed(cp: Int): Boolean {

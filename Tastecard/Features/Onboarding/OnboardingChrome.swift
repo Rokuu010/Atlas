@@ -71,12 +71,12 @@ struct SampleTeaserCard: View {
             HStack {
                 Circle().fill(.white.opacity(0.18)).frame(width: 28, height: 28)
                 Spacer()
-                Text("TASTECARD").font(AppFont.mono(10, weight: .bold)).tracking(3)
+                Text("ROLLCARD").font(AppFont.mono(10, weight: .bold)).tracking(3)
                     .foregroundColor(.white.opacity(0.8))
                 Spacer()
                 Circle().fill(.white.opacity(0.18)).frame(width: 28, height: 28)
             }
-            Text("Your Tastecard")
+            Text("Your Rollcard")
                 .font(AppFont.display(26, weight: .bold)).foregroundColor(.white)
             HStack(spacing: 10) {
                 ForEach(0..<3, id: \.self) { _ in

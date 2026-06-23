@@ -66,7 +66,7 @@ object SnapshotRenderer {
 
         val pad = 70f
         // Brand row.
-        canvas.drawText("MY TASTECARD", pad, 130f, paint(34f, bold = true, mono = true, alpha = 190))
+        canvas.drawText("MY ROLLCARD", pad, 130f, paint(34f, bold = true, mono = true, alpha = 190))
         val codeP = paint(34f, bold = true, mono = true, alpha = 190)
         canvas.drawText(card.serialDisplay, W - pad - codeP.measureText(card.serialDisplay), 130f, codeP)
 
@@ -100,7 +100,7 @@ object SnapshotRenderer {
         val titleP = paint(52f, bold = true)
         fitText(card.cardTitle, innerRight - titleX, titleP)
         canvas.drawText(card.cardTitle, titleX, pcy - 2f, titleP)
-        canvas.drawText("TASTECARD RARITY: ${card.cardRarity.displayName.uppercase()}", titleX, pcy + 44f,
+        canvas.drawText("ROLLCARD RARITY: ${card.cardRarity.displayName.uppercase()}", titleX, pcy + 44f,
             paint(26f, bold = true, mono = true, color = rarityColor(card.cardRarity)))
 
         // Stats.
@@ -165,7 +165,7 @@ object SnapshotRenderer {
         canvas.drawText(footer, (W - fp.measureText(footer)) / 2f, cardRect.bottom - 40f, fp)
 
         val dir = File(context.cacheDir, "shared").apply { mkdirs() }
-        val file = File(dir, "${InputSanitizer.filenameSlug(card.displayName)}_tastecard.png")
+        val file = File(dir, "${InputSanitizer.filenameSlug(card.displayName)}_rollcard.png")
         FileOutputStream(file).use { bmp.compress(Bitmap.CompressFormat.PNG, 100, it) }
         FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
     }

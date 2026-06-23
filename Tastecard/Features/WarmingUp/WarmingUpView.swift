@@ -24,11 +24,11 @@ struct WarmingUpView: View {
         // In limited mode the engine only sees the photos the user picked, so the fix is to
         // share more — not to "take more photos". Lead with that when access is limited.
         if model.photoService.isLimited {
-            return "Tastecard can only see the photos you selected. Tap “Select more photos” to share more of your library, then try again."
+            return "Rollcard can only see the photos you selected. Tap “Select more photos” to share more of your library, then try again."
         }
         switch reason {
         case .notEnoughPhotos:
-            return "We need a few more photos before your Tastecard takes shape. Keep snapping — then come back."
+            return "We need a few more photos before your Rollcard takes shape. Keep snapping — then come back."
         case .notEnoughEvidence:
             return "Your photos are wonderfully varied! We couldn't find three clear themes yet. Add more shots of the things you love and try again."
         }

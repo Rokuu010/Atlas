@@ -100,7 +100,7 @@ struct SnapshotCardView: View {
 
     private var brandRow: some View {
         HStack(spacing: 8) {
-            // Reflects the user's name (e.g. "ROHAN'S TASTECARD"); "MY TASTECARD" by default.
+            // Reflects the user's name (e.g. "ROHAN'S ROLLCARD"); "MY ROLLCARD" by default.
             Text(card.cardTitle.uppercased())
                 .font(AppFont.mono(11, weight: .heavy)).tracking(2)
                 .lineLimit(1).minimumScaleFactor(0.6)
@@ -137,7 +137,7 @@ struct SnapshotCardView: View {
                     .font(AppFont.display(22, weight: .black))
                     .lineLimit(2).minimumScaleFactor(0.5)
                 HStack(spacing: 5) {
-                    Text("TASTECARD RARITY:")
+                    Text("ROLLCARD RARITY:")
                         .font(AppFont.mono(8)).tracking(0.5).opacity(0.7)
                     RarityBadge(tier: card.cardRarity, fontSize: 10)
                 }

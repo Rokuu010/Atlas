@@ -37,7 +37,7 @@ enum InputSanitizer {
     }
 
     /// Returns a non-empty display name, falling back to a safe default.
-    static func displayNameOrDefault(_ raw: String, default fallback: String = "My Tastecard") -> String {
+    static func displayNameOrDefault(_ raw: String, default fallback: String = "My Rollcard") -> String {
         let s = displayName(raw)
         return s.isEmpty ? fallback : s
     }
@@ -66,7 +66,7 @@ enum InputSanitizer {
         var slug = String(mapped)
         while slug.contains("__") { slug = slug.replacingOccurrences(of: "__", with: "_") }
         slug = slug.trimmingCharacters(in: CharacterSet(charactersIn: "_"))
-        return slug.isEmpty ? "tastecard" : slug
+        return slug.isEmpty ? "rollcard" : slug
     }
 
     private static func isDisallowed(_ s: Unicode.Scalar) -> Bool {

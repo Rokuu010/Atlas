@@ -147,7 +147,7 @@ struct CardView: View {
                         .overlay(Capsule().strokeBorder(.white.opacity(0.12)))
                 }
                 .buttonStyle(.plain)
-                .accessibilityLabel("Edit Tastecard")
+                .accessibilityLabel("Edit Rollcard")
             }
         }
     }
@@ -170,7 +170,7 @@ struct CardView: View {
                     .foregroundStyle(.white)
                     .multilineTextAlignment(.center)
                 HStack(spacing: 6) {
-                    Text("TASTECARD RARITY:")
+                    Text("ROLLCARD RARITY:")
                         .font(AppFont.mono(10))
                         .tracking(1)
                         .foregroundStyle(.white.opacity(0.7))
@@ -217,7 +217,7 @@ struct CardView: View {
         Button {
             Haptics.tap(); sheet = .snapshot
         } label: {
-            Text("✨ Share Tastecard".uppercased())
+            Text("✨ Share Rollcard".uppercased())
                 .font(AppFont.sans(13, weight: .black))
                 .tracking(2)
                 .foregroundStyle(.white)

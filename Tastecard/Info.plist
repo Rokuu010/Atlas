@@ -13,7 +13,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleDisplayName</key>
-	<string>Tastecard</string>
+	<string>Rollcard</string>
 	<key>CFBundleName</key>
 	<string>$(PRODUCT_NAME)</string>
 	<key>CFBundleShortVersionString</key>
@@ -39,7 +39,7 @@
 	<!-- §8 / 5.1.1 — honest, specific Photos permission string.
 	     We request the *add/read* description; limited library is offered explicitly in-app. -->
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Tastecard analyses your photos on this device to build your card. Your photos never leave your device — nothing is uploaded, and you can grant access to all or only selected photos.</string>
+	<string>Rollcard analyses your photos on this device to build your card. Your photos never leave your device — nothing is uploaded, and you can grant access to all or only selected photos.</string>
 
 	<!-- Core app makes zero network calls and uses no non-exempt encryption.
 	     Declaring this avoids an unnecessary export-compliance prompt at submission. -->

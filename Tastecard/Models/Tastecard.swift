@@ -67,12 +67,16 @@ struct Tastecard: Codable, Equatable {
     /// Possessive card title for a given name. Exposed so Settings can preview it live.
     static func title(forName name: String) -> String {
         let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
-        if trimmed.isEmpty || trimmed.caseInsensitiveCompare("My Tastecard") == .orderedSame {
-            return "My Tastecard"
+        // Treat both the new and the old default as "no custom name" so cards saved before the
+        // rename don't render as "My Tastecard's Rollcard".
+        if trimmed.isEmpty
+            || trimmed.caseInsensitiveCompare("My Rollcard") == .orderedSame
+            || trimmed.caseInsensitiveCompare("My Tastecard") == .orderedSame {
+            return "My Rollcard"
         }
         // Light possessive: "James" -> "James'", everything else -> "<name>'s".
         let suffix = trimmed.lowercased().hasSuffix("s") ? "'" : "'s"
-        return "\(trimmed)\(suffix) Tastecard"
+        return "\(trimmed)\(suffix) Rollcard"
     }
 
     /// Effective glass tint multiplier with a safe default for cards saved before this field.

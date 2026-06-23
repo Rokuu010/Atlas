@@ -34,7 +34,7 @@ class AnalysisEngine(
     private val categories: List<Category>,
     private val cache: EmbeddingCache,
     private val config: SelectionConfig = SelectionConfig(),
-    private val defaultDisplayName: String = "My Tastecard",
+    private val defaultDisplayName: String = "My Rollcard",
     private val relativeMargin: Float = 0.05f,
     private val absoluteFloor: Float = 0.06f,
     private val backupPool: Int = 10,

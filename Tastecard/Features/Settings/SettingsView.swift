@@ -56,7 +56,7 @@ struct SettingsView: View {
                         .font(.caption).foregroundStyle(.secondary)
                 }
 
-                Section("Your Tastecard") {
+                Section("Your Rollcard") {
                     labeledRow("Code", vm.card.serialDisplay)
                     labeledRow("Photos analysed", vm.card.photosAnalysed.formatted())
                     labeledRow("Emerging themes", "\(vm.card.emergentThemeCount)")
@@ -81,12 +81,12 @@ struct SettingsView: View {
                 Section("Privacy") {
                     Button("Privacy Policy") { legal = .privacy }
                     Button("Terms of Use") { legal = .terms }
-                    Text("Tastecard analyses your photos on-device. Nothing is uploaded, stored off-device, or shared with third parties. There are no ads or trackers.")
+                    Text("Rollcard analyses your photos on-device. Nothing is uploaded, stored off-device, or shared with third parties. There are no ads or trackers.")
                         .font(.caption).foregroundStyle(.secondary)
                 }
 
                 Section {
-                    Button("Delete my Tastecard data", role: .destructive) { showDeleteConfirm = true }
+                    Button("Delete my Rollcard data", role: .destructive) { showDeleteConfirm = true }
                 } footer: {
                     Text("Removes your saved card, the on-device analysis cache, and any custom background from this device. This cannot be undone.")
                 }

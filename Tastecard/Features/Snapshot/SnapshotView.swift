@@ -99,7 +99,7 @@ struct SnapshotView: View {
                     } else {
                         Image(systemName: "square.and.arrow.up")
                     }
-                    Text(isSharing ? "Preparing…" : "Share Tastecard")
+                    Text(isSharing ? "Preparing…" : "Share Rollcard")
                 }
                 .font(AppFont.sans(13, weight: .black)).tracking(1)
                 .foregroundColor(.white)

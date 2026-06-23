@@ -132,7 +132,7 @@ fun CardScreen(vm: TastecardViewModel, card: Tastecard) {
                     RoundIcon(Icons.Filled.Settings, ink) { showSettings = true }
                     Spacer(Modifier.width(8.dp))
                     Box(Modifier.weight(1f), contentAlignment = Alignment.Center) {
-                        Mono("TASTECARD", ink.copy(alpha = 0.9f), 12, FontWeight.Bold, 3.0)
+                        Mono("ROLLCARD", ink.copy(alpha = 0.9f), 12, FontWeight.Bold, 3.0)
                     }
                     RoundIcon(Icons.Outlined.WaterDrop, ink) { showAppearance = true }
                 }
@@ -144,7 +144,7 @@ fun CardScreen(vm: TastecardViewModel, card: Tastecard) {
                         Text(card.cardTitle, color = ink, fontSize = 26.sp, fontWeight = FontWeight.Bold, maxLines = 2)
                         Spacer(Modifier.height(4.dp))
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Mono("TASTECARD RARITY: ", ink.copy(alpha = 0.6f), 10)
+                            Mono("ROLLCARD RARITY: ", ink.copy(alpha = 0.6f), 10)
                             RarityBadge(card.cardRarity, 12)
                         }
                     }
@@ -200,7 +200,7 @@ fun CardScreen(vm: TastecardViewModel, card: Tastecard) {
                         .padding(vertical = 14.dp),
                     contentAlignment = Alignment.Center,
                 ) {
-                    Text(if (sharing) "PREPARING…" else "SHARE TASTECARD",
+                    Text(if (sharing) "PREPARING…" else "SHARE ROLLCARD",
                         color = ink, fontWeight = FontWeight.Black, fontSize = 12.sp, letterSpacing = 2.sp)
                 }
 
@@ -406,11 +406,11 @@ private fun SettingsContent(vm: TastecardViewModel, card: Tastecard, onPickProfi
 
         TextButton(onClick = { onClose(); vm.startAnalysis() }) { Text("Re-analyse my camera roll") }
         Text(
-            "Tastecard analyses your photos on-device. Nothing is uploaded, stored off-device, or shared with third parties.",
+            "Rollcard analyses your photos on-device. Nothing is uploaded, stored off-device, or shared with third parties.",
             color = Color.White.copy(alpha = 0.6f), fontSize = 12.sp,
         )
         TextButton(onClick = { confirmDelete = true }) {
-            Text("Delete my Tastecard data", color = Color(0xFFFDA4AF))
+            Text("Delete my Rollcard data", color = Color(0xFFFDA4AF))
         }
         Spacer(Modifier.height(8.dp))
     }
@@ -476,5 +476,5 @@ private fun shareImage(context: Context, uri: Uri) {
         putExtra(Intent.EXTRA_STREAM, uri)
         addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
     }
-    context.startActivity(Intent.createChooser(intent, "Share Tastecard"))
+    context.startActivity(Intent.createChooser(intent, "Share Rollcard"))
 }

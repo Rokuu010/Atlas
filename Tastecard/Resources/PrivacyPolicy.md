@@ -1,12 +1,12 @@
-# Tastecard — Privacy Policy
+# Rollcard — Privacy Policy
 
 _Last updated: 2026-06-17_
 
-Tastecard is built around a single promise: **your photos and everything we derive from them never leave your device.**
+Rollcard is built around a single promise: **your photos and everything we derive from them never leave your device.**
 
 ## What we access
 
-- **Your photo library (read-only).** With your permission, Tastecard reads images from your photo library to build your card. You may grant access to **all** photos or only a **selected** subset (limited library) — your choice, changeable at any time in iOS Settings.
+- **Your photo library (read-only).** With your permission, Rollcard reads images from your photo library to build your card. You may grant access to **all** photos or only a **selected** subset (limited library) — your choice, changeable at any time in iOS Settings.
 - **Photo location & timestamp (on-device only).** To count the distinct "Places" on your card, we read each photo's GPS coordinate and date directly from the photo metadata, **immediately group them into coarse clusters in memory, and discard the raw coordinates.** We never store or transmit precise locations.
 
 ## What we do with it
@@ -37,13 +37,13 @@ There are **none**. No analytics, no advertising, no trackers, no third-party SD
 
 Because all data is local and nothing is collected by us, you remain in full control:
 
-- **Right to erasure:** "Delete my Tastecard data" in Settings permanently removes your saved card, the on-device analysis cache, and any custom background from your device.
+- **Right to erasure:** "Delete my Rollcard data" in Settings permanently removes your saved card, the on-device analysis cache, and any custom background from your device.
 - **Access control:** You can revoke or change photo access any time in iOS Settings.
 
 ## Children
 
-Tastecard does not knowingly collect data from anyone; it shows you only your own photos, on your own device.
+Rollcard does not knowingly collect data from anyone; it shows you only your own photos, on your own device.
 
 ## Contact
 
-Questions about this policy: privacy@tastecard.app
+Questions about this policy: privacy@rollcard.app

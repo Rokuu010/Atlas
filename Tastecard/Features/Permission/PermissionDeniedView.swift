@@ -23,7 +23,7 @@ struct PermissionDeniedView: View {
                 Text("Photo access is off")
                     .font(AppFont.display(24, weight: .bold))
                     .foregroundColor(.white)
-                Text("Tastecard needs to read your photos on this device to build your card. You can turn this on in Settings — your photos still never leave your device.")
+                Text("Rollcard needs to read your photos on this device to build your card. You can turn this on in Settings — your photos still never leave your device.")
                     .font(AppFont.sans(15))
                     .multilineTextAlignment(.center)
                     .foregroundColor(.white.opacity(0.72))

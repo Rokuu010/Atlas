@@ -25,7 +25,7 @@ struct GreetingView: View {
             VStack(spacing: 0) {
                 Spacer()
                 VStack(spacing: 16) {
-                    Text("Tastecard")
+                    Text("Rollcard")
                         .font(AppFont.mono(13, weight: .bold))
                         .tracking(4)
                         .foregroundColor(.white.opacity(0.75))
@@ -44,7 +44,7 @@ struct GreetingView: View {
                 }
                 .padding(.bottom, 28)
 
-                CTAButton(title: "Create my Tastecard", systemImage: "sparkles") {
+                CTAButton(title: "Create my Rollcard", systemImage: "sparkles") {
                     model.beginOnboarding()
                 }
                 .padding(.horizontal, 32)

@@ -82,9 +82,14 @@ data class Tastecard(
         /** Possessive card title for a name. Exposed so Settings can preview it live. */
         fun title(name: String): String {
             val trimmed = name.trim()
-            if (trimmed.isEmpty() || trimmed.equals("My Tastecard", ignoreCase = true)) return "My Tastecard"
+            // Treat both the new and old default as "no custom name" so older saved cards
+            // don't render as "My Tastecard's Rollcard".
+            if (trimmed.isEmpty() ||
+                trimmed.equals("My Rollcard", ignoreCase = true) ||
+                trimmed.equals("My Tastecard", ignoreCase = true)
+            ) return "My Rollcard"
             val suffix = if (trimmed.lowercase().endsWith("s")) "'" else "'s"
-            return "$trimmed$suffix Tastecard"
+            return "$trimmed$suffix Rollcard"
         }
 
         fun assemble(

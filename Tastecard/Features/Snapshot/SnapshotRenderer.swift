@@ -27,7 +27,7 @@ enum SnapshotRenderer {
     static func renderToTempFile(_ view: SnapshotCardView, displayName: String, scale: CGFloat = 3) -> URL? {
         guard let data = renderPNG(view, scale: scale) else { return nil }
         let slug = InputSanitizer.filenameSlug(displayName)
-        let url = FileManager.default.temporaryDirectory.appendingPathComponent("\(slug)_tastecard.png")
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("\(slug)_rollcard.png")
         do {
             try data.write(to: url, options: .atomic)
             return url

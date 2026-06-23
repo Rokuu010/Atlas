@@ -69,7 +69,7 @@ struct MiniThemeCardView: View {
 
             VStack {
                 HStack {
-                    Text("MY TASTECARD").font(AppFont.mono(11, weight: .heavy)).tracking(2)
+                    Text("MY ROLLCARD").font(AppFont.mono(11, weight: .heavy)).tracking(2)
                     Spacer()
                     Text(card.serialDisplay).font(AppFont.mono(11, weight: .bold))
                 }

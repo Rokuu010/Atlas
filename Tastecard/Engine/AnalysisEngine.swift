@@ -48,7 +48,7 @@ final class AnalysisEngine {
         var selection = SelectionConfig()
         var batchSize = 32
         var heroInspectTopN = 8
-        var defaultDisplayName = "My Tastecard"
+        var defaultDisplayName = "My Rollcard"
         /// Cap analysis to the most recent N photos — recent enough that the surfaced themes
         /// are ones the user relates to, but large enough that categories comfortably reach
         /// the per-category photo floor for a meaningful shadow set.

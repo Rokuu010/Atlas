@@ -47,7 +47,7 @@ fun GreetingScreen(onStart: () -> Unit) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Mono("TASTECARD", Color.White.copy(alpha = 0.75f), 13, FontWeight.Bold, 4.0)
+            Mono("ROLLCARD", Color.White.copy(alpha = 0.75f), 13, FontWeight.Bold, 4.0)
             Spacer(Modifier.height(16.dp))
             Text(
                 "Find out what your\ncamera roll says about you",
@@ -60,7 +60,7 @@ fun GreetingScreen(onStart: () -> Unit) {
                 color = Color.White.copy(alpha = 0.7f), fontSize = 14.sp, textAlign = TextAlign.Center,
             )
             Spacer(Modifier.height(36.dp))
-            CTAButton("Create my Tastecard", onClick = onStart)
+            CTAButton("Create my Rollcard", onClick = onStart)
         }
     }
 }
@@ -156,9 +156,9 @@ fun WarmingUpScreen(
     // fix is to share more — not to "take more photos". Lead with that when access is limited.
     val body = when {
         partialAccess ->
-            "Tastecard can only see the photos you selected. Share more of your library, then try again."
+            "Rollcard can only see the photos you selected. Share more of your library, then try again."
         reason == WarmingReason.NOT_ENOUGH_PHOTOS ->
-            "We need a few more photos before your Tastecard takes shape. Keep snapping — then come back."
+            "We need a few more photos before your Rollcard takes shape. Keep snapping — then come back."
         else ->
             "We couldn't find three clear themes yet. Add more shots of the things you love and try again."
     }
@@ -199,7 +199,7 @@ fun DeniedScreen(onOpenSettings: () -> Unit, onTryAgain: () -> Unit, onBack: () 
             CenteredMessage(
                 emoji = "🔒",
                 title = "Photo access is off",
-                body = "Tastecard needs to read your photos on this device to build your card. Turn on photo access in Settings — your photos still never leave your device.",
+                body = "Rollcard needs to read your photos on this device to build your card. Turn on photo access in Settings — your photos still never leave your device.",
             )
             Spacer(Modifier.height(28.dp))
             // Android only shows the system permission dialog the first time. Once denied, the

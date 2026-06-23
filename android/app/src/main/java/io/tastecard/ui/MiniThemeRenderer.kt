@@ -72,7 +72,7 @@ object MiniThemeRenderer {
         val contentW = W - pad * 2
 
         // Brand row at the top.
-        canvas.drawText("MY TASTECARD", pad, 120f, paint(34f, bold = true, mono = true, alpha = 217))
+        canvas.drawText("MY ROLLCARD", pad, 120f, paint(34f, bold = true, mono = true, alpha = 217))
         val codeP = paint(34f, bold = true, mono = true, alpha = 217)
         canvas.drawText(card.serialDisplay, W - pad - codeP.measureText(card.serialDisplay), 120f, codeP)
 

@@ -25,6 +25,10 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import io.tastecard.model.RarityTier
 
+/** Pre-card onboarding palette (greeting through generation); the card keeps its own theme. */
+val OnboardingBG = Color(0xFFF0C987)   // warm tan
+val OnboardingInk = Color(0xFF3B153A)  // deep plum
+
 /** Translucent "glass" surface (no live blur — broad device compatibility). */
 fun Modifier.glass(fill: Color, border: Color, radius: Dp): Modifier =
     this.clip(RoundedCornerShape(radius))
@@ -36,14 +40,14 @@ fun CTAButton(text: String, modifier: Modifier = Modifier, onClick: () -> Unit) 
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .glass(Color.White.copy(alpha = 0.18f), Color.White.copy(alpha = 0.35f), 18.dp)
+            .glass(OnboardingInk, OnboardingInk, 18.dp)
             .clickable { onClick() }
             .padding(vertical = 16.dp),
         contentAlignment = Alignment.Center,
     ) {
         Text(
             text.uppercase(),
-            color = Color.White,
+            color = OnboardingBG,
             fontWeight = FontWeight.Black,
             fontSize = 13.sp,
             letterSpacing = 2.sp,
@@ -55,7 +59,7 @@ fun CTAButton(text: String, modifier: Modifier = Modifier, onClick: () -> Unit) 
 fun SecondaryButton(text: String, onClick: () -> Unit) {
     Text(
         text,
-        color = Color.White.copy(alpha = 0.7f),
+        color = OnboardingInk.copy(alpha = 0.7f),
         fontWeight = FontWeight.SemiBold,
         fontSize = 13.sp,
         modifier = Modifier.clickable { onClick() }.padding(8.dp),
@@ -105,9 +109,7 @@ fun OnboardingBackground(content: @Composable () -> Unit) {
         Modifier
             .fillMaxSize()
             .background(
-                Brush.verticalGradient(
-                    listOf(Color(0xFF3F2A52), Color(0xFF2A1C38), Color(0xFF3A2438))
-                )
+                OnboardingBG
             )
     ) { content() }
 }
@@ -126,12 +128,12 @@ fun CenteredMessage(
     ) {
         Text(emoji, fontSize = 40.sp)
         androidx.compose.foundation.layout.Spacer(Modifier.padding(8.dp))
-        Text(title, color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
+        Text(title, color = OnboardingInk, fontSize = 24.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
         androidx.compose.foundation.layout.Spacer(Modifier.padding(6.dp))
-        Text(body, color = Color.White.copy(alpha = 0.72f), fontSize = 15.sp, textAlign = TextAlign.Center)
+        Text(body, color = OnboardingInk.copy(alpha = 0.72f), fontSize = 15.sp, textAlign = TextAlign.Center)
         if (sub != null) {
             androidx.compose.foundation.layout.Spacer(Modifier.padding(6.dp))
-            Mono(sub, Color.White.copy(alpha = 0.45f), 11)
+            Mono(sub, OnboardingInk.copy(alpha = 0.45f), 11)
         }
     }
 }

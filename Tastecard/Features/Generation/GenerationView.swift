@@ -21,7 +21,7 @@ struct GenerationView: View {
 
                 ZStack {
                     Circle()
-                        .stroke(.white.opacity(0.15), lineWidth: 8)
+                        .stroke(.onboardingInk.opacity(0.15), lineWidth: 8)
                     Circle()
                         .trim(from: 0, to: max(0.02, progress.fraction))
                         .stroke(
@@ -34,7 +34,7 @@ struct GenerationView: View {
                     VStack(spacing: 2) {
                         Text("\(Int(progress.fraction * 100))%")
                             .font(AppFont.mono(28, weight: .heavy))
-                            .foregroundColor(.white)
+                            .foregroundColor(.onboardingInk)
                     }
                 }
                 .frame(width: 150, height: 150)
@@ -42,21 +42,21 @@ struct GenerationView: View {
                 VStack(spacing: 6) {
                     Text("Reading your camera roll")
                         .font(AppFont.display(20, weight: .bold))
-                        .foregroundColor(.white)
+                        .foregroundColor(.onboardingInk)
                     if progress.total > 0 {
                         Text("Analysing \(progress.processed.formatted()) of \(progress.total.formatted())")
                             .font(AppFont.sans(14))
-                            .foregroundColor(.white.opacity(0.7))
+                            .foregroundColor(.onboardingInk.opacity(0.7))
                             .contentTransition(.numericText())
                     } else {
                         Text("Finding your photos…")
                             .font(AppFont.sans(14))
-                            .foregroundColor(.white.opacity(0.7))
+                            .foregroundColor(.onboardingInk.opacity(0.7))
                     }
                     Text("Everything stays on your device")
                         .font(AppFont.mono(10, weight: .medium))
                         .tracking(1)
-                        .foregroundColor(.white.opacity(0.45))
+                        .foregroundColor(.onboardingInk.opacity(0.45))
                         .padding(.top, 4)
                 }
 

@@ -47,17 +47,17 @@ fun GreetingScreen(onStart: () -> Unit) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Mono("ROLLCARD", Color.White.copy(alpha = 0.75f), 13, FontWeight.Bold, 4.0)
+            Mono("ROLLCARD", OnboardingInk.copy(alpha = 0.75f), 13, FontWeight.Bold, 4.0)
             Spacer(Modifier.height(16.dp))
             Text(
                 "Find out what your\ncamera roll says about you",
-                color = Color.White, fontSize = 30.sp, fontWeight = FontWeight.Bold,
+                color = OnboardingInk, fontSize = 30.sp, fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center, lineHeight = 38.sp,
             )
             Spacer(Modifier.height(14.dp))
             Text(
                 "Analysed entirely on your device. Nothing is ever uploaded.",
-                color = Color.White.copy(alpha = 0.7f), fontSize = 14.sp, textAlign = TextAlign.Center,
+                color = OnboardingInk.copy(alpha = 0.7f), fontSize = 14.sp, textAlign = TextAlign.Center,
             )
             Spacer(Modifier.height(36.dp))
             CTAButton("Create my Rollcard", onClick = onStart)
@@ -73,11 +73,11 @@ fun PrimingScreen(onContinue: () -> Unit, onBack: () -> Unit) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text("Before we look at your photos", color = Color.White, fontSize = 23.sp,
+            Text("Before we look at your photos", color = OnboardingInk, fontSize = 23.sp,
                 fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
             Spacer(Modifier.height(20.dp))
             Column(
-                Modifier.fillMaxWidth().glass(Color.White.copy(alpha = 0.06f), Color.White.copy(alpha = 0.12f), 24.dp)
+                Modifier.fillMaxWidth().glass(OnboardingInk.copy(alpha = 0.06f), OnboardingInk.copy(alpha = 0.12f), 24.dp)
                     .padding(20.dp),
                 verticalArrangement = Arrangement.spacedBy(14.dp),
             ) {
@@ -96,8 +96,8 @@ fun PrimingScreen(onContinue: () -> Unit, onBack: () -> Unit) {
 @Composable
 private fun Bullet(title: String, body: String) {
     Column {
-        Text(title, color = Color.White, fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
-        Text(body, color = Color.White.copy(alpha = 0.7f), fontSize = 13.sp)
+        Text(title, color = OnboardingInk, fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
+        Text(body, color = OnboardingInk.copy(alpha = 0.7f), fontSize = 13.sp)
     }
 }
 
@@ -119,20 +119,20 @@ fun GeneratingScreen(vm: TastecardViewModel) {
                     progress = if (fraction <= 0f) 0.02f else fraction,
                     modifier = Modifier.size(150.dp),
                     color = Color(0xFFE2A9C0),
-                    trackColor = Color.White.copy(alpha = 0.15f),
+                    trackColor = OnboardingInk.copy(alpha = 0.15f),
                     strokeWidth = 8.dp,
                 )
-                Text("${(fraction * 100).toInt()}%", color = Color.White, fontSize = 28.sp, fontWeight = FontWeight.Black)
+                Text("${(fraction * 100).toInt()}%", color = OnboardingInk, fontSize = 28.sp, fontWeight = FontWeight.Black)
             }
             Spacer(Modifier.height(24.dp))
-            Text("Reading your camera roll", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+            Text("Reading your camera roll", color = OnboardingInk, fontSize = 20.sp, fontWeight = FontWeight.Bold)
             Spacer(Modifier.height(6.dp))
             Text(
                 if (total > 0) "Analysing $processed of $total" else "Finding your photos…",
-                color = Color.White.copy(alpha = 0.7f), fontSize = 14.sp,
+                color = OnboardingInk.copy(alpha = 0.7f), fontSize = 14.sp,
             )
             Spacer(Modifier.height(4.dp))
-            Mono("EVERYTHING STAYS ON YOUR DEVICE", Color.White.copy(alpha = 0.45f), 10, letter = 1.0)
+            Mono("EVERYTHING STAYS ON YOUR DEVICE", OnboardingInk.copy(alpha = 0.45f), 10, letter = 1.0)
             Spacer(Modifier.height(32.dp))
             SecondaryButton("Cancel", onClick = vm::cancel)
         }

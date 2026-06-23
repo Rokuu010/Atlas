@@ -27,27 +27,27 @@ struct PermissionPrimingView: View {
                 VStack(spacing: 22) {
                     Image(systemName: "photo.stack")
                         .font(.system(size: 40, weight: .light))
-                        .foregroundColor(.white)
+                        .foregroundColor(.onboardingInk)
 
                     Text("Before we look at your photos")
                         .font(AppFont.display(24, weight: .bold))
                         .multilineTextAlignment(.center)
-                        .foregroundColor(.white)
+                        .foregroundColor(.onboardingInk)
 
                     VStack(alignment: .leading, spacing: 16) {
                         ForEach(points, id: \.0) { point in
                             HStack(alignment: .top, spacing: 14) {
                                 Image(systemName: point.0)
                                     .font(.system(size: 18, weight: .regular))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(.onboardingInk)
                                     .frame(width: 26)
                                 VStack(alignment: .leading, spacing: 3) {
                                     Text(point.1)
                                         .font(AppFont.sans(15, weight: .semibold))
-                                        .foregroundColor(.white)
+                                        .foregroundColor(.onboardingInk)
                                     Text(point.2)
                                         .font(AppFont.sans(13))
-                                        .foregroundColor(.white.opacity(0.7))
+                                        .foregroundColor(.onboardingInk.opacity(0.7))
                                         .fixedSize(horizontal: false, vertical: true)
                                 }
                                 Spacer(minLength: 0)
@@ -55,7 +55,7 @@ struct PermissionPrimingView: View {
                         }
                     }
                     .padding(20)
-                    .glassCard(cornerRadius: 28, fill: .white.opacity(0.06), border: .white.opacity(0.12))
+                    .glassCard(cornerRadius: 28, fill: .onboardingInk.opacity(0.06), border: .onboardingInk.opacity(0.12))
                 }
                 .padding(.horizontal, 28)
 

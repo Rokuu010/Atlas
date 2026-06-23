@@ -3,31 +3,26 @@
 //  Tastecard
 //
 //  Shared visual chrome for the non-card screens (greeting, priming, generation, edge
-//  states). Uses the design system's glass + typography so onboarding feels of-a-piece
-//  with the card.
+//  states). These pre-card screens use a warm palette — tan background, deep-plum ink.
+//  The Rollcard itself and everything after it keep their own theme.
 //
 
 import SwiftUI
 
-/// A calm, branded background for onboarding/edge screens.
+extension Color {
+    /// Pre-card onboarding palette (greeting through generation). Nothing after the card uses these.
+    static let onboardingBG = Color(hex: 0xF0C987)   // warm tan
+    static let onboardingInk = Color(hex: 0x3B153A)  // deep plum
+}
+
+/// The warm onboarding/edge-screen background (pre-card only).
 struct OnboardingBackground: View {
     var body: some View {
-        ZStack {
-            Color(hex: 0x3F2A52)
-            RadialGradient(
-                colors: [Color(hex: 0x75619D).opacity(0.55), .clear],
-                center: .top, startRadius: 20, endRadius: 520
-            )
-            RadialGradient(
-                colors: [Color(hex: 0xA24C61).opacity(0.30), .clear],
-                center: .bottomTrailing, startRadius: 10, endRadius: 460
-            )
-        }
-        .ignoresSafeArea()
+        Color.onboardingBG.ignoresSafeArea()
     }
 }
 
-/// Primary glass call-to-action button matching the card's "Share Tastecard" style.
+/// Primary call-to-action: a solid plum pill with tan text, legible on the tan background.
 struct CTAButton: View {
     let title: String
     var systemImage: String?
@@ -41,10 +36,10 @@ struct CTAButton: View {
             }
             .font(AppFont.sans(13, weight: .black))
             .tracking(2)
-            .foregroundColor(.white)
+            .foregroundColor(.onboardingBG)
             .frame(maxWidth: .infinity)
             .padding(.vertical, 16)
-            .glassPill(cornerRadius: 18, fill: .white.opacity(0.18), border: .white.opacity(0.35))
+            .background(RoundedRectangle(cornerRadius: 18, style: .continuous).fill(Color.onboardingInk))
         }
         .buttonStyle(.plain)
     }
@@ -58,31 +53,31 @@ struct SecondaryButton: View {
         Button(action: { Haptics.tap(); action() }) {
             Text(title)
                 .font(AppFont.sans(13, weight: .semibold))
-                .foregroundColor(.white.opacity(0.7))
+                .foregroundColor(.onboardingInk.opacity(0.7))
         }
         .buttonStyle(.plain)
     }
 }
 
-/// A blurred faux card used as the teaser behind the greeting (§4.1).
+/// A faux card used as the teaser behind the greeting (§4.1), styled for the warm background.
 struct SampleTeaserCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             HStack {
-                Circle().fill(.white.opacity(0.18)).frame(width: 28, height: 28)
+                Circle().fill(Color.onboardingInk.opacity(0.15)).frame(width: 28, height: 28)
                 Spacer()
                 Text("ROLLCARD").font(AppFont.mono(10, weight: .bold)).tracking(3)
-                    .foregroundColor(.white.opacity(0.8))
+                    .foregroundColor(.onboardingInk.opacity(0.8))
                 Spacer()
-                Circle().fill(.white.opacity(0.18)).frame(width: 28, height: 28)
+                Circle().fill(Color.onboardingInk.opacity(0.15)).frame(width: 28, height: 28)
             }
             Text("Your Rollcard")
-                .font(AppFont.display(26, weight: .bold)).foregroundColor(.white)
+                .font(AppFont.display(26, weight: .bold)).foregroundColor(.onboardingInk)
             HStack(spacing: 10) {
                 ForEach(0..<3, id: \.self) { _ in
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("2.3K").font(AppFont.mono(16, weight: .heavy)).foregroundColor(.white)
-                        Capsule().fill(.white.opacity(0.3)).frame(width: 40, height: 5)
+                        Text("2.3K").font(AppFont.mono(16, weight: .heavy)).foregroundColor(.onboardingInk)
+                        Capsule().fill(Color.onboardingInk.opacity(0.25)).frame(width: 40, height: 5)
                     }
                 }
             }
@@ -98,6 +93,11 @@ struct SampleTeaserCard: View {
         }
         .padding(20)
         .frame(maxWidth: 340)
-        .glassCard(fill: .white.opacity(0.06), border: .white.opacity(0.12))
+        .background(
+            RoundedRectangle(cornerRadius: 28, style: .continuous)
+                .fill(Color.onboardingInk.opacity(0.06))
+                .overlay(RoundedRectangle(cornerRadius: 28, style: .continuous)
+                    .strokeBorder(Color.onboardingInk.opacity(0.15)))
+        )
     }
 }

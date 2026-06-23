@@ -28,18 +28,18 @@ struct GreetingView: View {
                     Text("Rollcard")
                         .font(AppFont.mono(13, weight: .bold))
                         .tracking(4)
-                        .foregroundColor(.white.opacity(0.75))
+                        .foregroundColor(.onboardingInk.opacity(0.75))
 
                     Text("Find out what your\ncamera roll says about you")
                         .font(AppFont.display(30, weight: .bold))
                         .multilineTextAlignment(.center)
-                        .foregroundColor(.white)
+                        .foregroundColor(.onboardingInk)
                         .fixedSize(horizontal: false, vertical: true)
 
                     Text("Analysed entirely on your device. Nothing is ever uploaded.")
                         .font(AppFont.sans(14))
                         .multilineTextAlignment(.center)
-                        .foregroundColor(.white.opacity(0.7))
+                        .foregroundColor(.onboardingInk.opacity(0.7))
                         .padding(.horizontal, 24)
                 }
                 .padding(.bottom, 28)

@@ -21,7 +21,7 @@ struct GenerationView: View {
 
                 ZStack {
                     Circle()
-                        .stroke(.onboardingInk.opacity(0.15), lineWidth: 8)
+                        .stroke(Color.onboardingInk.opacity(0.15), lineWidth: 8)
                     Circle()
                         .trim(from: 0, to: max(0.02, progress.fraction))
                         .stroke(

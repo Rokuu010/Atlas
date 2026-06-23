@@ -25,13 +25,13 @@ final class InputSanitizerTests: XCTestCase {
     }
 
     func testEmptyFallsBackToDefault() {
-        XCTAssertEqual(InputSanitizer.displayNameOrDefault("   \u{200B} "), "My Tastecard")
+        XCTAssertEqual(InputSanitizer.displayNameOrDefault("   \u{200B} "), "My Rollcard")
         XCTAssertEqual(InputSanitizer.displayNameOrDefault("", default: "X"), "X")
     }
 
     func testFilenameSlug() {
         XCTAssertEqual(InputSanitizer.filenameSlug("Lina's Tastecard!"), "lina_s_tastecard")
-        XCTAssertEqual(InputSanitizer.filenameSlug("   "), "tastecard")
+        XCTAssertEqual(InputSanitizer.filenameSlug("   "), "rollcard")
         XCTAssertEqual(InputSanitizer.filenameSlug("café 2024"), "caf_2024")
     }
 

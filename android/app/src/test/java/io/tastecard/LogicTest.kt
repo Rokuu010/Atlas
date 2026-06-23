@@ -60,11 +60,11 @@ class InputSanitizerTest {
     }
 
     @Test fun emptyFallsBack() {
-        assertEquals("My Tastecard", InputSanitizer.displayNameOrDefault("   \u200B "))
+        assertEquals("My Rollcard", InputSanitizer.displayNameOrDefault("   \u200B "))
     }
 
     @Test fun filenameSlug() {
         assertEquals("lina_s_tastecard", InputSanitizer.filenameSlug("Lina's Tastecard!"))
-        assertEquals("tastecard", InputSanitizer.filenameSlug("   "))
+        assertEquals("rollcard", InputSanitizer.filenameSlug("   "))
     }
 }

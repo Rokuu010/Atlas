@@ -26,8 +26,8 @@ import coil.compose.AsyncImage
 import io.tastecard.model.RarityTier
 
 /** Pre-card onboarding palette (greeting through generation); the card keeps its own theme. */
-val OnboardingBG = Color(0xFFF0C987)   // warm tan
-val OnboardingInk = Color(0xFF3B153A)  // deep plum
+val OnboardingBG = Color(0xFFFBE4D4)   // logo peach
+val OnboardingInk = Color(0xFF2E2B52)  // logo navy
 
 /** Translucent "glass" surface (no live blur — broad device compatibility). */
 fun Modifier.glass(fill: Color, border: Color, radius: Dp): Modifier =

@@ -11,8 +11,8 @@ import SwiftUI
 
 extension Color {
     /// Pre-card onboarding palette (greeting through generation). Nothing after the card uses these.
-    static let onboardingBG = Color(hex: 0xF0C987)   // warm tan
-    static let onboardingInk = Color(hex: 0x3B153A)  // deep plum
+    static let onboardingBG = Color(hex: 0xFBE4D4)   // logo peach
+    static let onboardingInk = Color(hex: 0x2E2B52)  // logo navy
 }
 
 /// The warm onboarding/edge-screen background (pre-card only).
